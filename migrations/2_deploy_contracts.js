@@ -1,5 +1,5 @@
-var SimpleStorage = artifacts.require("./SimpleStorage.sol");
+var AuthorityManagement = artifacts.require("./AuthorityManagement.sol");
 
-module.exports = function(deployer) {
-  deployer.deploy(SimpleStorage);
+module.exports = function(deployer, network, accounts) {
+  deployer.deploy(AuthorityManagement, { from: accounts[0] });
 };

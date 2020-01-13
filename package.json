@@ -1,0 +1,15 @@
+{
+  "name": "transparent-healthcare",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "truffle": "truffle start",
+    "build": "truffle compile",
+    "test": "truffle test",
+    "eject": "react-scripts eject",
+    "start": "truffle develop"
+  },
+  "dependencies": {
+    "truffle": "^5.1.8"
+  }
+}
