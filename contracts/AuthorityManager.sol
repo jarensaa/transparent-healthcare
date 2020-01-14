@@ -22,7 +22,7 @@ contract AuthorityManager is Authority{
   mapping (address => uint ) public lastProposalSubmitted;
 
   modifier authorized() {
-    require(authorities[msg.sender], "Unauthorized by authority");
+    require(authorities[msg.sender], "Unauthorized");
     _;
   }
 

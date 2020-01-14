@@ -1,191 +1,187 @@
 const AuthorityManagement = artifacts.require("./AuthorityManager.sol");
+const assert = require("chai").assert;
+const truffleAssert = require("truffle-assertions");
 
 contract("AuthorityManager", accounts => {
+  let authorityManagementInstance;
+
+  before(async () => {
+    authorityManagementInstance = await AuthorityManagement.deployed();
+  });
+
   after("clean up...", () => {
     console.log("Cleaning up");
   });
 
   it("Account2 should be unable to propose a vote", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-
-    try {
-      await authorityManagementInstance.propose(1, accounts[2], {
+    await truffleAssert.fails(
+      authorityManagementInstance.propose(1, accounts[2], {
         from: accounts[2]
-      });
-      assert.fail("Unauthorized account could set state");
-    } catch (error) {
-      assert.ok(true);
-    }
+      }),
+      "Unauthorized"
+    );
   });
 
   it("Account0 should be unable to vote on nonexistant proposal", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-
-    try {
-      await authorityManagementInstance.voteOnProposal(10, {
+    await truffleAssert.reverts(
+      authorityManagementInstance.voteOnProposal(10, {
         from: accounts[0]
-      });
-      assert.fail("Could vote on nonexistant proposal");
-    } catch (error) {
-      assert.ok(true);
-    }
+      }),
+      "Proposal does not exist or has been enacted"
+    );
   });
 
   it("Account0 should be able to propose Account1 as authority", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-
-    await authorityManagementInstance.propose(1, accounts[1], {
-      from: accounts[0]
-    });
-    const proposalID = await authorityManagementInstance.getLastProposalSubmitted.call(
-      accounts[0]
+    await truffleAssert.passes(
+      authorityManagementInstance.propose(1, accounts[1], {
+        from: accounts[0]
+      })
     );
-
-    assert.equal(proposalID, 1);
   });
 
   it("Account1 should be able to claimAuthority", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    await authorityManagementInstance.enactProposal(1, {
-      from: accounts[1]
-    });
-    const account2IsAuthorized = await authorityManagementInstance.isAuthorized.call(
+    await truffleAssert.passes(
+      authorityManagementInstance.enactProposal(1, {
+        from: accounts[1]
+      })
+    );
+  });
+
+  it("Account1 should have authority", async () => {
+    const account1IsAuthorized = await authorityManagementInstance.isAuthorized.call(
       accounts[1],
       { from: accounts[1] }
     );
-
-    assert.ok(account2IsAuthorized);
+    assert.ok(account1IsAuthorized);
   });
 
   it("Account1 should be unable to claimAuthority again", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    try {
-      await authorityManagementInstance.enactProposal(1, {
+    await truffleAssert.reverts(
+      authorityManagementInstance.enactProposal(1, {
         from: accounts[1]
-      });
-      assert.fail();
-    } catch (error) {
-      assert.ok(true);
-    }
+      }),
+      "Proposal does not exist or has been enacted"
+    );
   });
 
   it("Account1 should be able to propose Account2 as authority", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    try {
-      await authorityManagementInstance.propose(1, accounts[2], {
+    await truffleAssert.passes(
+      authorityManagementInstance.propose(1, accounts[2], {
         from: accounts[1]
-      });
-      assert.ok(true);
-    } catch (error) {
-      assert.fail();
-    }
+      })
+    );
   });
 
   it("Account2 should be unable to claim authority", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    try {
-      await authorityManagementInstance.enactProposal(2, {
+    await truffleAssert.reverts(
+      authorityManagementInstance.enactProposal(2, {
         from: accounts[2]
-      });
-      assert.fail();
-    } catch (error) {
-      assert.ok(true);
-    }
+      }),
+      "Proposal does not have enough votes to be enacted"
+    );
   });
 
   it("Account0 should be able to vote on proposal for Account2 promotion", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    await authorityManagementInstance.voteOnProposal(2, { from: accounts[0] });
-    try {
-      await authorityManagementInstance.voteOnProposal(2, {
-        from: accounts[0]
-      });
-      assert.fail();
-    } catch (error) {
-      assert.ok(true);
-    }
+    await truffleAssert.passes(
+      authorityManagementInstance.voteOnProposal(2, { from: accounts[0] })
+    );
   });
 
   it("Account2 should be able to claim authority", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    try {
-      await authorityManagementInstance.enactProposal(2, { from: accounts[5] });
-      assert.ok(true);
-    } catch (error) {
-      assert.fail();
-    }
+    await truffleAssert.passes(
+      authorityManagementInstance.enactProposal(2, { from: accounts[5] })
+    );
   });
 
-  it("Account0 and 1 should be able to propose Account3 as authority", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    try {
+  it("Account2 should have authority", async () => {
+    const account2HasAuthority = await authorityManagementInstance.isAuthorized.call(
+      accounts[2]
+    );
+    assert.ok(account2HasAuthority);
+  });
+
+  it("Account0 should be able to propose Account3 as authority", async () => {
+    await truffleAssert.passes(
       authorityManagementInstance.propose(1, accounts[3], {
         from: accounts[0]
-      });
-      authorityManagementInstance.voteOnProposal(3, { from: accounts[1] });
-      assert.ok(true);
-    } catch (error) {
-      assert.fail();
-    }
+      })
+    );
   });
 
-  it("Account 1 and 2 should be able to remove Account0 as authority", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    await authorityManagementInstance.propose(2, accounts[0], {
-      from: accounts[2]
-    });
-    await authorityManagementInstance.voteOnProposal(4, { from: accounts[1] });
-    await authorityManagementInstance.enactProposal(4, { from: accounts[1] });
-    try {
-      await authorityManagementInstance.propose(2, accounts[2], {
-        from: accounts[0]
-      });
-      assert.fail();
-    } catch (error) {
-      assert.ok(true);
-    }
+  it("Account1 should be able to vote for Account3 proposal", async () => {
+    await truffleAssert.passes(
+      authorityManagementInstance.voteOnProposal(3, {
+        from: accounts[1]
+      })
+    );
+  });
+
+  it("Account1 should be able to propose removal of Account0 as authority", async () => {
+    await truffleAssert.passes(
+      authorityManagementInstance.propose(2, accounts[0], {
+        from: accounts[2]
+      })
+    );
+  });
+
+  it("Account2 should be able to vote on proposal for removal of Account0 as authority", async () => {
+    await truffleAssert.passes(
+      authorityManagementInstance.voteOnProposal(4, {
+        from: accounts[1]
+      })
+    );
+  });
+
+  it("Account 1 should be able to enact on vote to remove Account0 as authority", async () => {
+    truffleAssert.passes(
+      authorityManagementInstance.enactProposal(4, { from: accounts[1] })
+    );
+  });
+
+  it("Account0 should not have authority", async () => {
+    const account0HasAuthority = await authorityManagementInstance.isAuthorized.call(
+      accounts[0]
+    );
+    assert.isFalse(account0HasAuthority);
   });
 
   it("After Account0 is removed, Account3 should be unanble to claim authority", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
-    try {
-      await authorityManagementInstance.enactProposal(3, { from: accounts[3] });
-      assert.fail();
-    } catch (error) {
-      assert.ok(true);
-    }
+    await truffleAssert.reverts(
+      authorityManagementInstance.enactProposal(3, { from: accounts[3] }),
+      "Proposal does not have enough votes to be enacted"
+    );
   });
 
   it("The number of authorities should be 2", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
     const num = await authorityManagementInstance.getNumAuthorities.call();
     assert.equal(num, 2);
   });
 
-  it("Account0 and 3 is not an authority. Account 1 and 2 is.", async () => {
-    const authorityManagementInstance = await AuthorityManagement.deployed();
+  it("Account0 should not have authority", async () => {
+    const hasAuth = await authorityManagementInstance.isAuthorized.call(
+      accounts[0]
+    );
+    assert.isFalse(hasAuth);
+  });
 
-    try {
-      authorityManagementInstance.propose(2, accounts[3], {
-        from: accounts[1]
-      });
-      authorityManagementInstance.propose(2, accounts[5], {
-        from: accounts[2]
-      });
-    } catch (error) {
-      assert.fail();
-    }
+  it("Account1 should have authority", async () => {
+    const hasAuth = await authorityManagementInstance.isAuthorized.call(
+      accounts[1]
+    );
+    assert.ok(hasAuth);
+  });
 
-    try {
-      authorityManagementInstance.propose(2, accounts[5], {
-        from: accounts[0]
-      });
-      authorityManagementInstance.propose(2, accounts[5], {
-        from: accounts[3]
-      });
-      assert.fail();
-    } catch (error) {
-      assert.ok(true);
-    }
+  it("Account2 should have authority", async () => {
+    const hasAuth = await authorityManagementInstance.isAuthorized.call(
+      accounts[2]
+    );
+    assert.ok(hasAuth);
+  });
+
+  it("Account3 should not have authority", async () => {
+    const hasAuth = await authorityManagementInstance.isAuthorized.call(
+      accounts[3]
+    );
+    assert.isFalse(hasAuth);
   });
 });
