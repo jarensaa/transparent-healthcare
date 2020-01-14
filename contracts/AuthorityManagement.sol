@@ -5,8 +5,8 @@ contract AuthorityManagement {
   struct Proposal {
     uint proposalType;
     address target;
-    uint votes;
-    bool isClaimed;
+    bool isActive;
+    address[] voters;
     mapping (address => bool) hasVoted;
   }
 
@@ -32,7 +32,7 @@ contract AuthorityManagement {
   }
 
   function removeAuthority(address _address) private {
-    authorities[_address] = false;
+    delete authorities[_address];
     numAuthorities--;
   }
 
@@ -48,47 +48,49 @@ contract AuthorityManagement {
     return numAuthorities;
   }
 
-  function propose(uint proposalType, address targetAddress) public authorized {
-    if(proposalType == 1) {
-      require(authorities[targetAddress] == false, "Target is allready an authority");
-    } else if(proposalType == 2) {
-      require(authorities[targetAddress] == true, "Target is not an authority");
+  function propose(uint _proposalType, address _targetAddress) public authorized {
+    if(_proposalType == 1) {
+      require(authorities[_targetAddress] == false, "Target is allready an authority");
+    } else if(_proposalType == 2) {
+      require(authorities[_targetAddress] == true, "Target is not an authority");
     } else revert("Unsupported proposal type");
 
-    proposals[++proposalCount] = Proposal(proposalType, targetAddress, 0, false);
-    proposals[proposalCount].hasVoted[msg.sender] = true;
-    proposals[proposalCount].votes++;
+    Proposal storage proposal = proposals[++proposalCount];
+    proposal.proposalType = _proposalType;
+    proposal.target = _targetAddress;
+    proposal.isActive = true;
+
+    voteOnProposal(proposalCount);
     lastProposalSubmitted[msg.sender] = proposalCount;
   }
 
   function enactProposal(uint id) public {
-    require(proposals[id].isClaimed == false, "Proposal does not exist or has been enacted");
-    require(proposals[id].votes > (numAuthorities / 2), "Proposal does not have enough votes to be enacted");
-    proposals[id].isClaimed = true;
+    require(proposals[id].isActive, "Proposal does not exist or has been enacted");
+
+    uint votes;
+
+    for (uint i = 0; i < proposals[id].voters.length; i++) {
+      if(isAuthorized(proposals[id].voters[i])) {
+        votes++;
+      }
+    }
+
+    require(votes > (numAuthorities / 2), "Proposal does not have enough votes to be enacted");
 
     if(proposals[id].proposalType == 1) {
       addAuthority(proposals[id].target);
     }
-
-    if(proposals[id].proposalType == 2) {
+    else if(proposals[id].proposalType == 2) {
       removeAuthority(proposals[id].target);
     }
+
+    delete proposals[id]; //Delete refunds gas, making an enact call cheap if it's legitimate, and expensive if it's not.
   }
 
   function voteOnProposal(uint id) public authorized {
-    require(proposals[id].isClaimed == false, "Proposal has been enacted");
+    require(proposals[id].isActive, "Proposal does not exist or has been enacted");
     require(proposals[id].hasVoted[msg.sender] == false, "Vote has allready been cast by sender");
-    proposals[proposalCount].hasVoted[msg.sender] = true;
-    proposals[proposalCount].votes++;
-  }
-
-  uint storedData;
-
-  function set(uint x) public authorized {
-    storedData = x;
-  }
-
-  function get() public view returns (uint) {
-    return storedData;
+    proposals[id].hasVoted[msg.sender] = true;
+    proposals[id].voters.push(msg.sender);
   }
 }
