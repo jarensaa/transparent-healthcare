@@ -1,10 +1,21 @@
 pragma solidity ^0.6.1;
+import "./IAuthorization.sol";
 
 contract TreatmentManager {
 
-  string public ret = "hello";
+  IAuthorization authority;
+  string stringStore;
 
-  function getString() public view returns (string memory) {
-    return ret;
+  modifier authorityTrusted() {
+    require(authority.isAuthorized(msg.sender), "Sender not trusted by Authority");
+    _;
+  }
+
+  constructor (address _address) public {
+    authority = IAuthorization(_address);
+  }
+
+  function isAuthorized(address _address) public view returns(bool) {
+    return authority.isAuthorized(_address);
   }
 }

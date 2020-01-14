@@ -1,11 +1,7 @@
 pragma solidity ^0.6.1;
+import "./IAuthorization.sol";
 
-
-interface Authority {
-  function isAuthorized(address _address) external view returns (bool);
-}
-
-contract AuthorityManager is Authority{
+contract AuthorityManager is IAuthorization {
 
   struct Proposal {
     uint proposalType;
