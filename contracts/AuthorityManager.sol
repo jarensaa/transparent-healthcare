@@ -1,6 +1,11 @@
 pragma solidity ^0.6.1;
 
-contract AuthorityManagement {
+
+interface Authority {
+  function isAuthorized(address _address) external view returns (bool);
+}
+
+contract AuthorityManager is Authority{
 
   struct Proposal {
     uint proposalType;
@@ -17,7 +22,7 @@ contract AuthorityManagement {
   mapping (address => uint ) public lastProposalSubmitted;
 
   modifier authorized() {
-    require(authorities[msg.sender], "Unauthorized");
+    require(authorities[msg.sender], "Unauthorized by authority");
     _;
   }
 
@@ -40,7 +45,7 @@ contract AuthorityManagement {
     return lastProposalSubmitted[_address];
   }
 
-  function isAuthorized(address _address) public view returns (bool) {
+  function isAuthorized(address _address) external override view returns (bool) {
     return authorities[_address];
   }
 
@@ -70,7 +75,7 @@ contract AuthorityManagement {
     uint votes;
 
     for (uint i = 0; i < proposals[id].voters.length; i++) {
-      if(isAuthorized(proposals[id].voters[i])) {
+      if(authorities[proposals[id].voters[i]]) {
         votes++;
       }
     }
