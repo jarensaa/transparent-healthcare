@@ -10,7 +10,7 @@ interface ITreatmentProviderManager {
     function isTrustedProvider(address _address) external view returns (bool);
 }
 
-contract TreatmentProvider is ITreatmentProviderManager, IAuthorization {
+contract TreatmentProvider is ITreatmentProviderManager {
 
     IAuthorization authorityContract;
     string stringStore;
@@ -128,12 +128,4 @@ contract TreatmentProvider is ITreatmentProviderManager, IAuthorization {
         delete providerTrusteesIndex[_address][msg.sender];
     }
 
-    function isAuthorized(address _address) 
-        external 
-        override 
-        view 
-        returns(bool) 
-    {
-        return authorityContract.isAuthorized(_address);
-    }
 }

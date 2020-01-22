@@ -31,20 +31,6 @@ contract("TreatmentProvider", accounts => {
     });
   });
 
-  it("Account0 is authorized", async () => {
-    const isAuth = await treatmentProviderInstance.isAuthorized.call(
-      accounts[0]
-    );
-    assert.ok(isAuth);
-  });
-
-  it("Account1 is authorized", async () => {
-    const isAuth = await treatmentProviderInstance.isAuthorized.call(
-      accounts[1]
-    );
-    assert.ok(isAuth);
-  });
-
   it("Account5 can be added as provider", async () => {
     await truffleAssert.passes(
       treatmentProviderInstance.addSenderAsProvider({ from: accounts[5] })
