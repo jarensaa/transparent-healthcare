@@ -10,6 +10,7 @@
     "start": "truffle develop"
   },
   "dependencies": {
+    "solc": "^0.6.1",
     "truffle": "^5.1.8"
   },
   "devDependencies": {

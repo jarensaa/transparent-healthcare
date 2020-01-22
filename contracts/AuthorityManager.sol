@@ -1,5 +1,6 @@
-pragma solidity ^0.6.1;
+pragma solidity 0.6.1;
 import "./IAuthorization.sol";
+
 
 contract AuthorityManager is IAuthorization {
 

@@ -1,8 +1,8 @@
 var AuthorityManager = artifacts.require("./AuthorityManager.sol");
-var TreatmentManager = artifacts.require("./TreatmentManager.sol");
+var TreatmentProvider = artifacts.require("./TreatmentProvider.sol");
 
 module.exports = (deployer, network, accounts) => {
-  deployer.deploy(TreatmentManager, AuthorityManager.address, {
+  deployer.deploy(TreatmentProvider, AuthorityManager.address, {
     from: accounts[1]
   });
 };
