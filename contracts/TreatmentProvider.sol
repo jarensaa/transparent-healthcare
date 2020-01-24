@@ -1,37 +1,37 @@
 pragma solidity 0.6.1;
 import "./IAuthorization.sol";
-
-
-interface ITreatmentProviderManager {
-    function addSenderAsProvider() external;
-    function removeSenderAsProvider() external;
-    function addTrustInProvider(address _address) external;
-    function removeTrustInProvider(address _address) external;
-    function isTrustedProvider(address _address) external view returns (bool);
-}
+import "./ITreatmentProviderManager.sol";
 
 contract TreatmentProvider is ITreatmentProviderManager {
-
     IAuthorization authorityContract;
     string stringStore;
 
     mapping(address => bool) isProvider;
     mapping(address => address[]) providerTrustees;
-    mapping(address => mapping(address => uint)) providerTrusteesIndex;
+    mapping(address => mapping(address => uint256)) providerTrusteesIndex;
     mapping(address => mapping(address => bool)) isProviderTrustee;
 
     modifier senderIsAuthority() {
-        require(authorityContract.isAuthorized(msg.sender), "Sender not trusted by Authority");
+        require(
+            authorityContract.isAuthorized(msg.sender),
+            "Sender not trusted by Authority"
+        );
         _;
     }
 
     modifier targetIsTrustedBySender(address _target) {
-        require(isProviderTrustee[_target][msg.sender],"Provider is not a trusted by the sender");
+        require(
+            isProviderTrustee[_target][msg.sender],
+            "Provider is not a trusted by the sender"
+        );
         _;
     }
 
     modifier targetIsNotTrustedBySender(address _target) {
-        require(!isProviderTrustee[_target][msg.sender], "Provider is allready trusted by the sender");
+        require(
+            !isProviderTrustee[_target][msg.sender],
+            "Provider is allready trusted by the sender"
+        );
         _;
     }
 
@@ -45,26 +45,24 @@ contract TreatmentProvider is ITreatmentProviderManager {
         _;
     }
 
-    constructor (address _address) 
-        public 
-    {
+    constructor(address _address) public {
         authorityContract = IAuthorization(_address);
     }
 
-    function isTrustedProvider(address _address) 
+    function isTrustedProvider(address _address)
         external
+        view
         override
-        view 
         returns (bool)
     {
-        if(!isProvider[_address]){
+        if (!isProvider[_address]) {
             return false;
         }
 
-        uint numTrustees = providerTrustees[_address].length;
-    
-        for (uint i = 0; i < numTrustees; i++) {
-            if(authorityContract.isAuthorized(providerTrustees[_address][i])){
+        uint256 numTrustees = providerTrustees[_address].length;
+
+        for (uint256 i = 0; i < numTrustees; i++) {
+            if (authorityContract.isAuthorized(providerTrustees[_address][i])) {
                 return true;
             }
         }
@@ -73,20 +71,20 @@ contract TreatmentProvider is ITreatmentProviderManager {
     }
 
     function addSenderAsProvider()
-        external 
+        external
         override
         targetIsNotProvider(msg.sender)
     {
         isProvider[msg.sender] = true;
     }
 
-    function removeSenderAsProvider() 
-        external 
+    function removeSenderAsProvider()
+        external
         override
         targetIsProvider(msg.sender)
     {
         delete isProvider[msg.sender];
-        for (uint i = 0; i < providerTrustees[msg.sender].length; i++) {
+        for (uint256 i = 0; i < providerTrustees[msg.sender].length; i++) {
             address trustee = providerTrustees[msg.sender][i];
             delete providerTrusteesIndex[msg.sender][trustee];
             delete isProviderTrustee[msg.sender][trustee];
@@ -94,31 +92,31 @@ contract TreatmentProvider is ITreatmentProviderManager {
         delete providerTrustees[msg.sender];
     }
 
-    function addTrustInProvider(address _address) 
-        external 
+    function addTrustInProvider(address _address)
+        external
         override
         targetIsProvider(_address)
         senderIsAuthority
         targetIsNotTrustedBySender(_address)
     {
-        uint trusteeNumber = providerTrustees[_address].length;
+        uint256 trusteeNumber = providerTrustees[_address].length;
         providerTrustees[_address].push(msg.sender);
         isProviderTrustee[_address][msg.sender] = true;
         providerTrusteesIndex[_address][msg.sender] = trusteeNumber;
     }
 
-    function removeTrustInProvider(address _address) 
-        external 
+    function removeTrustInProvider(address _address)
+        external
         override
         targetIsProvider(_address)
         targetIsTrustedBySender(_address)
     {
-        uint indexOfTrustee = providerTrusteesIndex[_address][msg.sender];
-        uint numTrustees = providerTrustees[_address].length;
+        uint256 indexOfTrustee = providerTrusteesIndex[_address][msg.sender];
+        uint256 numTrustees = providerTrustees[_address].length;
 
         // Swap the trustee to remove with the last one.
-        if((numTrustees > 1) && (indexOfTrustee != numTrustees - 1)) {
-            address lastTrustee = providerTrustees[_address][numTrustees -1];
+        if ((numTrustees > 1) && (indexOfTrustee != numTrustees - 1)) {
+            address lastTrustee = providerTrustees[_address][numTrustees - 1];
             providerTrustees[_address][indexOfTrustee] = lastTrustee;
             providerTrusteesIndex[_address][lastTrustee] = indexOfTrustee;
         }
