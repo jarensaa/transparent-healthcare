@@ -63,17 +63,21 @@ contract LicenseProvider is ILicenseProviderManager {
         override
         returns (bool)
     {
-        return
-            (
-                authorityContract.isAuthorized(
-                    licenses[_licenseAddress].trustingIssuer
-                )
-            ) &&
-            (
-                authorityContract.isAuthorized(
-                    licenses[_licenseAddress].trustingProvider
-                )
-            );
+        address provider = licenses[_licenseAddress].trustingProvider;
+        address issuer = licenses[_licenseAddress].trustingIssuer;
+
+        if (!isIssuer[issuer]) return false;
+        if (!authorityContract.isAuthorized(issuerTrustedByAuthority[issuer]))
+            return false;
+
+        if (!isProvider[provider]) return false;
+        if (
+            !authorityContract.isAuthorized(
+                providerTrustedByAuthority[provider]
+            )
+        ) return false;
+
+        return true;
     }
 
     function registerSenderAsIssuer()
@@ -241,6 +245,26 @@ contract LicenseProvider is ILicenseProviderManager {
         returns (bool)
     {
         return licenses[_license].trustingProvider == _provider;
+    }
+
+    function getIsserOfLicense(address _licenseAddress)
+        external
+        view
+        override
+        addressIsLicense(_licenseAddress)
+        returns (address)
+    {
+        return licenses[_licenseAddress].trustingIssuer;
+    }
+
+    function getProviderForLicense(address _licenseAddress)
+        external
+        view
+        override
+        addressIsLicense(_licenseAddress)
+        returns (address)
+    {
+        return licenses[_licenseAddress].trustingProvider;
     }
 
 }

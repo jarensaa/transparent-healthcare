@@ -31,4 +31,14 @@ interface ILicenseProviderManager {
         address _provider
     ) external view returns (bool);
 
+    function getIsserOfLicense(address _licenseAddress)
+        external
+        view
+        returns (address);
+
+    function getProviderForLicense(address _licenseAddress)
+        external
+        view
+        returns (address);
+
 }

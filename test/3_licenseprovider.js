@@ -136,6 +136,34 @@ contract("TreatmentProvider", accounts => {
     );
   });
 
+  it("The issuer of Account5's license should be Account2", async () => {
+    const isser = await licenseProviderInstance.getIsserOfLicense.call(
+      accounts[5]
+    );
+    assert.equal(isser, accounts[2]);
+  });
+
+  it("Account2 should be a trusted licenseIssuer", async () => {
+    const isTrusted = await licenseProviderInstance.isTrustedLicenseIssuer.call(
+      accounts[2]
+    );
+    assert.ok(isTrusted);
+  });
+
+  it("The provider of Account5's license should be Account3", async () => {
+    const provider = await licenseProviderInstance.getProviderForLicense.call(
+      accounts[5]
+    );
+    assert.equal(provider, accounts[3]);
+  });
+
+  it("Account3 should be a trusted provider", async () => {
+    const isTrusted = await licenseProviderInstance.isTrustedProvider.call(
+      accounts[3]
+    );
+    assert.ok(isTrusted);
+  });
+
   it("The license of account5 should be trusted", async () => {
     const isTrusted = await licenseProviderInstance.isLicenseTrusted.call(
       accounts[5]
