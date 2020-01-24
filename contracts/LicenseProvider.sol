@@ -11,8 +11,9 @@ contract LicenseProvider is ILicenseProviderManager {
     IAuthorization authorityContract;
     mapping(address => License) licenses;
     mapping(address => bool) isIssuer;
+    mapping(address => bool) isProvider;
     mapping(address => address) issuerTrustedByAuthority;
-    mapping(address => address[]) licensesIssuedByIssuer;
+    mapping(address => address) providerTrustedByAuthority;
     mapping(address => mapping(address => bool)) issuerMoveProposed;
     mapping(address => mapping(address => bool)) providerMoveProposed;
 
@@ -31,6 +32,19 @@ contract LicenseProvider is ILicenseProviderManager {
 
     modifier addressIsNotIssuer(address _address) {
         require(!isIssuer[_address], "Target is allready a registed issuer");
+        _;
+    }
+
+    modifier addressIsProvider(address _address) {
+        require(isProvider[_address], "Target is not a provider");
+        _;
+    }
+
+    modifier addressIsNotProvider(address _address) {
+        require(
+            !isProvider[_address],
+            "Target is allready a registed provider"
+        );
         _;
     }
 
@@ -95,6 +109,7 @@ contract LicenseProvider is ILicenseProviderManager {
         external
         override
         addressIsAuthority(msg.sender)
+        addressIsIssuer(_address)
     {
         issuerTrustedByAuthority[_address] = msg.sender;
     }
@@ -142,9 +157,18 @@ contract LicenseProvider is ILicenseProviderManager {
         delete issuerMoveProposed[_address][msg.sender];
     }
 
-    function registerProvider() external override {}
+    function registerProvider()
+        external
+        override
+        addressIsNotProvider(msg.sender)
+    {
+        isProvider[msg.sender] = true;
+    }
 
-    function removeProvider() external override {}
+    function removeProvider() external override addressIsProvider(msg.sender) {
+        delete isProvider[msg.sender];
+        delete providerTrustedByAuthority[msg.sender];
+    }
 
     function isTrustedProvider(address _address)
         external
@@ -152,34 +176,71 @@ contract LicenseProvider is ILicenseProviderManager {
         override
         returns (bool)
     {
-        if (_address == 0xE0f5206BBD039e7b0592d8918820024e2a7437b9) {
-            return true;
-        }
+        if (!isProvider[_address]) return false;
+        if (
+            !authorityContract.isAuthorized(
+                providerTrustedByAuthority[_address]
+            )
+        ) return false;
         return true;
     }
 
-    function addTrustInProvider(address _address) external override {}
+    function addTrustInProvider(address _address)
+        external
+        override
+        addressIsProvider(_address)
+        addressIsAuthority(msg.sender)
+    {
+        providerTrustedByAuthority[_address] = msg.sender;
+    }
 
-    function removeTrustInProvider(address _address) external override {}
+    function removeTrustInProvider(address _address)
+        external
+        override
+        addressIsProvider(_address)
+    {
+        require(
+            providerTrustedByAuthority[_address] == msg.sender,
+            "Provider is not trusted by sending authority"
+        );
+        delete providerTrustedByAuthority[_address];
+    }
 
-    function proposeLicenseMovement(address _toAddress) external override {}
+    function proposeLicenseMovement(address _toAddress)
+        external
+        override
+        addressIsLicense(msg.sender)
+        addressIsProvider(_toAddress)
+    {
+        providerMoveProposed[msg.sender][_toAddress] = true;
+    }
 
     function approveLicenseMovement(address _licenseAddress)
         external
         override
-    {}
+        addressIsLicense(_licenseAddress)
+        addressIsProvider(msg.sender)
+    {
+        require(
+            providerMoveProposed[_licenseAddress][msg.sender],
+            "Provider movement has not been proposed by license holder"
+        );
+        licenses[_licenseAddress].trustingProvider = msg.sender;
+        delete providerMoveProposed[_licenseAddress][msg.sender];
+    }
 
     function isLicenseRegisteredWithProvider(
         address _license,
         address _provider
-    ) external view override returns (bool) {
-        if (_license == 0xE0f5206BBD039e7b0592d8918820024e2a7437b9) {
-            return true;
-        }
-        if (_provider == 0xE0f5206BBD039e7b0592d8918820024e2a7437b9) {
-            return true;
-        }
-        return true;
+    )
+        external
+        view
+        override
+        addressIsLicense(_license)
+        addressIsProvider(_provider)
+        returns (bool)
+    {
+        return licenses[_license].trustingProvider == _provider;
     }
 
 }
