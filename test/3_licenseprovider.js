@@ -4,14 +4,23 @@ const assert = require("chai").assert;
 const truffleAssert = require("truffle-assertions");
 
 /*
-    function isLicenseTrusted(address _licenseAddress) external view returns (bool);
+interface ILicenseProviderManager {
+    function isLicenseTrusted(address _licenseAddress)
+        external
+        view
+        returns (bool);
 
     function registerSenderAsIssuer() external;
     function removeSenderAsIssuer() external;
-    function isTrustedLicenseIssuer(address _address) external view returns (bool);
+    function isTrustedLicenseIssuer(address _address)
+        external
+        view
+        returns (bool);
     function addTrustInLicenseIssuer(address _address) external;
     function removeTrustInLicenseIssuer(address _address) external;
     function issueLicenseToAddress(address _address) external;
+    function proposeMoveToLicenseIssuer(address _address) external;
+    function approveMoveToLicenseIssuer(address _address) external;
 
     function registerProvider() external;
     function removeProvider() external;
@@ -21,8 +30,12 @@ const truffleAssert = require("truffle-assertions");
 
     function proposeLicenseMovement(address _toAddress) external;
     function approveLicenseMovement(address _licenseAddress) external;
-    function isLicenseRegisteredWithProvider(address _license, address _provider) external view returns (bool);
+    function isLicenseRegisteredWithProvider(
+        address _license,
+        address _provider
+    ) external view returns (bool);
 
+}
 */
 
 contract("TreatmentProvider", accounts => {
@@ -119,6 +132,60 @@ contract("TreatmentProvider", accounts => {
     await truffleAssert.passes(
       licenseProviderInstance.approveLicenseMovement(accounts[5], {
         from: accounts[3]
+      })
+    );
+  });
+
+  it("The license of account5 should be trusted", async () => {
+    const isTrusted = await licenseProviderInstance.isLicenseTrusted.call(
+      accounts[5]
+    );
+    assert.ok(isTrusted);
+  });
+
+  // Should a license issued by a revoked issuer still be ok? No, but it should be possbile for a new
+  // License issuer to approve it.
+  it("Account1 should be able to revoke trust of Account2 as issuer", async () => {
+    await truffleAssert.passes(
+      licenseProviderInstance.removeTrustInLicenseIssuer(accounts[2], {
+        from: accounts[1]
+      })
+    );
+  });
+
+  it("The license of account5 should not be trusted", async () => {
+    const isTrusted = await licenseProviderInstance.isLicenseTrusted.call(
+      accounts[5]
+    );
+    assert.isFalse(isTrusted);
+  });
+
+  it("Account6 can register themselves as a licenseIssuer", async () => {
+    await truffleAssert.passes(
+      licenseProviderInstance.registerSenderAsIssuer({ from: accounts[6] })
+    );
+  });
+
+  it("Account1 should be able to trust Account6 as issuer", async () => {
+    await truffleAssert.passes(
+      licenseProviderInstance.addTrustInLicenseIssuer(accounts[6], {
+        from: accounts[1]
+      })
+    );
+  });
+
+  it("Account5 should be able to propose to get their license approved by Account6", async () => {
+    await truffleAssert.passes(
+      licenseProviderInstance.proposeMoveToLicenseIssuer(accounts[6], {
+        from: accounts[5]
+      })
+    );
+  });
+
+  it("Account6 should be able approve poposal to approve the license of Account5", async () => {
+    await truffleAssert.passes(
+      licenseProviderInstance.approveMoveToLicenseIssuer(accounts[5], {
+        from: accounts[6]
       })
     );
   });
