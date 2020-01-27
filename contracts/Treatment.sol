@@ -20,6 +20,11 @@ contract Treatment is ITreatment {
         );
     }
 
+    function registerMeasureContract(address _measureContract)
+        external
+        override
+    {}
+
     function approveTreatment(address _treatmentAddress) external override {}
     function spendTreatment(address _treatmentAddress) external override {}
     function createTreatment(

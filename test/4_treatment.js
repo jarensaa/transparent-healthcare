@@ -83,7 +83,7 @@ contract("Treatment", accounts => {
   });
 
   it("Should be impossible to register Account8 as measureContract for Account1", async () => {
-    truffleAssert.reverts(
+    await truffleAssert.reverts(
       treatmentInstance.registerMeasureContract(accounts[8], {
         from: accounts[1]
       })
@@ -91,7 +91,7 @@ contract("Treatment", accounts => {
   });
 
   it("Should be possible to register Account8 as measureContract for Account0", async () => {
-    truffleAssert.passes(
+    await truffleAssert.passes(
       treatmentInstance.registerMeasureContract(accounts[8], {
         from: accounts[0]
       })
@@ -99,7 +99,7 @@ contract("Treatment", accounts => {
   });
 
   it("Should be impossible to reregister measureContract for Account0", async () => {
-    truffleAssert.reverts(
+    await truffleAssert.reverts(
       treatmentInstance.registerMeasureContract(accounts[9], {
         from: accounts[0]
       })
@@ -121,7 +121,7 @@ contract("Treatment", accounts => {
   });
 
   it("Account2 (TreatmentProvider) should be able to create a treatment", async () => {
-    truffleAssert.passes(
+    await truffleAssert.passes(
       treatmentInstance.createTreatment(
         accounts[6],
         treatment1Hash,
@@ -132,13 +132,13 @@ contract("Treatment", accounts => {
   });
 
   it("Account5 (LicenseHolder) should be able to approve the first treatment", async () => {
-    truffleAssert.passes(
+    await truffleAssert.passes(
       treatmentInstance.approveTreatment(accounts[6], { from: accounts[5] })
     );
   });
 
   it("Account2 (TreatmentProvider) should be able to create another treatment", async () => {
-    truffleAssert.passes(
+    await truffleAssert.passes(
       treatmentInstance.createTreatment(
         accounts[7],
         treatment2Hash,
@@ -149,7 +149,7 @@ contract("Treatment", accounts => {
   });
 
   it("Account5 (LicenseHolder) should be able to approve the second treatment", async () => {
-    truffleAssert.passes(
+    await truffleAssert.passes(
       treatmentInstance.approveTreatment(accounts[6], { from: accounts[5] })
     );
   });
@@ -192,7 +192,7 @@ contract("Treatment", accounts => {
   });
 
   it("Should be impossible to spend the first treatment (Account6) for Account9 (None)", async () => {
-    truffleAssert.reverts(
+    await truffleAssert.reverts(
       treatmentInstance.spendTreatment(accounts[6], { from: accounts[9] })
     );
   });
@@ -210,7 +210,7 @@ contract("Treatment", accounts => {
   });
 
   it("Should be possible to spend the first treatment (Account6) for Account8 (MeasureContract)", async () => {
-    truffleAssert.reverts(
+    await truffleAssert.reverts(
       treatmentInstance.spendTreatment(accounts[6], { from: accounts[8] })
     );
   });

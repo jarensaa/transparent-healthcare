@@ -131,7 +131,7 @@ contract("Measure", accounts => {
   });
 
   it("Should be possible to create new measure for Account7", async () => {
-    truffleAssert.passes(
+    await truffleAssert.passes(
       measureInstance.createMeasure(measureRating, measureHash, measureURL, {
         from: accounts[7]
       })
@@ -151,7 +151,7 @@ contract("Measure", accounts => {
   });
 
   it("Should not be possible to create new measure for Account7", async () => {
-    truffleAssert.reverts(
+    await truffleAssert.reverts(
       measureInstance.createMeasure(measureRating, measureHash, measureURL, {
         from: accounts[7]
       })
@@ -159,7 +159,7 @@ contract("Measure", accounts => {
   });
 
   it("Should not be possible to create new measure for Account9", async () => {
-    truffleAssert.reverts(
+    await truffleAssert.reverts(
       measureInstance.createMeasure(measureRating, measureHash, measureURL, {
         from: accounts[9]
       })
