@@ -1,5 +1,5 @@
 pragma solidity 0.6.1;
-import "./ISpendableTreatment.sol";
+import "./iface/ISpendableTreatment.sol";
 
 contract Measure {
     ISpendableTreatment treatmentContract;

@@ -1,9 +1,10 @@
 pragma solidity 0.6.1;
-import "./ILicenseProviderManager.sol";
-import "./ITreatmentProviderManager.sol";
-import "./ISpendableTreatment.sol";
+import "./iface/ILicenseProviderManager.sol";
+import "./iface/ITreatmentProviderManager.sol";
+import "./iface/ISpendableTreatment.sol";
+import "./iface/IApprovableTreatment.sol";
 
-contract Treatment is ISpendableTreatment {
+contract Treatment is ISpendableTreatment, IApprovableTreatment {
     ILicenseProviderManager licenseProvider;
     ITreatmentProviderManager treatmentProvider;
 
@@ -19,6 +20,6 @@ contract Treatment is ISpendableTreatment {
 
     function spendTreatment(address _treatmentAddress, uint256 _type)
         external
-        override
+        override(ISpendableTreatment)
     {}
 }

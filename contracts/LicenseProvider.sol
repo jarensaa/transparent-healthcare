@@ -1,6 +1,6 @@
 pragma solidity 0.6.1;
-import "./IAuthorization.sol";
-import "./ILicenseProviderManager.sol";
+import "./iface/IAuthorization.sol";
+import "./iface/ILicenseProviderManager.sol";
 
 contract LicenseProvider is ILicenseProviderManager {
     struct License {

@@ -1,6 +1,6 @@
 pragma solidity 0.6.1;
-import "./IAuthorization.sol";
-import "./ITreatmentProviderManager.sol";
+import "./iface/IAuthorization.sol";
+import "./iface/ITreatmentProviderManager.sol";
 
 contract TreatmentProvider is ITreatmentProviderManager {
     IAuthorization authorityContract;
