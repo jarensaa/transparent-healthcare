@@ -2,6 +2,7 @@ const LicenseProvider = artifacts.require("./LicenseProvider.sol");
 const AuthorityManager = artifacts.require("./AuthorityManager.sol");
 const TreatmentProvider = artifacts.require("./TreatmentProvider.sol");
 const Treatment = artifacts.require("./Treatment.sol");
+const Measure = artifacts.require("./Measure.sol");
 const assert = require("chai").assert;
 const truffleAssert = require("truffle-assertions");
 
@@ -10,27 +11,45 @@ contract("Measure", accounts => {
   let licenseProviderInstance;
   let treatmentProviderInstance;
   let treatmentInstance;
+  let measureInstance;
+
+  let treatment1Hash;
+  let treatment2Hash;
+  let treatmentURL;
+
+  let measureHash;
+  let measureURL;
+  let measureRating;
 
   before(async () => {
     /*
     Setup:
+        Account0: ContractDeployer
         Account0: Initial authority
         Account1: Added authority
         Account2: TreatmentProvider
         Account3: LicenseIssuer
         Account4: LicenseProvider
         Account5: A license holder
-        Account6: Address of registered treatment
-
-    During testing:
-        
-        
+        Account6: Measure Contract address 
+        Account7: Address generated (off-chain, unlinkable) by patient for treatment1
+        Account8: Address generated (off-chain, unlinkable) by another patient for treatment2
     */
 
     authorityManagerInstance = await AuthorityManager.deployed();
     licenseProviderInstance = await LicenseProvider.deployed();
     treatmentProviderInstance = await TreatmentProvider.deployed();
     treatmentInstance = await Treatment.deployed();
+    measureInstance = await Measure.deployed();
+
+    //Generate hashes and URLs
+    treatment1Hash = web3.utils.randomHex(32);
+    treatment2Hash = web3.utils.randomHex(32);
+    treatmentURL = "https://treatments.provider5.com/treatments";
+
+    measureHash = web3.utils.randomHex(32);
+    measureURL = "https://measures.provider2.com/treatments";
+    measureRating = 8;
 
     // Set up Account 0 and 1 as authorities
     await authorityManagerInstance.propose(1, accounts[1], {
@@ -67,22 +86,93 @@ contract("Measure", accounts => {
     await licenseProviderInstance.proposeLicenseMovement(accounts[4], {
       from: accounts[5]
     });
+
     await licenseProviderInstance.approveLicenseMovement(accounts[5], {
       from: accounts[4]
     });
+
+    //Connect TreatmentContract to MeasureContract
+    await treatmentInstance.registerMeasureContract(Measure.address, {
+      from: accounts[0]
+    });
+
+    //Create treatments and approce them by license
+    await treatmentInstance.createTreatment(
+      accounts[7],
+      treatment1Hash,
+      treatmentURL
+    );
+
+    await treatmentInstance.approveTreatment(accounts[7], {
+      from: accounts[5]
+    });
+
+    await treatmentInstance.createTreatment(
+      accounts[8],
+      treatment2Hash,
+      treatmentURL
+    );
+
+    await treatmentInstance.approveTreatment(accounts[8], {
+      from: accounts[5]
+    });
   });
 
-  it("Account5 should be a trusted license", async () => {
-    const isTrusted = await licenseProviderInstance.isLicenseTrusted.call(
-      accounts[5]
-    );
-    assert.ok(isTrusted);
+  it("Treatment1 (Account7) should not be spent.", async () => {
+    const [
+      approvingLicense,
+      treatmentProvider,
+      fullDataHash,
+      fullDataURL,
+      isSpent
+    ] = await treatmentInstance.getTreatmentData(accounts[7]);
+
+    assert.isFalse(isSpent);
   });
 
-  it("Account2 should be a trusted treatment provider", async () => {
-    const isTrusted = await treatmentProviderInstance.isTrustedProvider.call(
-      accounts[2]
+  it("Should be possible to create new measure for Account7", async () => {
+    truffleAssert.passes(
+      measureInstance.createMeasure(measureRating, measureHash, measureURL, {
+        from: accounts[7]
+      })
     );
-    assert.ok(isTrusted);
+  });
+
+  it("Treatment1 (Account7) should be spent.", async () => {
+    const [
+      approvingLicense,
+      treatmentProvider,
+      fullDataHash,
+      fullDataURL,
+      isSpent
+    ] = await treatmentInstance.getTreatmentData(accounts[7]);
+
+    assert.ok(isSpent);
+  });
+
+  it("Should not be possible to create new measure for Account7", async () => {
+    truffleAssert.reverts(
+      measureInstance.createMeasure(measureRating, measureHash, measureURL, {
+        from: accounts[7]
+      })
+    );
+  });
+
+  it("Should not be possible to create new measure for Account9", async () => {
+    truffleAssert.reverts(
+      measureInstance.createMeasure(measureRating, measureHash, measureURL, {
+        from: accounts[9]
+      })
+    );
+  });
+
+  it("Should be possible to get info for measure", async () => {
+    const [
+      rating,
+      fullMeasureHash,
+      fullMeasureURL
+    ] = measureInstance.getMeasureForTreatment(accounts[7]);
+
+    assert.equal(fullMeasureURL, measureURL);
   });
 });

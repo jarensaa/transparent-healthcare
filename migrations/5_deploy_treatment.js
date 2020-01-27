@@ -8,7 +8,7 @@ module.exports = (deployer, network, accounts) => {
     LicenseProvider.address,
     TreatmentProvider.address,
     {
-      from: accounts[6]
+      from: accounts[0]
     }
   );
 };

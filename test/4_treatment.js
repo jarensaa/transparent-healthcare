@@ -9,12 +9,11 @@ contract("Treatment", accounts => {
   let authorityManagerInstance;
   let licenseProviderInstance;
   let treatmentProviderInstance;
+  let treatmentInstance;
 
   let treatment1Hash;
   let treatment2Hash;
   let treatmentURL;
-  let measureHash;
-  let measureURL;
 
   before(async () => {
     /*
@@ -42,9 +41,6 @@ contract("Treatment", accounts => {
     treatment1Hash = web3.utils.randomHex(32);
     treatment2Hash = web3.utils.randomHex(32);
     treatmentURL = "https://treatments.provider5.com/treatments";
-
-    measureHash = web3.utils.randomHex(32);
-    measureURL = "https://measures.provider2.com/treatments";
 
     // Set up Account 0 and 1 as authorities
     await authorityManagerInstance.propose(1, accounts[1], {
