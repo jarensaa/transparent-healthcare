@@ -6,6 +6,10 @@ module.exports = async (deployer, network, accounts) => {
     from: accounts[0]
   });
 
+  if (!fs.existsSync("./addresses")) {
+    fs.mkdirSync("./addresses");
+  }
+
   var json = JSON.stringify({ authority: AuthorityManager.address });
   fs.writeFileSync("addresses/addresses.json", json);
 };
