@@ -7,6 +7,7 @@ interface ITreatment {
         bytes32 fullDataHash;
         string fullDataURL;
         bool isSpent;
+        bool isInstanced;
     }
 
     function approveTreatment(address _treatmentAddress) external;

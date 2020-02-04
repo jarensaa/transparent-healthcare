@@ -5,6 +5,16 @@ const Treatment = artifacts.require("./Treatment.sol");
 const assert = require("chai").assert;
 const truffleAssert = require("truffle-assertions");
 
+const treatmentObjectMapper = treatmentArray => {
+  return {
+    approvingLicense: treatmentArray[0],
+    treatmentProvider: treatmentArray[1],
+    fullDataHash: treatmentArray[2],
+    fullDataURL: treatmentArray[3],
+    isSpent: treatmentArray[4]
+  };
+};
+
 contract("Treatment", accounts => {
   let authorityManagerInstance;
   let licenseProviderInstance;
@@ -150,7 +160,7 @@ contract("Treatment", accounts => {
 
   it("Account5 (LicenseHolder) should be able to approve the second treatment", async () => {
     await truffleAssert.passes(
-      treatmentInstance.approveTreatment(accounts[6], { from: accounts[5] })
+      treatmentInstance.approveTreatment(accounts[7], { from: accounts[5] })
     );
   });
 
@@ -161,34 +171,32 @@ contract("Treatment", accounts => {
     assert.equal(treatmentAddresses.length, 2);
   });
 
-  it("It should be possible to fetch the URL and datahash of the first treatment though only knowing the lincenseAddress", async () => {
+  it("It should be possible to fetch the URL and datahash of the first treatment though only knowing the licenseAddress", async () => {
     const treatmentAddresses = await treatmentInstance.getTreatmentsForLicense(
       accounts[5]
     );
-    const [
-      approvingLicense,
-      treatmentProvider,
-      fullDataHash,
-      fullDataURL,
-      isSpent
-    ] = await treatmentInstance.getTreatmentData(treatmentAddresses[0]);
 
-    assert.equal(fullDataHash, treatment1Hash);
+    const treatmentArray = await treatmentInstance.getTreatmentData(
+      treatmentAddresses[0]
+    );
+
+    const treatmentObject = treatmentObjectMapper(treatmentArray);
+
+    assert.equal(treatmentObject.fullDataHash, treatment1Hash);
   });
 
-  it("It should be possible to fetch the URL and datahash of the second treatment though only knowing the lincenseAddress", async () => {
+  it("It should be possible to fetch the URL and datahash of the second treatment though only knowing the licenseAddress", async () => {
     const treatmentAddresses = await treatmentInstance.getTreatmentsForLicense(
       accounts[5]
     );
-    const [
-      approvingLicense,
-      treatmentProvider,
-      fullDataHash,
-      fullDataURL,
-      isSpent
-    ] = await treatmentInstance.getTreatmentData(treatmentAddresses[1]);
 
-    assert.equal(fullDataHash, treatment2Hash);
+    const treatmentArray = await treatmentInstance.getTreatmentData(
+      treatmentAddresses[1]
+    );
+
+    const treatmentObject = treatmentObjectMapper(treatmentArray);
+
+    assert.equal(treatmentObject.fullDataHash, treatment2Hash);
   });
 
   it("Should be impossible to spend the first treatment (Account6) for Account9 (None)", async () => {
@@ -198,32 +206,27 @@ contract("Treatment", accounts => {
   });
 
   it("Treatment1 (Account6) should not be spent.", async () => {
-    const [
-      approvingLicense,
-      treatmentProvider,
-      fullDataHash,
-      fullDataURL,
-      isSpent
-    ] = await treatmentInstance.getTreatmentData(accounts[6]);
+    const treatmentArray = await treatmentInstance.getTreatmentData(
+      accounts[6]
+    );
 
-    assert.isFalse(isSpent);
+    const treatmentObject = treatmentObjectMapper(treatmentArray);
+    assert.isFalse(treatmentObject.isSpent);
   });
 
   it("Should be possible to spend the first treatment (Account6) for Account8 (MeasureContract)", async () => {
-    await truffleAssert.reverts(
+    await truffleAssert.passes(
       treatmentInstance.spendTreatment(accounts[6], { from: accounts[8] })
     );
   });
 
   it("Treatment1 (Account6) should be spent.", async () => {
-    const [
-      approvingLicense,
-      treatmentProvider,
-      fullDataHash,
-      fullDataURL,
-      isSpent
-    ] = await treatmentInstance.getTreatmentData(accounts[6]);
+    const treatmentArray = await treatmentInstance.getTreatmentData(
+      accounts[6]
+    );
 
-    assert.ok(isSpent);
+    const treatmentObject = treatmentObjectMapper(treatmentArray);
+
+    assert.ok(treatmentObject.isSpent);
   });
 });
