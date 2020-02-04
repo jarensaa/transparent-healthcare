@@ -127,4 +127,22 @@ contract Treatment is ITreatment {
             treatments[_treatmentAddress].isSpent
         );
     }
+
+    function isTreatmentSpent(address _treatmentAddress)
+        external
+        view
+        override
+        returns (bool)
+    {
+        return treatments[_treatmentAddress].isSpent;
+    }
+
+    function isTreatmentInstanced(address _treatmentAddress)
+        external
+        view
+        override
+        returns (bool)
+    {
+        return treatments[_treatmentAddress].isInstanced;
+    }
 }

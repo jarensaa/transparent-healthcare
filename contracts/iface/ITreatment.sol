@@ -29,4 +29,14 @@ interface ITreatment {
         external
         view
         returns (address, address, bytes32, string memory, bool);
+
+    function isTreatmentSpent(address _treatmentAddress)
+        external
+        view
+        returns (bool);
+
+    function isTreatmentInstanced(address _treatmentAddress)
+        external
+        view
+        returns (bool);
 }
