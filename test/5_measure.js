@@ -6,6 +6,24 @@ const Measure = artifacts.require("./Measure.sol");
 const assert = require("chai").assert;
 const truffleAssert = require("truffle-assertions");
 
+const treatmentObjectMapper = treatmentArray => {
+  return {
+    approvingLicense: treatmentArray[0],
+    treatmentProvider: treatmentArray[1],
+    fullDataHash: treatmentArray[2],
+    fullDataURL: treatmentArray[3],
+    isSpent: treatmentArray[4]
+  };
+};
+
+const measureObjectMapper = measureArray => {
+  return {
+    rating: measureArray[0],
+    fullMeasureHash: measureArray[1],
+    fullMeasureURL: measureArray[2]
+  };
+};
+
 contract("Measure", accounts => {
   let authorityManagerInstance;
   let licenseProviderInstance;
@@ -100,7 +118,8 @@ contract("Measure", accounts => {
     await treatmentInstance.createTreatment(
       accounts[7],
       treatment1Hash,
-      treatmentURL
+      treatmentURL,
+      { from: accounts[2] }
     );
 
     await treatmentInstance.approveTreatment(accounts[7], {
@@ -110,7 +129,10 @@ contract("Measure", accounts => {
     await treatmentInstance.createTreatment(
       accounts[8],
       treatment2Hash,
-      treatmentURL
+      treatmentURL,
+      {
+        from: accounts[2]
+      }
     );
 
     await treatmentInstance.approveTreatment(accounts[8], {
@@ -119,15 +141,11 @@ contract("Measure", accounts => {
   });
 
   it("Treatment1 (Account7) should not be spent.", async () => {
-    const [
-      approvingLicense,
-      treatmentProvider,
-      fullDataHash,
-      fullDataURL,
-      isSpent
-    ] = await treatmentInstance.getTreatmentData(accounts[7]);
-
-    assert.isFalse(isSpent);
+    const treatmentArray = await treatmentInstance.getTreatmentData(
+      accounts[7]
+    );
+    const treatmentObject = treatmentObjectMapper(treatmentArray);
+    assert.isFalse(treatmentObject.isSpent);
   });
 
   it("Should be possible to create new measure for Account7", async () => {
@@ -139,15 +157,11 @@ contract("Measure", accounts => {
   });
 
   it("Treatment1 (Account7) should be spent.", async () => {
-    const [
-      approvingLicense,
-      treatmentProvider,
-      fullDataHash,
-      fullDataURL,
-      isSpent
-    ] = await treatmentInstance.getTreatmentData(accounts[7]);
-
-    assert.ok(isSpent);
+    const treatmentArray = await treatmentInstance.getTreatmentData(
+      accounts[7]
+    );
+    const treatmentObject = treatmentObjectMapper(treatmentArray);
+    assert.equal(treatmentObject.isSpent, true);
   });
 
   it("Should not be possible to create new measure for Account7", async () => {
@@ -167,12 +181,11 @@ contract("Measure", accounts => {
   });
 
   it("Should be possible to get info for measure", async () => {
-    const [
-      rating,
-      fullMeasureHash,
-      fullMeasureURL
-    ] = measureInstance.getMeasureForTreatment(accounts[7]);
+    const measureArray = await measureInstance.getMeasureForTreatment(
+      accounts[7]
+    );
+    const measureObject = measureObjectMapper(measureArray);
 
-    assert.equal(fullMeasureURL, measureURL);
+    assert.equal(measureObject.fullMeasureURL, measureURL);
   });
 });
