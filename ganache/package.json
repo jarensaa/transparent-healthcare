@@ -1,0 +1,12 @@
+{
+  "name": "ganache",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "ganache-cli --account_keys_path ./keyfile.json"
+  },
+  "dependencies": {
+    "ganache-cli": "^6.9.0"
+  }
+}

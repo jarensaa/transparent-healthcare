@@ -1,8 +1,19 @@
 var AuthorityManager = artifacts.require("./AuthorityManager.sol");
 var TreatmentProvider = artifacts.require("./TreatmentProvider.sol");
+var fs = require("fs");
 
-module.exports = (deployer, network, accounts) => {
-  deployer.deploy(TreatmentProvider, AuthorityManager.address, {
+module.exports = async (deployer, network, accounts) => {
+  await deployer.deploy(TreatmentProvider, AuthorityManager.address, {
     from: accounts[1]
   });
+
+  var previousAddresses = JSON.parse(
+    fs.readFileSync("addresses/addresses.json")
+  );
+
+  var json = JSON.stringify({
+    ...previousAddresses,
+    treatmentProvider: TreatmentProvider.address
+  });
+  fs.writeFileSync("addresses/addresses.json", json);
 };
