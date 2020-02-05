@@ -8,8 +8,8 @@ module.exports = {
   },
   networks: {
     development: {
-      host: "127.0.0.1",
-      port: 8545,
+      host: process.env.BLOCKCHAIN_HOST || "127.0.0.1",
+      port: process.env.BLOCKCHAIN_PORT || 8545,
       network_id: "*" // Match any network id
     }
   }

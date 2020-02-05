@@ -7,7 +7,7 @@
     "build": "truffle compile",
     "test": "truffle test",
     "eject": "react-scripts eject",
-    "start": "truffle develop"
+    "start": "truffle migrate"
   },
   "dependencies": {
     "solc": "^0.6.1",

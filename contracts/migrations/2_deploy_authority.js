@@ -11,5 +11,5 @@ module.exports = async (deployer, network, accounts) => {
   }
 
   var json = JSON.stringify({ authority: AuthorityManager.address });
-  fs.writeFileSync("addresses/addresses.json", json);
+  fs.writeFileSync("shared/addresses.json", json);
 };

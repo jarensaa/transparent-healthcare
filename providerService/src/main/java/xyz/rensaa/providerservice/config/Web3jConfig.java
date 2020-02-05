@@ -18,9 +18,6 @@ import java.util.stream.Collectors;
 @Configuration
 public class Web3jConfig  {
 
-  @Value("${web3j.mnemonic}")
-  String mnemonic;
-
   @Value("${ganache-cli.keyfile}")
   String keyFilePath;
 

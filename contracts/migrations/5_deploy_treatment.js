@@ -13,13 +13,11 @@ module.exports = async (deployer, network, accounts) => {
     }
   );
 
-  var previousAddresses = JSON.parse(
-    fs.readFileSync("addresses/addresses.json")
-  );
+  var previousAddresses = JSON.parse(fs.readFileSync("shared/addresses.json"));
 
   var json = JSON.stringify({
     ...previousAddresses,
     treatment: Treatment.address
   });
-  fs.writeFileSync("addresses/addresses.json", json);
+  fs.writeFileSync("shared/addresses.json", json);
 };

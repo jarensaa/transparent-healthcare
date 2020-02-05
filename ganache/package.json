@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ganache-cli --account_keys_path ./keyfile.json"
+    "start": "rm -r shared/* && ganache-cli -h 0.0.0.0 --account_keys_path ./shared/keyfile.json"
   },
   "dependencies": {
     "ganache-cli": "^6.9.0"

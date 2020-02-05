@@ -7,13 +7,15 @@ module.exports = async (deployer, network, accounts) => {
     from: accounts[0]
   });
 
-  var previousAddresses = JSON.parse(
-    fs.readFileSync("addresses/addresses.json")
-  );
+  var previousAddresses = JSON.parse(fs.readFileSync("shared/addresses.json"));
 
-  var json = JSON.stringify({
-    ...previousAddresses,
-    measure: Measure.address
-  });
-  fs.writeFileSync("addresses/addresses.json", json);
+  var json = JSON.stringify(
+    {
+      ...previousAddresses,
+      measure: Measure.address
+    },
+    null,
+    2
+  );
+  fs.writeFileSync("shared/addresses.json", json);
 };
