@@ -2,11 +2,13 @@ plugins {
 	id 'org.springframework.boot' version '2.2.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'com.palantir.baseline-idea' version '3.3.0'
 }
 
 group = 'xyz.rensaa'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+targetCompatibility = '11'
 
 repositories {
 	mavenCentral()
@@ -16,7 +18,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.google.guava:guava:28.2-jre'
-	implementation 'org.web3j:core:4.5.14'
+	implementation 'org.web3j:core:4.5.5'
 	implementation 'org.web3j:codegen:4.5.14'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

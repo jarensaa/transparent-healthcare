@@ -1,4 +1,4 @@
 FROM node
 COPY . .
 EXPOSE 8454
-CMD yarn start
+CMD yarn run clean && yarn start

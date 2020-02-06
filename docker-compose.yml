@@ -3,7 +3,7 @@ services:
   blockchain:
     build: ./ganache
     volumes:
-      - ./shared:/shared
+      - ./shared/:/shared/
   contract-deployer:
     build: ./contracts
     depends_on:
@@ -12,7 +12,7 @@ services:
       - BLOCKCHAIN_HOST=blockchain
       - BLOCKCHAIN_PORT=8545
     volumes:
-      - ./shared:/shared
+      - ./shared/:/shared/
     command: ./wait-for-it.sh -s blockchain:8545 -- yarn start
   backend:
     build: ./providerService
@@ -23,10 +23,11 @@ services:
     environment:
       - KEYS_PATH=./shared/keyfile.json
       - ADDRESSES_PATH=./shared/addresses.json
+      - BLOCKCHAIN_URI=http://blockchain:8545
     volumes:
-      - ./shared:/shared
+      - ./shared/:/shared/
     command: ./wait-for-it.sh -s blockchain:8545 -- bash -c 'until [[ $$(wc -l < shared/addresses.json) -ge 6 ]]; do sleep 1; done; java -jar /app.jar'
   webapp:
     build: ./webapp
     ports:
-      - "8080:80"
+      - "3000:80"

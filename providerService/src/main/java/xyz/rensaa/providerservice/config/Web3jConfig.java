@@ -1,45 +1,65 @@
 package xyz.rensaa.providerservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.gas.ContractGasProvider;
 import xyz.rensaa.providerservice.dto.ContractAddresses;
 import xyz.rensaa.providerservice.dto.GanacheKeys;
+import xyz.rensaa.providerservice.providers.GasProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Configuration
 public class Web3jConfig  {
 
-  @Value("${ganache-cli.keyfile}")
+  @Value("${custom.ganache-cli.keyfile}")
   String keyFilePath;
 
-  @Value("${contracts.addressesfile}")
+  @Value("${custom.contracts.addressesfile}")
   String addressesFilePath;
 
+  @Value("${custom.blockchain.uri}")
+  String blockchainUri;
+
+  @Autowired
+  Logger logger;
+
+  private static ObjectMapper mapper = new ObjectMapper();
+
   @Bean
-  public Web3j createWeb3jClient() {
-    return Web3j.build(new HttpService("http://localhost:7545"));
+  public Web3j createWeb3jClient() throws IOException {
+    var client = Web3j.build(new HttpService(blockchainUri));
+    logger.info("Connected to client: " + client.web3ClientVersion().send().getWeb3ClientVersion());
+    return client;
   }
 
   @Bean
   public List<Credentials> createCredentialsFromGanacheFile() throws IOException {
-    var objectMapper = new ObjectMapper();
-    var keys = objectMapper.readValue(new File(keyFilePath), GanacheKeys.class);
+    GanacheKeys keys = mapper.readValue(new File(keyFilePath), GanacheKeys.class);
     return keys.getPrivateKeys().values().stream().map(Credentials::create).collect(Collectors.toList());
   }
 
   @Bean
   public ContractAddresses createContractAddressesFromDeployFile() throws IOException {
-    var objectMapper = new ObjectMapper();
-    var addresses = objectMapper.readValue(new File(addressesFilePath), ContractAddresses.class);
-    return addresses;
+    return mapper.readValue(new File(addressesFilePath), ContractAddresses.class);
+  }
+
+  @Bean
+  public GasProvider createGasProvider() {
+    return new GasProvider.Builder()
+        .gasLimit(BigInteger.valueOf(6721975L))
+        .gasPrice(BigInteger.valueOf(20000000000L))
+        .build();
   }
 }
