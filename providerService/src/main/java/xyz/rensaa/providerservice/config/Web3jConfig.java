@@ -1,6 +1,11 @@
 package xyz.rensaa.providerservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,15 +15,9 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.StaticGasProvider;
 import xyz.rensaa.providerservice.dto.ContractAddresses;
 import xyz.rensaa.providerservice.dto.GanacheKeys;
-import xyz.rensaa.providerservice.providers.GasProvider;
-
-import java.io.File;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 public class Web3jConfig  {
@@ -56,10 +55,7 @@ public class Web3jConfig  {
   }
 
   @Bean
-  public GasProvider createGasProvider() {
-    return new GasProvider.Builder()
-        .gasLimit(BigInteger.valueOf(6721975L))
-        .gasPrice(BigInteger.valueOf(20000000000L))
-        .build();
+  public ContractGasProvider createGasProvider() {
+    return new StaticGasProvider(BigInteger.valueOf(6721975L),BigInteger.valueOf(20000000000L));
   }
 }

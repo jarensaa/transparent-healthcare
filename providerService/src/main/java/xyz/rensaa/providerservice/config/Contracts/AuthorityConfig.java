@@ -1,6 +1,10 @@
 package xyz.rensaa.providerservice.config.Contracts;
 
-import com.google.common.base.Preconditions;
+import java.io.IOException;
+import java.util.List;
+
+import com.palantir.logsafe.Preconditions;
+import com.palantir.logsafe.SafeArg;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,9 +14,6 @@ import org.web3j.protocol.Web3j;
 import org.web3j.tx.gas.ContractGasProvider;
 import xyz.rensaa.providerservice.AuthorityManager;
 import xyz.rensaa.providerservice.dto.ContractAddresses;
-
-import java.io.IOException;
-import java.util.List;
 
 @Configuration
 public class AuthorityConfig {
@@ -36,7 +37,7 @@ public class AuthorityConfig {
   public AuthorityManager createAuthorityContract() throws IOException {
     var authorityContract = AuthorityManager.load(contractAddresses.getAuthorityAddress(),web3j,credentials.get(0), gasProvider);
     Preconditions.checkArgument(authorityContract.isValid(),"Provided authority address is invalid");
-    logger.info("AuthorityManager bytecode is deployed on the blockchain at address " + authorityContract.getContractAddress());
+    logger.info("AuthorityManager bytecode is deployed on the blockchain at address {}", SafeArg.of("authority manager address", authorityContract.getContractAddress()));
     return authorityContract;
   }
 }

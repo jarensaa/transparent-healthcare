@@ -2,7 +2,8 @@ plugins {
 	id 'org.springframework.boot' version '2.2.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
-	id 'com.palantir.baseline-idea' version '3.3.0'
+	id 'com.palantir.baseline' version '3.3.0'
+	id 'org.inferred.processors' version '3.3.0'
 }
 
 group = 'xyz.rensaa'
@@ -12,14 +13,18 @@ targetCompatibility = '11'
 
 repositories {
 	mavenCentral()
+	maven {
+    	url "http://palantir.bintray.com/releases"
+  	}
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'com.google.guava:guava:28.2-jre'
 	implementation 'org.web3j:core:4.5.5'
 	implementation 'org.web3j:codegen:4.5.14'
+	implementation 'com.palantir.safe-logging:safe-logging:1.13.0'
+	implementation 'com.palantir.safe-logging:preconditions:1.13.0'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -35,14 +40,19 @@ sourceSets.main.java.srcDirs += "${buildDir}/generated/sources/contracts/xyz/ren
 task generateContractWrappers {
 	group = "Codegen"
 	description = "Generates java wrapper classes based compiled .json truffle contracts"
-	PatternFilterable tree = fileTree('../contracts/build/contracts').include("*.json")
-	tree.each { File file ->
-		javaexec {
-			description = "Generates java wrapper classes based compiled .json truffle contracts"
-			classpath = sourceSets.main.runtimeClasspath
-			args(file.toString(),'-p','xyz.rensaa.providerservice','-o','build/generated/sources/contracts')
-			main = "org.web3j.codegen.TruffleJsonFunctionWrapperGenerator"
+	doLast {
+		PatternFilterable tree = fileTree('../contracts/build/contracts').include("*.json")
+		tree.each { File file ->
+			javaexec {
+				description = "Generates java wrapper classes based compiled .json truffle contracts"
+				classpath = sourceSets.main.runtimeClasspath
+				args(file.toString(),'-p','xyz.rensaa.providerservice','-o','build/generated/sources/contracts')
+				main = "org.web3j.codegen.TruffleJsonFunctionWrapperGenerator"
+			}
 		}
 	}
 }
 
+compileJava {
+	dependsOn tasks.generateContractWrappers
+}
