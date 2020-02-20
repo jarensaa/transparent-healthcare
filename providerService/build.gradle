@@ -26,6 +26,9 @@ dependencies {
 	implementation 'com.palantir.safe-logging:safe-logging:1.13.0'
 	implementation 'com.palantir.safe-logging:preconditions:1.13.0'
 
+	compileOnly("org.immutables:value-annotations:2.8.2")
+	annotationProcessor("org.immutables:value:2.8.2")
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}

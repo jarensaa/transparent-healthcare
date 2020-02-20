@@ -6,13 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import xyz.rensaa.providerservice.dto.ContractAddresses;
 
 @SpringBootApplication
-public class ProviderserviceApplication {
+public class ProviderApplication {
 
 	@Autowired
 	ContractAddresses addresses;
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProviderserviceApplication.class, args);
+		SpringApplication.run(ProviderApplication.class, args);
 	}
 
 }

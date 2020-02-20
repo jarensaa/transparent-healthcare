@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.palantir.logsafe.SafeArg;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +41,8 @@ public class Web3jConfig  {
   @Bean
   public Web3j createWeb3jClient() throws IOException {
     var client = Web3j.build(new HttpService(blockchainUri));
-    logger.info("Connected to client: " + client.web3ClientVersion().send().getWeb3ClientVersion());
+
+    logger.info("Connected to client: {}", SafeArg.of("client", client.web3ClientVersion().send().getWeb3ClientVersion()));
     return client;
   }
 
