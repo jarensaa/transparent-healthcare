@@ -33,9 +33,8 @@ public class AuthorityController {
 
   @MessageMapping("/hello")
   @SendTo("/topic/greetings")
-  public HelloMessage hello(HelloMessage message) throws Exception {
+  public String hello(String message) throws Exception {
     Thread.sleep(1000);
     return message;
   }
-
 }
