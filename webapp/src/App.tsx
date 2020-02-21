@@ -11,12 +11,18 @@ stompClient.webSocketFactory = () => {
   return SockJS("http://localhost:8080/gs-guide-websocket")
 }
 
+stompClient.onConnect = () => {
+  stompClient.subscribe('/topic/greetings', (event) => {
+    console.log(event);
+  })
+}
+
 stompClient.activate();
 
 const App = () => {
 
   const sendMessage = () => {
-    console.log("send")
+    stompClient.publish({destination: "/app/hello", body: "hello world!"});
   }
 
   return (

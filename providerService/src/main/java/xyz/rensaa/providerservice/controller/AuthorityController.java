@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.web3j.crypto.WalletUtils;
-import xyz.rensaa.providerservice.dto.HelloMessage;
 import xyz.rensaa.providerservice.service.AuthorityService;
 
 import java.util.List;
@@ -19,6 +18,9 @@ public class AuthorityController {
 
   @Autowired
   private AuthorityService authorityService;
+
+  //@Autowired
+  //private SimpMessagingTemplate template;
 
   @GetMapping()
   public List<String> getAuthorities() {
@@ -35,6 +37,7 @@ public class AuthorityController {
   @SendTo("/topic/greetings")
   public String hello(String message) throws Exception {
     Thread.sleep(1000);
-    return message;
+    System.out.println(message);
+    return "Hello world world";
   }
 }
