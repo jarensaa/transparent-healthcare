@@ -1,4 +1,4 @@
-pragma solidity 0.6.1;
+pragma solidity ^0.6.1;
 import "./iface/IAuthorization.sol";
 
 contract AuthorityManager is IAuthorization {
@@ -11,10 +11,12 @@ contract AuthorityManager is IAuthorization {
     }
 
     uint256 proposalCount;
-    uint256 numAuthorities;
     mapping(address => bool) public authorities;
     mapping(uint256 => Proposal) proposals;
     mapping(address => uint256) public lastProposalSubmitted;
+
+    mapping(address => uint256) authorityToRegistryIndex;
+    address[] authorityRegistry;
 
     modifier authorized() {
         require(authorities[msg.sender], "Unauthorized");
@@ -23,17 +25,33 @@ contract AuthorityManager is IAuthorization {
 
     constructor() public {
         authorities[msg.sender] = true;
-        numAuthorities = 1;
+        authorityRegistry.push(msg.sender);
+        authorityToRegistryIndex[msg.sender] = 0;
     }
 
     function addAuthority(address _address) private {
         authorities[_address] = true;
-        numAuthorities++;
+        authorityRegistry.push(_address);
+        authorityToRegistryIndex[_address] = authorityRegistry.length - 1;
     }
 
     function removeAuthority(address _address) private {
+        uint256 authorityIndex = authorityToRegistryIndex[_address];
+
+        // Swap the trustee to remove with the last one.
+        if (
+            (authorityRegistry.length > 1) &&
+            (authorityIndex != authorityRegistry.length - 1)
+        ) {
+            address lastAuthority = authorityRegistry[authorityRegistry.length -
+                1];
+            authorityRegistry[authorityIndex] = lastAuthority;
+            authorityToRegistryIndex[lastAuthority] = authorityIndex;
+        }
+
+        authorityRegistry.pop();
+        delete authorityToRegistryIndex[_address];
         delete authorities[_address];
-        numAuthorities--;
     }
 
     function getLastProposalSubmitted(address _address)
@@ -54,7 +72,11 @@ contract AuthorityManager is IAuthorization {
     }
 
     function getNumAuthorities() public view returns (uint256) {
-        return numAuthorities;
+        return authorityRegistry.length;
+    }
+
+    function getAuthorities() public view returns (address[] memory) {
+        return authorityRegistry;
     }
 
     function propose(uint256 _proposalType, address _targetAddress)
@@ -97,7 +119,7 @@ contract AuthorityManager is IAuthorization {
         }
 
         require(
-            votes > (numAuthorities / 2),
+            votes > (authorityRegistry.length / 2),
             "Proposal does not have enough votes to be enacted"
         );
 

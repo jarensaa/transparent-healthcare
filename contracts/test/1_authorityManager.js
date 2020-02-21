@@ -13,6 +13,11 @@ contract("AuthorityManager", accounts => {
     console.log("Cleaning up");
   });
 
+  it("Account0 should be only authority", async () => {
+    const authorities = await authorityManagementInstance.getAuthorities();
+    assert.ok(authorities.includes(accounts[0]));
+  });
+
   it("Account2 should be unable to propose a vote", async () => {
     await truffleAssert.fails(
       authorityManagementInstance.propose(1, accounts[2], {
@@ -44,6 +49,13 @@ contract("AuthorityManager", accounts => {
       authorityManagementInstance.enactProposal(1, {
         from: accounts[1]
       })
+    );
+  });
+
+  it("Account0 and 1 should be all authorities", async () => {
+    const authorities = await authorityManagementInstance.getAuthorities();
+    assert.ok(
+      authorities.includes(accounts[0]) && authorities.includes(accounts[1])
     );
   });
 
@@ -93,6 +105,15 @@ contract("AuthorityManager", accounts => {
     );
   });
 
+  it("Account0,1 and 2 should be all authorities", async () => {
+    const authorities = await authorityManagementInstance.getAuthorities();
+    assert.ok(
+      authorities.includes(accounts[0]) &&
+        authorities.includes(accounts[1]) &&
+        authorities.includes(accounts[2])
+    );
+  });
+
   it("Account2 should have authority", async () => {
     const account2HasAuthority = await authorityManagementInstance.isAuthorized.call(
       accounts[2]
@@ -135,6 +156,15 @@ contract("AuthorityManager", accounts => {
   it("Account 1 should be able to enact on vote to remove Account0 as authority", async () => {
     truffleAssert.passes(
       authorityManagementInstance.enactProposal(4, { from: accounts[1] })
+    );
+  });
+
+  it("Account1 and 2 should be all authorities", async () => {
+    const authorities = await authorityManagementInstance.getAuthorities();
+    assert.ok(
+      !authorities.includes(accounts[0]) &&
+        authorities.includes(accounts[1]) &&
+        authorities.includes(accounts[2])
     );
   });
 
