@@ -37,19 +37,18 @@ contract("AuthorityManager", accounts => {
   });
 
   it("Account0 should be able to propose Account1 as authority", async () => {
-    await truffleAssert.passes(
-      authorityManagementInstance.propose(1, accounts[1], {
-        from: accounts[0]
-      })
-    );
+    const result = await authorityManagementInstance.propose(1, accounts[1], {
+      from: accounts[0]
+    });
+    truffleAssert.eventEmitted(result, "ProposalEvent");
   });
 
   it("Account1 should be able to claimAuthority", async () => {
-    await truffleAssert.passes(
-      authorityManagementInstance.enactProposal(1, {
-        from: accounts[1]
-      })
-    );
+    const result = await authorityManagementInstance.enactProposal(1, {
+      from: accounts[1]
+    });
+
+    truffleAssert.eventEmitted(result, "NewAuthorityEvent");
   });
 
   it("Account0 and 1 should be all authorities", async () => {
@@ -154,9 +153,11 @@ contract("AuthorityManager", accounts => {
   });
 
   it("Account 1 should be able to enact on vote to remove Account0 as authority", async () => {
-    truffleAssert.passes(
-      authorityManagementInstance.enactProposal(4, { from: accounts[1] })
-    );
+    const result = await authorityManagementInstance.enactProposal(4, {
+      from: accounts[1]
+    });
+
+    truffleAssert.eventEmitted(result, "RemovedAuthorityEvent");
   });
 
   it("Account1 and 2 should be all authorities", async () => {

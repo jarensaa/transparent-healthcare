@@ -23,6 +23,10 @@ contract AuthorityManager is IAuthorization {
         _;
     }
 
+    event ProposalEvent(address _proposalSubject, uint256 _proposalType);
+    event NewAuthorityEvent(address _authority);
+    event RemovedAuthorityEvent(address _authority);
+
     constructor() public {
         authorities[msg.sender] = true;
         authorityRegistry.push(msg.sender);
@@ -33,6 +37,7 @@ contract AuthorityManager is IAuthorization {
         authorities[_address] = true;
         authorityRegistry.push(_address);
         authorityToRegistryIndex[_address] = authorityRegistry.length - 1;
+        emit NewAuthorityEvent(_address);
     }
 
     function removeAuthority(address _address) private {
@@ -52,6 +57,7 @@ contract AuthorityManager is IAuthorization {
         authorityRegistry.pop();
         delete authorityToRegistryIndex[_address];
         delete authorities[_address];
+        emit RemovedAuthorityEvent(_address);
     }
 
     function getLastProposalSubmitted(address _address)
@@ -102,6 +108,7 @@ contract AuthorityManager is IAuthorization {
 
         voteOnProposal(proposalCount);
         lastProposalSubmitted[msg.sender] = proposalCount;
+        emit ProposalEvent(_targetAddress, _proposalType);
     }
 
     function enactProposal(uint256 id) public {
