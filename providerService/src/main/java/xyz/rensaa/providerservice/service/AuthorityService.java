@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import xyz.rensaa.providerservice.AuthorityManager;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -29,6 +30,15 @@ public class AuthorityService {
       logger.error("Could not process Authority.isAuthorized transaction", e);
     }
     return false;
+  }
+
+  public List<String> getAuthorities() {
+    try {
+      return authorityManager.getAuthorities().send();
+    } catch (Exception e) {
+      logger.error("Could not fetch authorities", e);
+    }
+    return List.of();
   }
 
   public String getOriginalAuthorityAddress() {

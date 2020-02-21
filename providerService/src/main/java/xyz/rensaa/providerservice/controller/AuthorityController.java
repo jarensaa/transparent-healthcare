@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.web3j.crypto.WalletUtils;
 import xyz.rensaa.providerservice.service.AuthorityService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/authority")
 public class AuthorityController {
@@ -16,8 +18,8 @@ public class AuthorityController {
   private AuthorityService authorityService;
 
   @GetMapping()
-  public String getAuthorities() {
-    return authorityService.getOriginalAuthorityAddress();
+  public List<String> getAuthorities() {
+    return authorityService.getAuthorities();
   }
 
   @GetMapping("/{address}/isAuthorized")
@@ -25,4 +27,5 @@ public class AuthorityController {
     if (!WalletUtils.isValidAddress(address)) return false;
     return authorityService.isAuthorized(address);
   }
+
 }
