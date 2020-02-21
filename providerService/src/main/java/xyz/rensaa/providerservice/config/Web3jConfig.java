@@ -46,7 +46,7 @@ public class Web3jConfig  {
     return client;
   }
 
-  @Bean
+  @Bean("originalCredentials")
   public List<Credentials> createCredentialsFromGanacheFile() throws IOException {
     GanacheKeys keys = mapper.readValue(new File(keyFilePath), GanacheKeys.class);
     return keys.getPrivateKeys().values().stream().map(Credentials::create).collect(Collectors.toList());

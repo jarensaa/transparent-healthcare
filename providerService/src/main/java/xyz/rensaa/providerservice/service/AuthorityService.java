@@ -1,45 +1,37 @@
 package xyz.rensaa.providerservice.service;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
-import xyz.rensaa.providerservice.model.Key;
-import xyz.rensaa.providerservice.model.Keystore;
+import xyz.rensaa.providerservice.AuthorityManager;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthorityService {
 
   @Autowired
-  private Keystore keystore;
+  private AuthorityManager authorityManager;
 
   @Autowired
-  private Web3Service web3Service;
-
-  @Autowired
+  @Qualifier("originalCredentials")
   private List<Credentials> credentials;
 
+  @Autowired
+  private Logger logger;
 
-  public String getAuthority() {
-    var addresses = keystore.keys().stream().map(Key::address).collect(Collectors.toList());
-    var actualAccountAddress = credentials.get(0).getAddress();
+  public boolean isAuthorized(String address) {
+    try {
+      return authorityManager.isAuthorized(address).send();
+    } catch (Exception e) {
+      logger.error("Could not process Authority.isAuthorized transaction", e);
+    }
+    return false;
+  }
 
-    var randomBalance = web3Service.getAddressBalance(addresses.get(0));
-    var actualAccountBalance = web3Service.getAddressBalance(actualAccountAddress);
-
-    System.out.println(randomBalance);
-    System.out.println(actualAccountBalance);
-
-    web3Service.sendEth(credentials.get(0), addresses.get(0), BigDecimal.valueOf(1));
-
-    randomBalance = web3Service.getAddressBalance(addresses.get(0));
-    actualAccountBalance = web3Service.getAddressBalance(actualAccountAddress);
-
-    return String.valueOf(randomBalance) + String.valueOf(actualAccountBalance);
-
+  public String getOriginalAuthorityAddress() {
+    return credentials.get(0).getAddress();
   }
 }

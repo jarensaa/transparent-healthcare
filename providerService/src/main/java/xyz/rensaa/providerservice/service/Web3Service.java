@@ -6,11 +6,9 @@ import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -44,20 +42,17 @@ public class Web3Service {
           .sendAsync()
           .get().getBalance();
     } catch (InterruptedException | ExecutionException e) {
-      e.printStackTrace();
+      logger.error("Get balance failed. ", e);
     }
     return new BigInteger(String.valueOf(-1));
   }
-
 
   void sendEth(Credentials sendingCredentials, String toAddress, BigDecimal eth) {
     try {
       Transfer.sendFunds(web3j,sendingCredentials,toAddress, eth, Convert.Unit.ETHER).send();
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("Send eth failed", e);
     }
   }
-
-
 
 }
