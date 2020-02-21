@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import xyz.rensaa.providerservice.AuthorityManager;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
