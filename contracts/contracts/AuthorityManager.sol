@@ -23,8 +23,18 @@ contract AuthorityManager is IAuthorization {
         _;
     }
 
-    event ProposalEvent(address _proposalSubject, uint256 _proposalType);
+    event ProposalEvent(
+        address _proposalSubject,
+        uint256 _proposalType,
+        uint256 _proposalID
+    );
+
+    event ProposalVoteEvent(uint256 _proposalID, address _voter);
+
+    event ProposalEnactedEvent(uint256 _proposalID);
+
     event NewAuthorityEvent(address _authority);
+
     event RemovedAuthorityEvent(address _authority);
 
     constructor() public {
@@ -77,12 +87,25 @@ contract AuthorityManager is IAuthorization {
         return authorities[_address];
     }
 
-    function getNumAuthorities() public view returns (uint256) {
+    function getNumAuthorities() external view returns (uint256) {
         return authorityRegistry.length;
     }
 
-    function getAuthorities() public view returns (address[] memory) {
+    function getAuthorities() external view returns (address[] memory) {
         return authorityRegistry;
+    }
+
+    function getProposal(uint256 _proposalID)
+        external
+        view
+        returns (uint256, address, address[] memory)
+    {
+        require(proposals[_proposalID].isActive, "No active proposal");
+        return (
+            proposals[_proposalID].proposalType,
+            proposals[_proposalID].target,
+            proposals[_proposalID].voters
+        );
     }
 
     function propose(uint256 _proposalType, address _targetAddress)
@@ -108,7 +131,7 @@ contract AuthorityManager is IAuthorization {
 
         voteOnProposal(proposalCount);
         lastProposalSubmitted[msg.sender] = proposalCount;
-        emit ProposalEvent(_targetAddress, _proposalType);
+        emit ProposalEvent(_targetAddress, _proposalType, proposalCount);
     }
 
     function enactProposal(uint256 id) public {
@@ -136,6 +159,7 @@ contract AuthorityManager is IAuthorization {
             removeAuthority(proposals[id].target);
         }
 
+        emit ProposalEnactedEvent(id);
         delete proposals[id]; //Delete refunds gas, making an enact call cheap if it's legitimate, and expensive if it's not.
     }
 
@@ -150,5 +174,6 @@ contract AuthorityManager is IAuthorization {
         );
         proposals[id].hasVoted[msg.sender] = true;
         proposals[id].voters.push(msg.sender);
+        emit ProposalVoteEvent(id, msg.sender);
     }
 }
