@@ -24,7 +24,7 @@ public class AuthorityController {
 
   @GetMapping("/{address}/isAuthorized")
   public boolean isAuthorized(@PathVariable("address") String address) {
-    if (!WalletUtils.isValidAddress(address)) return false;
+    if (!WalletUtils.isValidAddress(address)) { return false; }
     return authorityService.isAuthorized(address);
   }
 
