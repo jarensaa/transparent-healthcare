@@ -3,11 +3,9 @@ package xyz.rensaa.providerservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.web3j.crypto.WalletUtils;
+import xyz.rensaa.providerservice.dto.Propsal;
 import xyz.rensaa.providerservice.service.AuthorityService;
 
 import java.util.List;
@@ -18,9 +16,6 @@ public class AuthorityController {
 
   @Autowired
   private AuthorityService authorityService;
-
-  //@Autowired
-  //private SimpMessagingTemplate template;
 
   @GetMapping()
   public List<String> getAuthorities() {
@@ -33,11 +28,15 @@ public class AuthorityController {
     return authorityService.isAuthorized(address);
   }
 
+  @PostMapping("/propose")
+  public boolean propose(@RequestBody Propsal propsal) {
+    authorityService.proposeAuthority(propsal);
+    return true;
+  }
+
   @MessageMapping("/hello")
   @SendTo("/topic/greetings")
-  public String hello(String message) throws Exception {
-    Thread.sleep(1000);
-    System.out.println(message);
+  public String hello() {
     return "Hello world world";
   }
 }
