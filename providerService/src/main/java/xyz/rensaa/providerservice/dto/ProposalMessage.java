@@ -10,9 +10,9 @@ import java.util.Optional;
 
 
 @Value.Immutable
-@JsonDeserialize(as = ImmutablePropsal.class)
-@JsonSerialize(as = ImmutablePropsal.class)
-public interface Propsal {
+@JsonDeserialize(as = ImmutableProposalMessage.class)
+@JsonSerialize(as = ImmutableProposalMessage.class)
+public interface ProposalMessage {
 
     @JsonProperty("proposer")
     String proposer();
@@ -25,4 +25,5 @@ public interface Propsal {
 
     @JsonProperty("id")
     Optional<Integer> id();
+
 }

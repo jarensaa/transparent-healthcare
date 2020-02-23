@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.rensaa.providerservice.service.AccountService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/accounts")
@@ -16,12 +17,12 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping("/rich")
-    public List<String> getRichAccounts() {
+    public Map<String, String> getRichAccounts() {
         return accountService.getRichAccounts();
     }
 
     @GetMapping("/generated")
-    public List<String> getGeneratedAccounts() {
+    public Map<String, String> getGeneratedAccounts() {
         return accountService.getGeneratedAccounts();
     }
 }

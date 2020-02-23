@@ -59,6 +59,6 @@ public class Web3jConfig  {
 
   @Bean
   public ContractGasProvider createGasProvider() {
-    return new StaticGasProvider(BigInteger.valueOf(6721975L),BigInteger.valueOf(20000000000L));
+    return new StaticGasProvider(BigInteger.valueOf(20000000000L),BigInteger.valueOf(300000L));
   }
 }

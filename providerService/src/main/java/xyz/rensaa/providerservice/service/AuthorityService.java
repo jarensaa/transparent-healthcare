@@ -7,7 +7,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import xyz.rensaa.providerservice.AuthorityManager;
-import xyz.rensaa.providerservice.dto.Propsal;
+import xyz.rensaa.providerservice.dto.ProposalMessage;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -47,7 +47,7 @@ public class AuthorityService {
     return List.of();
   }
 
-  public boolean proposeAuthority(Propsal propsal) {
+  public boolean proposeAuthority(ProposalMessage propsal) {
     try {
       authorityManager.propose(BigInteger.valueOf(propsal.proposalType().longValue()), propsal.subject()).send();
       return true;
