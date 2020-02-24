@@ -1,29 +1,15 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import SockJS from 'sockjs-client';
-import {Client} from '@stomp/stompjs';
+import React, { useContext } from "react";
+import logo from "./logo.svg";
+import "./App.css";
 
-
-
-const stompClient = new Client()
-stompClient.webSocketFactory = () => {
-  return SockJS("http://localhost:8080/gs-guide-websocket")
-}
-
-stompClient.onConnect = () => {
-  stompClient.subscribe('/topic/greetings', (event) => {
-    console.log(event);
-  })
-}
-
-stompClient.activate();
+import WebSocketContext from "./hooks/useWebSocket";
 
 const App = () => {
+  const stomp = useContext(WebSocketContext);
 
-  const sendMessage = () => {
-    stompClient.publish({destination: "/app/hello", body: "hello world!"});
-  }
+  stomp.watch("/authority/proposal").subscribe(message => {
+    console.log(message.body);
+  });
 
   return (
     <div className="App">
@@ -40,10 +26,9 @@ const App = () => {
         >
           Learn React
         </a>
-        <button onClick={sendMessage}>Click me</button>
       </header>
     </div>
   );
-}
+};
 
 export default App;

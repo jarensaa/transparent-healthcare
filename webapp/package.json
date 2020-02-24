@@ -11,7 +11,7 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/sockjs-client": "^1.1.1",
-    "@stomp/stompjs": "5.4.3",
+    "@stomp/rx-stomp": "0.3.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "3.3.1",

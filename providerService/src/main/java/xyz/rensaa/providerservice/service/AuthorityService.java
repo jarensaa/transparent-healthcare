@@ -1,14 +1,20 @@
 package xyz.rensaa.providerservice.service;
 
+import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.request.EthFilter;
 import xyz.rensaa.providerservice.AuthorityManager;
 import xyz.rensaa.providerservice.dto.ProposalMessage;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -61,4 +67,5 @@ public class AuthorityService {
   public String getOriginalAuthorityAddress() {
     return credentials.get(0).getAddress();
   }
+
 }

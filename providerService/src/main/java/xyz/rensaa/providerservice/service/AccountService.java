@@ -38,6 +38,6 @@ public class AccountService {
         return keystore.credentials().stream()
             .map(Credentials::getAddress)
             .collect(Collectors.toMap(s -> s, s -> Double.toString(web3Service.getAddressBalance(s))));
-
     }
+
 }

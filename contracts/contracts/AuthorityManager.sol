@@ -24,6 +24,7 @@ contract AuthorityManager is IAuthorization {
     }
 
     event ProposalEvent(
+        address _proposer,
         address _proposalSubject,
         uint256 _proposalType,
         uint256 _proposalID
@@ -131,7 +132,12 @@ contract AuthorityManager is IAuthorization {
 
         voteOnProposal(proposalCount);
         lastProposalSubmitted[msg.sender] = proposalCount;
-        emit ProposalEvent(_targetAddress, _proposalType, proposalCount);
+        emit ProposalEvent(
+            msg.sender,
+            _targetAddress,
+            _proposalType,
+            proposalCount
+        );
     }
 
     function enactProposal(uint256 id) public {

@@ -1105,7 +1105,15 @@
   resolved "https://registry.yarnpkg.com/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.2.tgz#8013f2af54a2b7d735f71560ff360d3a8176a87b"
   integrity sha512-vTCdPp/T/Q3oSqwHmZ5Kpa9oI7iLtGl3RQaA/NyLHikvcrPxACkkKVr/XzkSPJWXHRhKGzVvb0urJsbMlRxi1Q==
 
-"@stomp/stompjs@5.4.3":
+"@stomp/rx-stomp@0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@stomp/rx-stomp/-/rx-stomp-0.3.4.tgz#b3ec25b94077d88712458ca6cad0c00dbc731c69"
+  integrity sha512-uJb+cCMbS39Vh+T6ibyLNENeyNNEi+a5/e9CZw2/iqFL9lpHGRF7oIZjcdw7ZVftTMFUDUNObO+1l/yXiVM5HQ==
+  dependencies:
+    "@stomp/stompjs" "^5.1.0 >=5.4.2"
+    angular2-uuid "^1.1.1"
+
+"@stomp/stompjs@^5.1.0 >=5.4.2":
   version "5.4.3"
   resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-5.4.3.tgz#ba312f589c5e4c73639aa89a7e4d5cff5a495904"
   integrity sha512-ZuucwL2mLnBRN6ep/Ic7do3bZHP9HqgZQzBPEkXO6McZcysaJb8N1aQT8Et+JaG9FuQ1wVvtbQvOGvDZyOWQNQ==
@@ -1718,6 +1726,11 @@ alphanum-sort@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
+
+angular2-uuid@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/angular2-uuid/-/angular2-uuid-1.1.1.tgz#72f03cd532b7f40032eb1ecfb9f8457384be956e"
+  integrity sha1-cvA81TK39AAy6x7PufhFc4S+lW4=
 
 ansi-colors@^3.0.0:
   version "3.2.4"
