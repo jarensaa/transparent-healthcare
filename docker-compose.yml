@@ -31,3 +31,5 @@ services:
     build: ./webapp
     ports:
       - "3000:80"
+    depends_on:
+      - "contract-deployer"

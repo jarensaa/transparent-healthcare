@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "clean": "ls -lah && rm -r ./shared/* || true",
-    "start": "ganache-cli --gasLimit 9991391 -h localhost --account_keys_path ./shared/keyfile.json"
+    "start": "ganache-cli --gasLimit 9991391 -h localhost --account_keys_path ./shared/keyfile.json",
+    "start-in-docker": "ganache-cli --gasLimit 9991391 -h 0.0.0.0 --account_keys_path ./shared/keyfile.json"
   },
   "dependencies": {
     "ganache-cli": "^6.9.0"

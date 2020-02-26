@@ -1,4 +1,4 @@
 FROM node
 COPY . .
-EXPOSE 8454
-CMD yarn run clean && yarn start
+EXPOSE 8545
+CMD yarn run clean && yarn start-in-docker
