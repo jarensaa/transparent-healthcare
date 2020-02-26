@@ -2,7 +2,6 @@ plugins {
 	id 'org.springframework.boot' version '2.2.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
-	id 'com.palantir.baseline' version '3.3.0'
 	id 'org.inferred.processors' version '3.3.0'
 }
 
@@ -33,10 +32,6 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-	options.errorprone.errorproneArgs += ['-XepExcludedPaths:.*/build/.*']
 }
 
 test {

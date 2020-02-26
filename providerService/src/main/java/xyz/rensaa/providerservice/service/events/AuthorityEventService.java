@@ -1,5 +1,7 @@
 package xyz.rensaa.providerservice.service.events;
 
+import com.palantir.logsafe.SafeArg;
+import com.palantir.logsafe.UnsafeArg;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +38,10 @@ public class AuthorityEventService {
             proposalEventEventResponse -> {
               logger.info(
                 "New proposal event: id:{},proposer:{}, subject:{}, type:{}",
-                proposalEventEventResponse._proposalID,
-                proposalEventEventResponse._proposer,
-                proposalEventEventResponse._proposalSubject,
-                proposalEventEventResponse._proposalType);
+                  SafeArg.of("propsalID", proposalEventEventResponse._proposalID),
+                  SafeArg.of("proposer", proposalEventEventResponse._proposer),
+                  SafeArg.of("subject", proposalEventEventResponse._proposalSubject),
+                  SafeArg.of("type", proposalEventEventResponse._proposalType));
 
               webSocketMessaging.convertAndSend("/authority/proposal",
                   ImmutableProposalMessage.builder()
