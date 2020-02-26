@@ -8,12 +8,13 @@
     "test": "truffle test",
     "eject": "react-scripts eject",
     "start": "truffle migrate",
-    "bundle-contracts": "jq -s '.[] | {contract:.contractName,abi:.abi}' build/contracts/* | jq -s . > shared/contracts.json"
+    "bundle-contracts": "node buildcontractbundle"
   },
   "dependencies": {
+    "fs": "^0.0.1-security",
+    "json-concat": "^0.0.1",
     "solc": "^0.6.1",
-    "truffle": "^5.1.8",
-    "node-jq": "1.11.0"
+    "truffle": "^5.1.8"
   },
   "devDependencies": {
     "chai": "^4.2.0",
