@@ -1,12 +1,14 @@
+import React from "react";
 import Home from "../pages/Home/Home";
 import Authority from "../pages/Authority/Authority";
 import Keys from "../pages/Keys/Keys";
 import TreatmentProvider from "../pages/TreatmentProvider/TreatmentProvider";
+import { FunctionComponent } from "react";
 
 interface RouteDefinition {
   title: string;
   path: string;
-  Component: any;
+  Component: FunctionComponent;
   exact: boolean;
 }
 

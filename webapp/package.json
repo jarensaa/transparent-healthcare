@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@blueprintjs/core": "^3.24.0",
+    "@blueprintjs/select": "^3.12.0",
     "@stomp/rx-stomp": "0.3.4",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

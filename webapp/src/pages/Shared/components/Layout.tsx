@@ -1,8 +1,9 @@
-import React from "react";
+import React, { Fragment } from "react";
 import LeftMenu from "./Leftmenu";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import routes from "../../../utils/routes";
 import styled from "styled-components";
+import Keys from "../../Keys/Keys";
 
 const StyledLayout = styled.div`
   min-height: 100vh;
@@ -19,7 +20,7 @@ const MainArea = styled.div`
 const Layout = () => {
   const pages = routes.map(route => (
     <Route exact key={route.path} path={route.path}>
-      {route.Component}
+      {route.Component({ children: <Fragment /> })}
     </Route>
   ));
 

@@ -1,6 +1,7 @@
 import React from "react";
 import Layout from "./pages/Shared/components/Layout";
 import { BrowserRouter } from "react-router-dom";
+import { KeyContextProvider } from "./context/KeyContext";
 
 /*
 const stomp = useContext(WebSocketContext);
@@ -14,7 +15,9 @@ stomp.watch("/authority/proposal").subscribe(message => {
 export default function App() {
   return (
     <BrowserRouter>
-      <Layout></Layout>;
+      <KeyContextProvider>
+        <Layout></Layout>;
+      </KeyContextProvider>
     </BrowserRouter>
   );
 }
