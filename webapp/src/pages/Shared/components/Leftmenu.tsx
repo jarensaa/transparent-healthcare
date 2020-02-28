@@ -24,18 +24,22 @@ const LeftMenu = () => {
 
   return (
     <LeftMenuContainer>
-      {routes.map(item => (
-        <Button
-          style={{ color: Colors.LIGHT_GRAY2 }}
-          minimal
-          large
-          key={item.title}
-          className={`item ${item.path === location.pathname ? "active" : ""}`}
-          onClick={() => handleClick(item.path)}
-        >
-          {item.title}
-        </Button>
-      ))}
+      {routes
+        .filter(item => item.showInSidebar)
+        .map(item => (
+          <Button
+            style={{ color: Colors.LIGHT_GRAY2 }}
+            minimal
+            large
+            key={item.title}
+            className={`item ${
+              item.path === location.pathname ? "active" : ""
+            }`}
+            onClick={() => handleClick(item.path)}
+          >
+            {item.title}
+          </Button>
+        ))}
     </LeftMenuContainer>
   );
 };
