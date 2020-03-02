@@ -62,6 +62,7 @@ public class AuthorityService {
             .voters(proposal.component3())
             .build()
         );
+
       }
     } catch (Exception e) {
       logger.error("Could not get number of proposals");

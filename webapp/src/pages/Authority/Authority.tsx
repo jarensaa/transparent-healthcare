@@ -44,7 +44,7 @@ const Authority = () => {
           {propsals.proposalEvents.map((event, index) => (
             <ClickableRow
               key={index}
-              onClick={() => goToProposalPage(event.id)}
+              onClick={() => goToProposalPage(event.id!)}
             >
               <td>{event.id}</td>
               <td>{event.type}</td>
