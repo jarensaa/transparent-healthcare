@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 import { RxStomp } from "@stomp/rx-stomp";
 import SockJS from "sockjs-client";
 

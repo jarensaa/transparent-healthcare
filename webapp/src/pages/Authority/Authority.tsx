@@ -1,4 +1,4 @@
-import React, { useContext, Fragment, useEffect } from "react";
+import React, { useContext, Fragment, FunctionComponent } from "react";
 import KeyContext from "../../context/KeyContext";
 import { Select } from "@blueprintjs/select";
 import { Button, MenuItem, HTMLTable, Colors } from "@blueprintjs/core";
@@ -18,7 +18,7 @@ const ClickableRow = styled.tr`
   }
 `;
 
-const Authority = () => {
+const Authority: FunctionComponent = () => {
   const { keys } = useContext(KeyContext);
   const propsals = useContext(AuthorityEventContext);
   const history = useHistory();

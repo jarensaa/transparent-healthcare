@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useHistory, useLocation } from "react-router-dom";
-import routes from "../../../utils/routes";
+import routes from "../../../config/routes";
 import styled from "styled-components";
 import { Button, Colors } from "@blueprintjs/core";
 

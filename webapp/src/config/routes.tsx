@@ -1,4 +1,3 @@
-import React from "react";
 import Home from "../pages/Home/Home";
 import Authority from "../pages/Authority/Authority";
 import Keys from "../pages/Keys/Keys";
@@ -23,18 +22,18 @@ const routes: RouteDefinition[] = [
     Component: Home
   },
   {
-    title: "Authority",
-    path: "/authority",
-    exact: true,
-    showInSidebar: true,
-    Component: Authority
-  },
-  {
     title: "Proposal",
     path: "/proposal/:proposalId",
     exact: true,
     showInSidebar: false,
     Component: Proposal
+  },
+  {
+    title: "Authority",
+    path: "/authority",
+    exact: true,
+    showInSidebar: true,
+    Component: Authority
   },
   {
     title: "TreatmentProvider",
