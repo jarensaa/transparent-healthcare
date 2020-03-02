@@ -21,7 +21,7 @@ public class KeystoreConfig {
 
   private static SecureRandom random = new SecureRandom();
 
-  @Value("${custom.numkeys}")
+  @Value("${keygen.numkeys}")
   String numKeysConfig;
 
   @Bean

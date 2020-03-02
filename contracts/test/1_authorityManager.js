@@ -158,6 +158,11 @@ contract("AuthorityManager", accounts => {
     );
   });
 
+  it("The number of proposals should be 5", async () => {
+    const proposals = await authorityManagementInstance.getProposalCount();
+    assert.equal(proposals, 4);
+  });
+
   it("Account2 should be able to vote on proposal for removal of Account0 as authority", async () => {
     await truffleAssert.passes(
       authorityManagementInstance.voteOnProposal(4, {

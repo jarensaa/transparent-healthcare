@@ -44,7 +44,9 @@ task generateContractWrappers {
 	group = "Codegen"
 	description = "Generates java wrapper classes based compiled .json truffle contracts"
 	doLast {
-		PatternFilterable tree = fileTree('../contracts/build/contracts').include("*.json")
+		def contractEnvVariable = System.getenv('CONTRACT_DIRECTORY')
+		def contractPath = contractEnvVariable != null ? contractEnvVariable : "../contracts/shared/contracts"
+		PatternFilterable tree = fileTree(contractPath).include("*.json")
 		tree.each { File file ->
 			javaexec {
 				description = "Generates java wrapper classes based compiled .json truffle contracts"

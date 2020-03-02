@@ -19,14 +19,15 @@ services:
     depends_on:
       - "contract-deployer"
     ports:
-      - "9753:8080"
+      - "8080:8080"
     environment:
       - KEYS_PATH=./shared/keyfile.json
       - ADDRESSES_PATH=./shared/addresses.json
       - BLOCKCHAIN_URI=http://blockchain:8545
+      - CONTRACT_DIRECTORY=./shared/contracts
     volumes:
       - ./shared/:/shared/
-    command: ./wait-for-it.sh -s blockchain:8545 -- bash -c 'until [[ $$(wc -l < shared/addresses.json) -ge 6 ]]; do sleep 1; done; java -jar /app.jar'
+    command: ./wait-for-it.sh -s blockchain:8545 -- bash -c 'until [[ $$(wc -l < shared/addresses.json) -ge 6 ]]; do sleep 1; done; ./gradlew bootRun'
   webapp:
     build: ./webapp
     ports:

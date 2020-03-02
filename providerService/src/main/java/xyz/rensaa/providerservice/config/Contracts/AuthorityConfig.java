@@ -36,7 +36,8 @@ public class AuthorityConfig {
   @Bean
   public AuthorityManager createAuthorityContract() throws IOException {
     var authorityContract = AuthorityManager.load(contractAddresses.getAuthorityAddress(),web3j,credentials.get(0), gasProvider);
-    Preconditions.checkArgument(authorityContract.isValid(),"Provided authority address is invalid");
+    Preconditions.checkArgument(authorityContract.isValid(),
+        "Provided authority address is invalid. Did you deploy contracts after starting the network?");
     logger.info("AuthorityManager bytecode is deployed on the blockchain at address {}",
         SafeArg.of("authority manager address", authorityContract.getContractAddress()));
     return authorityContract;

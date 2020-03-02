@@ -26,7 +26,12 @@ public class AuthorityController {
     return authorityService.isAuthorized(address);
   }
 
-  @PostMapping("/propose")
+  @GetMapping("/proposals")
+  public List<ProposalMessage> getProposals() {
+    return authorityService.getProposals();
+  }
+
+  @PostMapping("/proposals")
   public boolean propose(@RequestBody ProposalMessage propsal) {
     authorityService.proposeAuthority(propsal);
     return true;

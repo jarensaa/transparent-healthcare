@@ -36,7 +36,8 @@ public class AuthorityService {
 
   public boolean isAuthorized(String address) {
     try {
-      return authorityManager.isAuthorized(address).send();
+      var response = authorityManager.isAuthorized(address).send();
+      return true;
     } catch (Exception e) {
       logger.error("Could not process Authority.isAuthorized transaction", e);
     }
@@ -46,11 +47,15 @@ public class AuthorityService {
   public List<String> getAuthorities() {
     try {
       template.convertAndSend("/topic/greetings", "hello authority");
-      return authorityManager.getAuthorities().send();
+      return null; // authorityManager.getAuthorities().send();
     } catch (Exception e) {
       logger.error("Could not fetch authorities", e);
     }
     return List.of();
+  }
+
+  public List<ProposalMessage> getProposals() {
+      return null;
   }
 
   public boolean proposeAuthority(ProposalMessage propsal) {

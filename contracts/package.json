@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "truffle": "truffle start",
-    "build": "truffle compile && yarn run bundle-contracts",
+    "build": "truffle compile",
     "test": "truffle test",
     "eject": "react-scripts eject",
-    "start": "truffle migrate",
-    "bundle-contracts": "node buildcontractbundle"
+    "clean": "rm -r shared/contracts shared/addresses.json shared/contractsbundle.json",
+    "start": "yarn clean || true && truffle migrate && yarn run bundle-contracts",
+    "bundle-contracts": "cp -r ./build/contracts ./shared && node buildcontractbundle"
   },
   "dependencies": {
     "fs": "^0.0.1-security",

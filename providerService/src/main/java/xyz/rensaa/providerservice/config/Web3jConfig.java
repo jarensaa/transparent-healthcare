@@ -24,13 +24,13 @@ import xyz.rensaa.providerservice.dto.GanacheKeys;
 @Configuration
 public class Web3jConfig  {
 
-  @Value("${custom.ganache-cli.keyfile}")
+  @Value("${contracts.keyfile}")
   String keyFilePath;
 
-  @Value("${custom.contracts.addressesfile}")
+  @Value("${contracts.addressesfile}")
   String addressesFilePath;
 
-  @Value("${custom.blockchain.uri}")
+  @Value("${blockchain.uri}")
   String blockchainUri;
 
   @Autowired

@@ -16,6 +16,7 @@ contract AuthorityManager is IAuthorization {
     mapping(address => uint256) public lastProposalSubmitted;
 
     mapping(address => uint256) authorityToRegistryIndex;
+
     address[] authorityRegistry;
 
     modifier authorized() {
@@ -107,6 +108,10 @@ contract AuthorityManager is IAuthorization {
             proposals[_proposalID].target,
             proposals[_proposalID].voters
         );
+    }
+
+    function getProposalCount() external view returns (uint256) {
+        return proposalCount;
     }
 
     function propose(uint256 _proposalType, address _targetAddress)

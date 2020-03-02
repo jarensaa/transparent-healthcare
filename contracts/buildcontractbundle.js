@@ -13,4 +13,7 @@ fs.readdirSync(contractDirectory).forEach(file => {
 
   contracts.push(contract);
 });
-fs.writeFileSync("shared/contracts.json", JSON.stringify(contracts, null, 2));
+fs.writeFileSync(
+  "shared/contractsbundle.json",
+  JSON.stringify(contracts, null, 2)
+);
