@@ -1,21 +1,17 @@
 package xyz.rensaa.providerservice.service;
 
-import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.request.EthFilter;
 import xyz.rensaa.providerservice.AuthorityManager;
+import xyz.rensaa.providerservice.dto.ImmutableProposalMessage;
 import xyz.rensaa.providerservice.dto.ProposalMessage;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,8 +32,7 @@ public class AuthorityService {
 
   public boolean isAuthorized(String address) {
     try {
-      var response = authorityManager.isAuthorized(address).send();
-      return true;
+      return authorityManager.isAuthorized(address).send();
     } catch (Exception e) {
       logger.error("Could not process Authority.isAuthorized transaction", e);
     }
@@ -46,8 +41,7 @@ public class AuthorityService {
 
   public List<String> getAuthorities() {
     try {
-      template.convertAndSend("/topic/greetings", "hello authority");
-      return null; // authorityManager.getAuthorities().send();
+      return authorityManager.getAuthorities().send();
     } catch (Exception e) {
       logger.error("Could not fetch authorities", e);
     }
@@ -55,7 +49,24 @@ public class AuthorityService {
   }
 
   public List<ProposalMessage> getProposals() {
-      return null;
+    var proposals = new ArrayList<ProposalMessage>();
+    try {
+      int numProposals = authorityManager.getProposalCount().send().intValue();
+      for (int i = 1; i <= numProposals; i++) {
+        var proposal = authorityManager.getProposal(BigInteger.valueOf(i)).send();
+        proposals.add(ImmutableProposalMessage.builder()
+            .id(i)
+            .proposalType(proposal.component1().intValue())
+            .subject(proposal.component2())
+            .proposer(proposal.component3().get(0))
+            .voters(proposal.component3())
+            .build()
+        );
+      }
+    } catch (Exception e) {
+      logger.error("Could not get number of proposals");
+    }
+    return proposals;
   }
 
   public boolean proposeAuthority(ProposalMessage propsal) {
