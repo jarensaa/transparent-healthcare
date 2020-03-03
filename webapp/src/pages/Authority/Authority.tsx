@@ -1,7 +1,5 @@
 import React, { useContext, Fragment, FunctionComponent } from "react";
-import KeyContext from "../../context/KeyContext";
-import { Select } from "@blueprintjs/select";
-import { Button, MenuItem } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
 import styled from "styled-components";
 import AuthorityContext from "../../context/AuthorityContext";
 import ProposalSummaryTable from "./components/ProposalSummaryTable";

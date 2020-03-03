@@ -8,7 +8,7 @@ const StyledLayout = styled.div`
   min-height: 100vh;
   height: 100%;
   display: grid;
-  grid-template-columns: 300px auto;
+  grid-template-columns: 250px auto;
 `;
 
 const MainArea = styled.div`

@@ -11,7 +11,7 @@ export default function App() {
       <StompContextProvider>
         <AuthorityContextProvider>
           <KeyContextProvider>
-            <Layout></Layout>;
+            <Layout></Layout>
           </KeyContextProvider>
         </AuthorityContextProvider>
       </StompContextProvider>

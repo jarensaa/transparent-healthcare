@@ -4,45 +4,47 @@ import Key from "../dto/Key";
 
 type KeyContext = {
   keys: Key[];
+  isOriginalAuthority: boolean;
   addKey(keys: Key): void;
-  setOriginalAuthority(status: boolean): void;
+  toggleIsAuthority(): void;
 };
 
 const KeyContext = React.createContext<KeyContext>({
   keys: [],
-  setOriginalAuthority: () => {},
+  isOriginalAuthority: false,
+  toggleIsAuthority: () => {},
   addKey: () => {}
 });
+
+const serializeKeys = (keys: Key[]): string => {
+  return keys
+    .map(key => key.address + "," + key.publicKey + "," + key.privateKey)
+    .join(";");
+};
+
+const deserializeKeys = (serlializedKeys: string): Key[] => {
+  if (!serializeKeys) {
+    return [];
+  }
+  return serlializedKeys
+    .split(";")
+    .map(keyString => keyString.split(","))
+    .map(
+      (keyParts): Key => {
+        return {
+          address: keyParts[0],
+          publicKey: keyParts[1],
+          privateKey: keyParts[2]
+        };
+      }
+    );
+};
 
 const KeyContextProvider: FunctionComponent = ({ children }) => {
   const [keys, setKeys] = useState<Key[]>([]);
   const [isOriginalAuthrority, setIsOriginalAuthority] = useState<boolean>(
-    true
+    false
   );
-
-  const serializeKeys = (keys: Key[]): string => {
-    return keys
-      .map(key => key.address + "," + key.publicKey + "," + key.privateKey)
-      .join(";");
-  };
-
-  const deserializeKeys = (serlializedKeys: string): Key[] => {
-    if (!serializeKeys) {
-      return [];
-    }
-    return serlializedKeys
-      .split(";")
-      .map(keyString => keyString.split(","))
-      .map(
-        (keyParts): Key => {
-          return {
-            address: keyParts[0],
-            publicKey: keyParts[1],
-            privateKey: keyParts[2]
-          };
-        }
-      );
-  };
 
   useEffect(() => {
     const serlializedKeys = localStorage.getItem("keys");
@@ -59,6 +61,14 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
         .then((res: Key) => {
           setKeys(keys => [...keys, res]);
         });
+    } else {
+      setKeys(previousKeyState => {
+        const localStorageState = localStorage.getItem("keys");
+        const localStorageKeys = localStorageState
+          ? deserializeKeys(localStorageState)
+          : [];
+        return localStorageKeys;
+      });
     }
   }, [isOriginalAuthrority]);
 
@@ -78,7 +88,9 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
     <KeyContext.Provider
       value={{
         keys: keys,
-        setOriginalAuthority: setIsOriginalAuthority,
+        isOriginalAuthority: isOriginalAuthrority,
+        toggleIsAuthority: () =>
+          setIsOriginalAuthority(prevState => !prevState),
         addKey: addKey
       }}
     >
