@@ -6,14 +6,14 @@ import styled from "styled-components";
 
 const StyledLayout = styled.div`
   min-height: 100vh;
+  height: 100%;
   display: grid;
   grid-template-columns: 300px auto;
 `;
 
 const MainArea = styled.div`
   background-color: #f5f8fa;
-  padding-top: 50px;
-  padding-left: 100px;
+  padding: 50px 0px 100px 50px;
 `;
 
 const Layout = () => {

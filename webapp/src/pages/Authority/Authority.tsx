@@ -1,80 +1,61 @@
 import React, { useContext, Fragment, FunctionComponent } from "react";
 import KeyContext from "../../context/KeyContext";
 import { Select } from "@blueprintjs/select";
-import { Button, MenuItem, HTMLTable, Colors } from "@blueprintjs/core";
+import { Button, MenuItem } from "@blueprintjs/core";
 import styled from "styled-components";
 import AuthorityContext from "../../context/AuthorityContext";
-import { useHistory } from "react-router-dom";
+import ProposalSummaryTable from "./components/ProposalSummaryTable";
+import AuthoritiesSummaryTable from "./components/AuthoritiesSummarayTable";
 
 const AuthorityPageWrapper = styled.div`
   display: grid;
-  grid-template-rows: 300px auto;
-`;
+  gap: 30px;
+  grid-template-rows: auto auto;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "title none"
+    "authorities proposals";
 
-const ClickableRow = styled.tr`
-  &:hover {
-    background-color: ${Colors.LIGHT_GRAY1};
-    cursor: pointer;
+  @media only screen and (max-width: 1650px) {
+    grid-template-rows: auto;
+    grid-template-columns: auto auto auto;
+    grid-template-areas:
+      "title"
+      "authorities"
+      "proposals";
   }
 `;
 
+const ProposalsTile = styled.div`
+  grid-area: proposals;
+`;
+
+const TitleTile = styled.div`
+  grid-area: title;
+`;
+
+const AuthoritiesTile = styled.div`
+  grid-area: authorities;
+`;
+
 const Authority: FunctionComponent = () => {
-  const { keys } = useContext(KeyContext);
-  const propsals = useContext(AuthorityContext);
-  const history = useHistory();
-
-  const KeySelect = Select.ofType<String>();
-
-  const goToProposalPage = (proposalId: number) => {
-    history.push("/proposal/" + proposalId);
-  };
-
-  const proposalsTable =
-    propsals.proposalEvents.length > 0 ? (
-      <HTMLTable>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>ProposalType</th>
-            <th>Proposer</th>
-            <th>Subject</th>
-          </tr>
-        </thead>
-        <tbody>
-          {propsals.proposalEvents.map((event, index) => (
-            <ClickableRow
-              key={index}
-              onClick={() => goToProposalPage(event.id!)}
-            >
-              <td>{event.id}</td>
-              <td>{event.type}</td>
-              <td>{event.proposer}</td>
-              <td>{event.subject}</td>
-            </ClickableRow>
-          ))}
-        </tbody>
-      </HTMLTable>
-    ) : (
-      <div>No proposals present</div>
-    );
+  const authorityContext = useContext(AuthorityContext);
 
   return (
     <Fragment>
       <AuthorityPageWrapper>
-        <div>
+        <TitleTile>
           <h2>Authority</h2>
-          <KeySelect
-            items={keys}
-            itemRenderer={item => <MenuItem text="key" />}
-            onItemSelect={console.log}
-          >
-            <Button text={"select key"} />
-          </KeySelect>
-        </div>
-        <div>
+          <Button text={"select key"} />
+        </TitleTile>
+        <AuthoritiesTile>
+          <h2>Authorities</h2>
+          <AuthoritiesSummaryTable authorities={authorityContext.authorities} />
+        </AuthoritiesTile>
+        <ProposalsTile>
           <h2>Proposals</h2>
-          {proposalsTable}
-        </div>
+          <ProposalSummaryTable proposals={authorityContext.proposalEvents} />
+        </ProposalsTile>
       </AuthorityPageWrapper>
     </Fragment>
   );

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import xyz.rensaa.providerservice.dto.ContractAddresses;
+import xyz.rensaa.providerservice.dto.ImmutableKeyMessage;
+import xyz.rensaa.providerservice.dto.KeyMessage;
 import xyz.rensaa.providerservice.model.Keystore;
 
 import java.util.List;
@@ -38,6 +40,15 @@ public class AccountService {
         return keystore.credentials().stream()
             .map(Credentials::getAddress)
             .collect(Collectors.toMap(s -> s, s -> Double.toString(web3Service.getAddressBalance(s))));
+    }
+
+    public KeyMessage getAuthorityKey() {
+        var creds = credentials.get(0);
+        return ImmutableKeyMessage.builder()
+            .privateKey(creds.getEcKeyPair().getPrivateKey().toString(16))
+            .publicKey(creds.getEcKeyPair().getPublicKey().toString(16))
+            .address(creds.getAddress())
+            .build();
     }
 
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.rensaa.providerservice.dto.KeyMessage;
 import xyz.rensaa.providerservice.service.AccountService;
 
 import java.util.List;
@@ -24,5 +25,10 @@ public class AccountController {
     @GetMapping("/generated")
     public Map<String, String> getGeneratedAccounts() {
         return accountService.getGeneratedAccounts();
+    }
+
+    @GetMapping("/authority")
+    public KeyMessage getAuthorityAccount() {
+        return accountService.getAuthorityKey();
     }
 }
