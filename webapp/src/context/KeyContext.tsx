@@ -91,6 +91,9 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
           setKeys(keys => [...keys, res]);
         });
     } else {
+      if (activeKey?.description === "Original authority key") {
+        setActiveKey(undefined);
+      }
       setKeys(previousKeyState => {
         const localStorageState = localStorage.getItem("keys");
         const localStorageKeys = localStorageState
