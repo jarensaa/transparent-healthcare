@@ -45,8 +45,8 @@ public class AccountService {
     public KeyMessage getAuthorityKey() {
         var creds = credentials.get(0);
         return ImmutableKeyMessage.builder()
-            .privateKey(creds.getEcKeyPair().getPrivateKey().toString(16))
-            .publicKey(creds.getEcKeyPair().getPublicKey().toString(16))
+            .privateKey("0x" + creds.getEcKeyPair().getPrivateKey().toString(16))
+            .publicKey("0x" + creds.getEcKeyPair().getPublicKey().toString(16))
             .address(creds.getAddress())
             .build();
     }
