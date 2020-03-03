@@ -8,7 +8,7 @@ interface VotersTableProps {
 
 const VotersTable: FunctionComponent<VotersTableProps> = ({ proposal }) => {
   const votersRows =
-    proposal.voters === undefined ? (
+    proposal.voters == null ? (
       <tr>
         <td>none</td>
       </tr>
@@ -24,7 +24,7 @@ const VotersTable: FunctionComponent<VotersTableProps> = ({ proposal }) => {
     <HTMLTable>
       <thead>
         <tr>
-          <th>Voter</th>
+          <th>Voters</th>
         </tr>
       </thead>
       <tbody>{votersRows}</tbody>

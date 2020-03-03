@@ -1,7 +1,6 @@
 package xyz.rensaa.providerservice.service.events;
 
 import com.palantir.logsafe.SafeArg;
-import com.palantir.logsafe.UnsafeArg;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import xyz.rensaa.providerservice.dto.ImmutableProposalMessage;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 
 @Service
 public class AuthorityEventService {
@@ -43,12 +43,13 @@ public class AuthorityEventService {
                   SafeArg.of("subject", proposalEventEventResponse._proposalSubject),
                   SafeArg.of("type", proposalEventEventResponse._proposalType));
 
-              webSocketMessaging.convertAndSend("/authority/proposal",
+              webSocketMessaging.convertAndSend("/authorities/proposal",
                   ImmutableProposalMessage.builder()
                       .proposer(proposalEventEventResponse._proposer)
                       .subject(proposalEventEventResponse._proposalSubject)
                       .id(proposalEventEventResponse._proposalID.intValue())
                       .proposalType(proposalEventEventResponse._proposalType.intValue())
+                      .voters(List.of(proposalEventEventResponse._proposer))
                       .build());
             },
             throwable -> logger.error("Failed to get proposalEvent ", throwable));

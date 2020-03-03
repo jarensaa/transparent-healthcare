@@ -2,7 +2,8 @@ import config from "./properties";
 
 const endpoints = {
   authority: {
-    proposals: config.serverUrl + "/authority/proposals"
+    base: config.serverUrl + "/authortities",
+    proposals: config.serverUrl + "/authorities/proposals"
   }
 };
 

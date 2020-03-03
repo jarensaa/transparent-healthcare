@@ -9,7 +9,7 @@ import xyz.rensaa.providerservice.service.AuthorityService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/authority")
+@RequestMapping("/authorities")
 public class AuthorityController {
 
   @Autowired

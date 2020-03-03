@@ -13,6 +13,8 @@ const KeyContext = React.createContext<KeyContext>({
 const KeyContextProvider: FunctionComponent = ({ children }) => {
   const [keys, setKeys] = useState<string[]>([]);
 
+  console.log("Key context render");
+
   const addKey = (key: string): void => {
     setKeys([...keys, key]);
   };

@@ -7,6 +7,8 @@ const StompContext = React.createContext<RxStomp>(new RxStomp());
 const StompContextProvider: FunctionComponent = ({ children }) => {
   const rxStompClient = new RxStomp();
 
+  console.log("Stomp context render");
+
   rxStompClient.stompClient.webSocketFactory = () => {
     return SockJS("http://localhost:8080/gs-guide-websocket");
   };

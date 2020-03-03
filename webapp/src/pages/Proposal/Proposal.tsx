@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
-import AuthorityEventContext from "../../context/AuthorityEventContext";
+import AuthorityContext from "../../context/AuthorityContext";
 import ProposalEvent from "../../dto/ProposalEvent";
 import styled from "styled-components";
 import { Spinner } from "@blueprintjs/core";
@@ -41,7 +41,7 @@ const VotePanel = styled.div`
 
 const Proposal = (): JSX.Element => {
   const { proposalId } = useParams();
-  const authorityContext = useContext(AuthorityEventContext);
+  const authorityContext = useContext(AuthorityContext);
   const [proposal, setProposal] = useState<ProposalEvent>();
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const Proposal = (): JSX.Element => {
     <ProposalPanel>
       <Title>Proposal</Title>
       <DescriptionArea>
-        This page shows the proposal on the blockchain. If you have a key for
+        This page shows the proposal on the blockchain. If you have a key for a
         trusted authority, you may vote on the proposal. If the vote is above
         the threshold to be enacted, you can do so on this page as well.
       </DescriptionArea>

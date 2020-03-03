@@ -3,7 +3,7 @@ import KeyContext from "../../context/KeyContext";
 import { Select } from "@blueprintjs/select";
 import { Button, MenuItem, HTMLTable, Colors } from "@blueprintjs/core";
 import styled from "styled-components";
-import AuthorityEventContext from "../../context/AuthorityEventContext";
+import AuthorityContext from "../../context/AuthorityContext";
 import { useHistory } from "react-router-dom";
 
 const AuthorityPageWrapper = styled.div`
@@ -20,7 +20,7 @@ const ClickableRow = styled.tr`
 
 const Authority: FunctionComponent = () => {
   const { keys } = useContext(KeyContext);
-  const propsals = useContext(AuthorityEventContext);
+  const propsals = useContext(AuthorityContext);
   const history = useHistory();
 
   const KeySelect = Select.ofType<String>();
