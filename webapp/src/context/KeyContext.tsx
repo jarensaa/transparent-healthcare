@@ -1,9 +1,17 @@
-import React, { useState, FunctionComponent, useEffect } from "react";
+import React, {
+  useState,
+  FunctionComponent,
+  useEffect,
+  useContext
+} from "react";
 import endpoints from "../config/endpoints";
 import Key from "../dto/Key";
+import Web3Context from "./Web3Context";
+import { Account } from "web3-core";
 
 type KeyContext = {
   keys: Key[];
+  accounts: Account[];
   isOriginalAuthority: boolean;
   addKey(keys: Key): void;
   toggleIsAuthority(): void;
@@ -11,6 +19,7 @@ type KeyContext = {
 
 const KeyContext = React.createContext<KeyContext>({
   keys: [],
+  accounts: [],
   isOriginalAuthority: false,
   toggleIsAuthority: () => {},
   addKey: () => {}
@@ -18,8 +27,14 @@ const KeyContext = React.createContext<KeyContext>({
 
 const serializeKeys = (keys: Key[]): string => {
   return keys
-    .map(key => key.address + "," + key.publicKey + "," + key.privateKey)
-    .join(";");
+    .map(
+      key =>
+        key.address +
+        ";" +
+        key.privateKey +
+        (key.description ? ";" + key.description : "")
+    )
+    .join(",");
 };
 
 const deserializeKeys = (serlializedKeys: string): Key[] => {
@@ -27,23 +42,32 @@ const deserializeKeys = (serlializedKeys: string): Key[] => {
     return [];
   }
   return serlializedKeys
-    .split(";")
-    .map(keyString => keyString.split(","))
+    .split(",")
+    .map(keyString => keyString.split(";"))
     .map(
       (keyParts): Key => {
-        return {
+        const key: Key = {
           address: keyParts[0],
-          publicKey: keyParts[1],
-          privateKey: keyParts[2]
+          privateKey: keyParts[1]
         };
+        if (keyParts[2]) {
+          key.description = keyParts[2];
+        }
+
+        return key;
       }
     );
 };
 
 const KeyContextProvider: FunctionComponent = ({ children }) => {
+  const { web3 } = useContext(Web3Context);
   const [keys, setKeys] = useState<Key[]>([]);
   const [isOriginalAuthrority, setIsOriginalAuthority] = useState<boolean>(
-    false
+    true
+  );
+
+  const accounts = keys.map(key =>
+    web3.eth.accounts.privateKeyToAccount(key.privateKey)
   );
 
   useEffect(() => {
@@ -59,6 +83,7 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
       fetch(endpoints.accounts.authority)
         .then(res => res.json())
         .then((res: Key) => {
+          res.description = "Original authority key";
           setKeys(keys => [...keys, res]);
         });
     } else {
@@ -88,6 +113,7 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
     <KeyContext.Provider
       value={{
         keys: keys,
+        accounts: accounts,
         isOriginalAuthority: isOriginalAuthrority,
         toggleIsAuthority: () =>
           setIsOriginalAuthority(prevState => !prevState),
