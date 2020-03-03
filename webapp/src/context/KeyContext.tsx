@@ -12,9 +12,11 @@ import { Account } from "web3-core";
 type KeyContext = {
   keys: Key[];
   accounts: Account[];
+  activeKey?: Key;
   isOriginalAuthority: boolean;
   addKey(keys: Key): void;
   toggleIsAuthority(): void;
+  setActiveKey(key: Key): void;
 };
 
 const KeyContext = React.createContext<KeyContext>({
@@ -22,7 +24,8 @@ const KeyContext = React.createContext<KeyContext>({
   accounts: [],
   isOriginalAuthority: false,
   toggleIsAuthority: () => {},
-  addKey: () => {}
+  addKey: () => {},
+  setActiveKey: () => {}
 });
 
 const serializeKeys = (keys: Key[]): string => {
@@ -62,6 +65,7 @@ const deserializeKeys = (serlializedKeys: string): Key[] => {
 const KeyContextProvider: FunctionComponent = ({ children }) => {
   const { web3 } = useContext(Web3Context);
   const [keys, setKeys] = useState<Key[]>([]);
+  const [activeKey, setActiveKey] = useState<Key>();
   const [isOriginalAuthrority, setIsOriginalAuthority] = useState<boolean>(
     true
   );
@@ -114,10 +118,12 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
       value={{
         keys: keys,
         accounts: accounts,
+        activeKey: activeKey,
         isOriginalAuthority: isOriginalAuthrority,
         toggleIsAuthority: () =>
           setIsOriginalAuthority(prevState => !prevState),
-        addKey: addKey
+        addKey: addKey,
+        setActiveKey: setActiveKey
       }}
     >
       {children}
