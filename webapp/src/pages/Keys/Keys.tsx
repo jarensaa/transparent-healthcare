@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Button, Popover, Position } from "@blueprintjs/core";
 import Web3Context from "../../context/Web3Context";
 import NewKeyPopoverContent from "./components/NewKeyPopoverContent";
-import Key from "../../dto/Key";
+import GeneratedKey from "../../types/GeneratedKey";
 import ImportKeyPopoverContent from "./components/ImportKeyPopoverContent";
 
 const KeyAreaWrapper = styled.div`
@@ -18,8 +18,8 @@ const KeyAreaWrapper = styled.div`
 
 const AreaGrid = styled.div`
   display: grid;
-  grid-template-rows: 60px 50px auto;
-  grid-template-columns: 200px, auto;
+  grid-template-rows: 80px 50px auto;
+  grid-template-columns: 200px auto;
   grid-template-areas:
     "title none"
     "buttons buttons"
@@ -34,7 +34,7 @@ const ButtonArea = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  margin-left: 10px;
+  margin-right: 10px;
 `;
 
 const Keys: FunctionComponent = () => {
@@ -48,7 +48,7 @@ const Keys: FunctionComponent = () => {
   const generateKeyCallback = (keyname: string) => {
     const keyPair = web3.eth.accounts.create();
 
-    const newKey: Key = {
+    const newKey: GeneratedKey = {
       description: keyname,
       address: keyPair.address,
       privateKey: keyPair.privateKey
@@ -59,7 +59,7 @@ const Keys: FunctionComponent = () => {
 
   return (
     <AreaGrid>
-      <h2>Keys</h2>
+      <h1>Keys</h1>
       <ButtonArea>
         <ButtonWrapper>
           <Popover

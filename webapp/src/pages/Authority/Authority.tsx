@@ -1,35 +1,27 @@
 import React, { useContext, Fragment, FunctionComponent } from "react";
-import { Button } from "@blueprintjs/core";
 import styled from "styled-components";
 import AuthorityContext from "../../context/AuthorityContext";
 import ProposalSummaryTable from "./components/ProposalSummaryTable";
 import AuthoritiesSummaryTable from "./components/AuthoritiesSummarayTable";
+import AddProposalButton from "./components/AddProposalButton";
 
-const AuthorityPageWrapper = styled.div`
+const AreaGrid = styled.div`
   display: grid;
-  gap: 30px;
-  grid-template-rows: auto auto;
-  grid-template-columns: auto auto;
+  grid-template-rows: 80px 50px auto auto;
+  grid-template-columns: 200px auto;
   grid-template-areas:
     "title none"
-    "authorities proposals";
-
-  @media only screen and (max-width: 1650px) {
-    grid-template-rows: auto;
-    grid-template-columns: auto auto auto;
-    grid-template-areas:
-      "title"
-      "authorities"
-      "proposals";
-  }
+    "buttons buttons"
+    "authorities authorities"
+    "proposals proposals";
 `;
 
 const ProposalsTile = styled.div`
   grid-area: proposals;
 `;
 
-const TitleTile = styled.div`
-  grid-area: title;
+const ButtonTile = styled.div`
+  grid-area: buttons;
 `;
 
 const AuthoritiesTile = styled.div`
@@ -41,11 +33,11 @@ const Authority: FunctionComponent = () => {
 
   return (
     <Fragment>
-      <AuthorityPageWrapper>
-        <TitleTile>
-          <h2>Authority</h2>
-          <Button text={"select key"} />
-        </TitleTile>
+      <AreaGrid>
+        <h1>Authority</h1>
+        <ButtonTile>
+          <AddProposalButton />
+        </ButtonTile>
         <AuthoritiesTile>
           <h2>Authorities</h2>
           <AuthoritiesSummaryTable authorities={authorityContext.authorities} />
@@ -54,7 +46,7 @@ const Authority: FunctionComponent = () => {
           <h2>Proposals</h2>
           <ProposalSummaryTable proposals={authorityContext.proposalEvents} />
         </ProposalsTile>
-      </AuthorityPageWrapper>
+      </AreaGrid>
     </Fragment>
   );
 };

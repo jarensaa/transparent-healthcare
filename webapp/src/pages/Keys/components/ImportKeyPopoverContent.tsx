@@ -13,7 +13,7 @@ import {
   Button,
   Classes
 } from "@blueprintjs/core";
-import Key from "../../../dto/Key";
+import GeneratedKey from "../../../types/GeneratedKey";
 import Web3Context from "../../../context/Web3Context";
 
 const Wrapper = styled.div`
@@ -28,7 +28,7 @@ const MarginWrapper = styled.div`
 `;
 
 interface NewKeyProps {
-  callback: (key: Key) => void;
+  callback: (key: GeneratedKey) => void;
 }
 
 const ImportKeyPopoverContent: FunctionComponent<NewKeyProps> = ({

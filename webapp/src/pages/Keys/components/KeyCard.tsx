@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
-import Key from "../../../dto/Key";
 import { Card, HTMLTable } from "@blueprintjs/core";
 import styled from "styled-components";
+import Key from "../../../types/Key";
 
 interface KeyCardProps {
   keyPair: Key;
@@ -37,10 +37,6 @@ const KeyCard: FunctionComponent<KeyCardProps> = ({ keyPair }) => {
             <tr>
               <th>Address</th>
               <WrappingTableData>{keyPair.address}</WrappingTableData>
-            </tr>
-            <tr>
-              <th>Private key</th>
-              <WrappingTableData>{keyPair.privateKey}</WrappingTableData>
             </tr>
           </tbody>
         </HTMLTable>
