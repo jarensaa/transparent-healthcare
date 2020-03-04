@@ -31,4 +31,9 @@ public class AccountController {
     public KeyMessage getAuthorityAccount() {
         return accountService.getAuthorityKey();
     }
+
+    @GetMapping("/create")
+    public KeyMessage getNewGeneratedKey() throws Exception {
+        return accountService.getNewGeneratedKey();
+    }
 }

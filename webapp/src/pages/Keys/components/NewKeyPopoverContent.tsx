@@ -1,12 +1,13 @@
 import React, { FunctionComponent, useState, ChangeEvent } from "react";
 import styled from "styled-components";
 import { Intent, InputGroup, Button, Classes } from "@blueprintjs/core";
+import AuthorizationKey from "../../../dto/KeyAuthorization";
 
 const Wrapper = styled.div`
   padding: 20px;
   background-color: white;
   min-height: 100px;
-  width: 200px;
+  width: 250px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -14,10 +15,14 @@ const ButtonWrapper = styled.div`
 `;
 
 interface NewKeyProps {
-  callback: (keyname: string) => void;
+  localGenerateCallback: (keyname: string) => void;
+  serverGenerateCallback: (keyname: string) => void;
 }
 
-const NewKeyPopoverContent: FunctionComponent<NewKeyProps> = ({ callback }) => {
+const NewKeyPopoverContent: FunctionComponent<NewKeyProps> = ({
+  localGenerateCallback,
+  serverGenerateCallback
+}) => {
   const [keyname, setKeyName] = useState<string>("");
 
   return (
@@ -32,11 +37,20 @@ const NewKeyPopoverContent: FunctionComponent<NewKeyProps> = ({ callback }) => {
       <ButtonWrapper>
         <Button
           className={Classes.POPOVER_DISMISS}
-          onClick={() => callback(keyname)}
+          onClick={() => localGenerateCallback(keyname)}
           intent={Intent.SUCCESS}
         >
-          Generate key
+          Generate key locally
         </Button>
+        <ButtonWrapper>
+          <Button
+            className={Classes.POPOVER_DISMISS}
+            onClick={() => serverGenerateCallback(keyname)}
+            intent={Intent.SUCCESS}
+          >
+            Generate key at provider
+          </Button>
+        </ButtonWrapper>
       </ButtonWrapper>
     </Wrapper>
   );

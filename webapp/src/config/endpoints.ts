@@ -11,7 +11,8 @@ const endpoints = {
   },
   accounts: {
     base: config.serverUrl + "/accounts",
-    authority: config.serverUrl + "/accounts/authority"
+    authority: config.serverUrl + "/accounts/authority",
+    generate: config.serverUrl + "/accounts/create"
   }
 };
 

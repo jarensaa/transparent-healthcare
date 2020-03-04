@@ -7,6 +7,7 @@ import Web3Context from "../../context/Web3Context";
 import NewKeyPopoverContent from "./components/NewKeyPopoverContent";
 import GeneratedKey from "../../types/GeneratedKey";
 import ImportKeyPopoverContent from "./components/ImportKeyPopoverContent";
+import useAccountApi from "../../hooks/useAccountApi";
 
 const KeyAreaWrapper = styled.div`
   display: flex;
@@ -40,12 +41,13 @@ const ButtonWrapper = styled.div`
 const Keys: FunctionComponent = () => {
   const { keys, addKey } = useContext(KeyContext);
   const { web3 } = useContext(Web3Context);
+  const { getNewGeneratedKey } = useAccountApi();
 
   const keyListing = keys.map((key, index) => (
     <KeyCard key={index} keyPair={key} />
   ));
 
-  const generateKeyCallback = (keyname: string) => {
+  const generateLocalKeyCallback = (keyname: string) => {
     const keyPair = web3.eth.accounts.create();
 
     const newKey: GeneratedKey = {
@@ -57,13 +59,25 @@ const Keys: FunctionComponent = () => {
     addKey(newKey);
   };
 
+  const generateServerKeyCallback = (keyname: string) => {
+    getNewGeneratedKey().then(key => {
+      key.description = keyname;
+      addKey(key);
+    });
+  };
+
   return (
     <AreaGrid>
       <h1>Keys</h1>
       <ButtonArea>
         <ButtonWrapper>
           <Popover
-            content={<NewKeyPopoverContent callback={generateKeyCallback} />}
+            content={
+              <NewKeyPopoverContent
+                serverGenerateCallback={generateServerKeyCallback}
+                localGenerateCallback={generateLocalKeyCallback}
+              />
+            }
             position={Position.BOTTOM_LEFT}
             hasBackdrop
           >
