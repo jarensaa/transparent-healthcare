@@ -91,7 +91,6 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
       fetch(endpoints.accounts.authority)
         .then(res => res.json())
         .then((res: AuthorizationKey) => {
-          console.log(res);
           res.description = "Original authority key";
           setKeys(keys => [...keys, res]);
         });
