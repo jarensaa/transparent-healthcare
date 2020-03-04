@@ -4,6 +4,7 @@ type ProposalEvent = {
   type: number;
   id?: number;
   voters?: string[];
+  isActive?: boolean;
 };
 
 export default ProposalEvent;

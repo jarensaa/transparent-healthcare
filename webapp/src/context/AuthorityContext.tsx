@@ -72,6 +72,10 @@ const AuthorityContextProvider: FunctionComponent = ({ children }) => {
   useEffect(() => {
     fetch(endpoints.authority.proposals)
       .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        return res;
+      })
       .then((res: ProposalEvent[]) =>
         addToAuthorityState({ proposalEvents: res })
       );

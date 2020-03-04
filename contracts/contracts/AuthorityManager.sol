@@ -100,13 +100,14 @@ contract AuthorityManager is IAuthorization {
     function getProposal(uint256 _proposalID)
         external
         view
-        returns (uint256, address, address[] memory)
+        returns (uint256, address, address[] memory, bool)
     {
-        require(proposals[_proposalID].isActive, "No active proposal");
+        require(_proposalID <= proposalCount, "No such proposal created");
         return (
             proposals[_proposalID].proposalType,
             proposals[_proposalID].target,
-            proposals[_proposalID].voters
+            proposals[_proposalID].voters,
+            proposals[_proposalID].isActive
         );
     }
 

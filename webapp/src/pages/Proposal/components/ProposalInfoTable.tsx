@@ -24,6 +24,10 @@ const ProposalInfoTable: FunctionComponent<ProposalInfoTableProps> = ({
           <td>{proposal.id ? proposal.id : "none"}</td>
         </tr>
         <tr>
+          <th>Enacted</th>
+          <td>{proposal.isActive ? "No" : "Yes"}</td>
+        </tr>
+        <tr>
           <th>Type</th>
           <td>{getStringFormatedProposalType(proposal.type)}</td>
         </tr>

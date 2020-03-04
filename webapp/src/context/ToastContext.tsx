@@ -1,6 +1,5 @@
-import React, { FunctionComponent, useState } from "react";
-import { Toaster, Toast, Position, Button, Intent } from "@blueprintjs/core";
-import { show } from "@blueprintjs/core/lib/esm/components/context-menu/contextMenu";
+import React, { FunctionComponent } from "react";
+import { Toaster, Position, Intent } from "@blueprintjs/core";
 
 type ToastContextProps = {
   showSuccess(message: string): void;

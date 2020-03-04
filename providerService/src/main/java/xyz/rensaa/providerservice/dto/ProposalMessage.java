@@ -23,6 +23,9 @@ public interface ProposalMessage {
     @JsonProperty("type")
     Integer proposalType();
 
+    @JsonProperty("isActive")
+    Optional<Boolean> isActive();
+
     @JsonProperty("id")
     Optional<Integer> id();
 

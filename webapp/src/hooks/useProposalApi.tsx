@@ -7,6 +7,8 @@ import ToastContext from "../context/ToastContext";
 
 type ProposalApi = {
   postProposal(target: string, type: number): Promise<boolean>;
+  voteOnProposal(id: number): Promise<boolean>;
+  enactProposal(id: number): Promise<boolean>;
 };
 
 const useProposalApi = (): ProposalApi => {
@@ -50,7 +52,38 @@ const useProposalApi = (): ProposalApi => {
     return true;
   };
 
-  return { postProposal: postProposal };
+  const voteOnProposal = async (id: number) => {
+    if (!activeKey) {
+      showFailure("No active key set");
+      return false;
+    }
+
+    if (!isAuthorizationKey(activeKey)) {
+      showFailure("The selected key is not a authorization key");
+      return false;
+    }
+
+    return true;
+  };
+
+  const enactProposal = async (id: number) => {
+    if (!activeKey) {
+      showFailure("No active key set");
+      return false;
+    }
+
+    if (!isAuthorizationKey(activeKey)) {
+      showFailure("The selected key is not a authorization key");
+      return false;
+    }
+    return true;
+  };
+
+  return {
+    postProposal: postProposal,
+    enactProposal: enactProposal,
+    voteOnProposal: voteOnProposal
+  };
 };
 
 export default useProposalApi;

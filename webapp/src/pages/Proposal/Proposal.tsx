@@ -3,23 +3,25 @@ import { useParams } from "react-router-dom";
 import AuthorityContext from "../../context/AuthorityContext";
 import ProposalEvent from "../../dto/ProposalEvent";
 import styled from "styled-components";
-import { Spinner } from "@blueprintjs/core";
+import { Spinner, Button, Intent } from "@blueprintjs/core";
 import ProposalInfoTable from "./components/ProposalInfoTable";
 import VotersTable from "./components/VotersTable";
+import KeyContext from "../../context/KeyContext";
+import ToastContext from "../../context/ToastContext";
+import useProposalApi from "../../hooks/useProposalApi";
 
 const ProposalPanel = styled.div`
   display: grid;
   gap: 10px;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 50px 80px auto auto;
+  grid-template-rows: auto auto auto;
   grid-template-areas:
     "title none"
-    "text none"
-    "info voters"
-    "vote voters";
+    "actions none"
+    "info voters";
 `;
 
-const Title = styled.h1`
+const HeaderArea = styled.div`
   grid-area: title;
 `;
 
@@ -31,23 +33,24 @@ const VotersPanel = styled.div`
   grid-area: voters;
 `;
 
-const DescriptionArea = styled.div`
-  grid-area: text;
+const ActionsPanel = styled.div`
+  grid-area: actions;
 `;
 
-const VotePanel = styled.div`
-  grid-area: vote;
+const MarginWrapper = styled.a`
+  margin-right: 10px;
 `;
 
 const Proposal = (): JSX.Element => {
   const { proposalId } = useParams();
-  const authorityContext = useContext(AuthorityContext);
-  const [proposal, setProposal] = useState<ProposalEvent>();
+  const { proposalEventsMap, authorities } = useContext(AuthorityContext);
+  const { activeKey } = useContext(KeyContext);
+  const { showFailure } = useContext(ToastContext);
+  const { enactProposal, voteOnProposal } = useProposalApi();
 
-  useEffect(() => {
-    const proposalIntId = Number(proposalId);
-    setProposal(authorityContext.proposalEventsMap.get(proposalIntId));
-  }, [proposalId, authorityContext]);
+  const proposal = proposalId
+    ? proposalEventsMap.get(Number(proposalId))
+    : undefined;
 
   if (proposal === undefined)
     return (
@@ -56,21 +59,74 @@ const Proposal = (): JSX.Element => {
       </Fragment>
     );
 
+  const isAuthority = activeKey?.address
+    ? authorities.includes(activeKey.address)
+    : false;
+
+  const voters = proposal.voters ? proposal.voters : [];
+
+  const hasVoted = activeKey?.address
+    ? voters.includes(activeKey.address)
+    : false;
+
+  const isEnacted = proposal.isActive ? !proposal.isActive : false;
+
+  const clickVoteButton = () => {
+    if (!isAuthority) {
+      showFailure(
+        "The selected key is not an authority, and therefore cannot vote."
+      );
+      return;
+    }
+
+    if (hasVoted) {
+      showFailure("You have allready voted on this proposal");
+    }
+
+    if (proposalId) voteOnProposal(Number(proposalId));
+  };
+
+  const clickEnactButton = () => {
+    if (isEnacted) {
+      showFailure("Proposal is allready enacted");
+      return;
+    }
+    if (proposalId) enactProposal(Number(proposalId));
+  };
+
   return (
     <ProposalPanel>
-      <Title>Proposal</Title>
-      <DescriptionArea>
-        This page shows the proposal on the blockchain. If you have a key for a
-        trusted authority, you may vote on the proposal. If the vote is above
-        the threshold to be enacted, you can do so on this page as well.
-      </DescriptionArea>
+      <HeaderArea>
+        <h1>Proposal</h1>
+        Proposal This page shows the proposal on the blockchain. If you have a
+        key for a trusted authority, you may vote on the proposal. If the vote
+        is above the threshold to be enacted, you can do so on this page as
+        well.
+      </HeaderArea>
+
+      <ActionsPanel>
+        <h2>Actions</h2>
+        <MarginWrapper>
+          <Button
+            intent={hasVoted ? Intent.NONE : Intent.PRIMARY}
+            active={hasVoted}
+            onClick={clickVoteButton}
+          >
+            Vote on proposal
+          </Button>
+        </MarginWrapper>
+        <Button
+          active={isEnacted}
+          intent={isEnacted ? Intent.NONE : Intent.PRIMARY}
+          onClick={clickEnactButton}
+        >
+          Enact proposal
+        </Button>
+      </ActionsPanel>
       <InfoPanel>
         <h2>Info</h2>
         <ProposalInfoTable proposal={proposal} />
       </InfoPanel>
-      <VotePanel>
-        <h2>Actions</h2>
-      </VotePanel>
       <VotersPanel>
         <h2>Voters</h2>
         <VotersTable proposal={proposal} />

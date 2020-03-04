@@ -57,6 +57,7 @@ public class AuthorityService {
         proposals.add(ImmutableProposalMessage.builder()
             .id(i)
             .proposalType(proposal.component1().intValue())
+            .isActive(proposal.component4())
             .subject(proposal.component2())
             .proposer(proposal.component3().get(0))
             .voters(proposal.component3())
