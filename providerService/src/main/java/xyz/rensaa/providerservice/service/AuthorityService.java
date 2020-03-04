@@ -70,7 +70,7 @@ public class AuthorityService {
     return proposals;
   }
 
-  public boolean proposeAuthority(ProposalMessage propsal) {
+  public boolean proposeAuthority(ProposalMessage propsal, String privateKey) {
     try {
       authorityManager.propose(BigInteger.valueOf(propsal.proposalType().longValue()), propsal.subject()).send();
       return true;

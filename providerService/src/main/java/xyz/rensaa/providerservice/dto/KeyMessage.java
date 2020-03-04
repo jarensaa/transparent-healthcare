@@ -10,11 +10,8 @@ import org.immutables.value.Value;
 @JsonSerialize(as = ImmutableKeyMessage.class)
 public interface KeyMessage {
 
-  @JsonProperty("privateKey")
-  String privateKey();
-
-  @JsonProperty("publicKey")
-  String publicKey();
+  @JsonProperty("usageToken")
+  String token();
 
   @JsonProperty("address")
   String address();

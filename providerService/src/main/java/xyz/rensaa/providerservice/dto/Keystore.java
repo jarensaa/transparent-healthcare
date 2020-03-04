@@ -1,4 +1,4 @@
-package xyz.rensaa.providerservice.model;
+package xyz.rensaa.providerservice.dto;
 
 import org.immutables.value.Value;
 import org.web3j.crypto.Credentials;

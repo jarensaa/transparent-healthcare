@@ -21,10 +21,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.web3j:core:4.5.5'
 	implementation 'org.web3j:codegen:4.5.14'
 	implementation 'com.palantir.safe-logging:safe-logging:1.13.0'
 	implementation 'com.palantir.safe-logging:preconditions:1.13.0'
+	implementation 'com.h2database:h2:1.4.200'
 
 	compileOnly("org.immutables:value-annotations:2.8.2")
 	annotationProcessor("org.immutables:value:2.8.2")

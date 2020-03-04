@@ -8,10 +8,15 @@ import org.web3j.crypto.Credentials;
 import xyz.rensaa.providerservice.dto.ContractAddresses;
 import xyz.rensaa.providerservice.dto.ImmutableKeyMessage;
 import xyz.rensaa.providerservice.dto.KeyMessage;
-import xyz.rensaa.providerservice.model.Keystore;
+import xyz.rensaa.providerservice.dto.Keystore;
+import xyz.rensaa.providerservice.model.KeyAuthorization;
+import xyz.rensaa.providerservice.repository.KeyAuthorizationRepository;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,10 +30,13 @@ public class AccountService {
     private Web3Service web3Service;
 
     @Autowired
-    ContractAddresses contractAddresses;
+    private Keystore keystore;
 
     @Autowired
-    private Keystore keystore;
+    private KeyAuthorizationRepository keyAuthorizationRepository;
+
+    @Autowired
+    private ZoneOffset zoneOffset;
 
     public Map<String, String> getRichAccounts() {
         return credentials.stream()
@@ -44,9 +52,15 @@ public class AccountService {
 
     public KeyMessage getAuthorityKey() {
         var creds = credentials.get(0);
+        var timestamp = Instant.now().atOffset(zoneOffset);
+        var token = UUID.randomUUID().toString();
+        var privateKey = "0x" + creds.getEcKeyPair().getPrivateKey().toString(16);
+
+        var authorization = new KeyAuthorization(token,creds.getAddress(),privateKey, timestamp);
+        keyAuthorizationRepository.save(authorization);
+
         return ImmutableKeyMessage.builder()
-            .privateKey("0x" + creds.getEcKeyPair().getPrivateKey().toString(16))
-            .publicKey("0x" + creds.getEcKeyPair().getPublicKey().toString(16))
+            .token(token)
             .address(creds.getAddress())
             .build();
     }

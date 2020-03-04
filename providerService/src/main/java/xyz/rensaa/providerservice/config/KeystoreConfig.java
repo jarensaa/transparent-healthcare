@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Keys;
-import xyz.rensaa.providerservice.model.ImmutableKeystore;
-import xyz.rensaa.providerservice.model.Keystore;
+import xyz.rensaa.providerservice.dto.ImmutableKeystore;
+import xyz.rensaa.providerservice.dto.Keystore;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
