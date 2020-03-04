@@ -1,6 +1,8 @@
 import React, { useState, FunctionComponent, useEffect } from "react";
 import endpoints from "../config/endpoints";
 import Key from "../types/Key";
+import GeneratedKey, { isGeneratedKey } from "../types/GeneratedKey";
+import AuthorizationKey, { isAuthorizationKey } from "../dto/KeyAuthorization";
 
 type KeyContext = {
   keys: Key[];
@@ -21,7 +23,17 @@ const KeyContext = React.createContext<KeyContext>({
 
 const serializeKeys = (keys: Key[]): string => {
   return keys
-    .map(key => key.address + (key.description ? ";" + key.description : ""))
+    .map(key => {
+      const description = key.description ? key.description : key.address;
+      if (isGeneratedKey(key)) {
+        return `generated;${key.address};${key.privateKey};${description}`;
+      } else if (isAuthorizationKey(key)) {
+        return `authorization;${key.address};${key.token};${description}`;
+      }
+
+      return "";
+    })
+    .filter(serialization => serialization.length > 30)
     .join(",");
 };
 
@@ -34,14 +46,27 @@ const deserializeKeys = (serlializedKeys: string): Key[] => {
     .map(keyString => keyString.split(";"))
     .map(
       (keyParts): Key => {
-        const key: Key = {
-          address: keyParts[0]
-        };
-        if (keyParts[1]) {
-          key.description = keyParts[1];
+        if (keyParts[0] === "generated") {
+          const key: GeneratedKey = {
+            address: keyParts[1],
+            privateKey: keyParts[2],
+            description: keyParts[3]
+          };
+          return key;
         }
 
-        return key;
+        if (keyParts[0] === "authorization") {
+          const key: AuthorizationKey = {
+            address: keyParts[1],
+            token: keyParts[2],
+            description: keyParts[3]
+          };
+          return key;
+        }
+        return {
+          address: keyParts[1],
+          description: keyParts[2]
+        };
       }
     );
 };
@@ -65,7 +90,8 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
     if (isOriginalAuthrority) {
       fetch(endpoints.accounts.authority)
         .then(res => res.json())
-        .then((res: Key) => {
+        .then((res: AuthorizationKey) => {
+          console.log(res);
           res.description = "Original authority key";
           setKeys(keys => [...keys, res]);
         });

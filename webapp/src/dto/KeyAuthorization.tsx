@@ -1,7 +1,13 @@
 import Key from "../types/Key";
 
-interface KeyAuthorization extends Key {
+interface AuthorizationKey extends Key {
   token: string;
 }
 
-export default KeyAuthorization;
+const isAuthorizationKey = (key: Key): key is AuthorizationKey => {
+  if ((key as AuthorizationKey).token) return true;
+  return false;
+};
+
+export { isAuthorizationKey };
+export default AuthorizationKey;
