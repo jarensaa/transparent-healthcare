@@ -63,6 +63,19 @@ const useProposalApi = (): ProposalApi => {
       return false;
     }
 
+    const response = await fetch(endpoints.authority.voteOnProposal(id), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + activeKey.token
+      }
+    });
+
+    if (response.ok) {
+      showSuccess("Successfully voted on proposal");
+    }
+
     return true;
   };
 
@@ -76,6 +89,20 @@ const useProposalApi = (): ProposalApi => {
       showFailure("The selected key is not a authorization key");
       return false;
     }
+
+    const response = await fetch(endpoints.authority.enactProposal(id), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + activeKey.token
+      }
+    });
+
+    if (response.ok) {
+      showSuccess("Successfully enacted proposal");
+    }
+
     return true;
   };
 

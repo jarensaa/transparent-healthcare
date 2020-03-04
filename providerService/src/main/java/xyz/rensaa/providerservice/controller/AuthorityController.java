@@ -8,6 +8,7 @@ import xyz.rensaa.providerservice.dto.ProposalMessage;
 import xyz.rensaa.providerservice.exceptions.UnauthorizedException;
 import xyz.rensaa.providerservice.repository.KeyAuthorizationRepository;
 import xyz.rensaa.providerservice.service.AuthorityService;
+import xyz.rensaa.providerservice.service.KeyRepositoryService;
 
 import javax.naming.AuthenticationException;
 import java.nio.file.AccessDeniedException;
@@ -21,7 +22,7 @@ public class AuthorityController {
   private AuthorityService authorityService;
 
   @Autowired
-  private KeyAuthorizationRepository keyAuthorizationRepository;
+  private KeyRepositoryService keyRepositoryService;
 
   @GetMapping()
   public List<String> getAuthorities() {
@@ -42,10 +43,24 @@ public class AuthorityController {
   @PostMapping("/proposals")
   public boolean propose(@RequestBody ProposalMessage propsal,
                          @RequestHeader("Authorization") String bearerToken) {
-    var token = bearerToken.substring(7);
-    var storedAuthorization = keyAuthorizationRepository.findById(token).orElseThrow(UnauthorizedException::new);
+    var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
     if(!propsal.proposer().equals(storedAuthorization.getAddress())) throw new UnauthorizedException();
     authorityService.proposeAuthority(propsal, storedAuthorization.getPrivateKey());
     return true;
   }
+
+  @PostMapping("/proposals/{proposalId}/vote")
+  public boolean voteOnProposal(@PathVariable("proposalId") int proposalId,
+                                @RequestHeader("Authorization") String bearerToken) {
+    var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+    return authorityService.voteOnProposal(proposalId, storedAuthorization.getPrivateKey());
+  }
+
+  @PostMapping("/proposals/{proposalId}/enact")
+  public boolean enactProposal(@PathVariable("proposalId") int proposalId,
+                                @RequestHeader("Authorization") String bearerToken) {
+    var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+    return authorityService.enactProposal(proposalId, storedAuthorization.getPrivateKey());
+  }
+
 }

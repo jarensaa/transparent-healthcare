@@ -2,11 +2,9 @@ package xyz.rensaa.providerservice.service;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.web3j.crypto.Credentials;
 import xyz.rensaa.providerservice.AuthorityManager;
+import xyz.rensaa.providerservice.contracts.AuthorityManagerFactory;
 import xyz.rensaa.providerservice.dto.ImmutableProposalMessage;
 import xyz.rensaa.providerservice.dto.ProposalMessage;
 
@@ -18,21 +16,18 @@ import java.util.List;
 public class AuthorityService {
 
   @Autowired
-  private AuthorityManager authorityManager;
+  private AuthorityManager defaultAuthorityManager;
 
   @Autowired
-  @Qualifier("originalCredentials")
-  private List<Credentials> credentials;
-
-  @Autowired
-  private SimpMessagingTemplate template;
+  private AuthorityManagerFactory authorityManagerFactory;
 
   @Autowired
   private Logger logger;
 
+
   public boolean isAuthorized(String address) {
     try {
-      return authorityManager.isAuthorized(address).send();
+      return defaultAuthorityManager.isAuthorized(address).send();
     } catch (Exception e) {
       logger.error("Could not process Authority.isAuthorized transaction", e);
     }
@@ -41,7 +36,7 @@ public class AuthorityService {
 
   public List<String> getAuthorities() {
     try {
-      return authorityManager.getAuthorities().send();
+      return defaultAuthorityManager.getAuthorities().send();
     } catch (Exception e) {
       logger.error("Could not fetch authorities", e);
     }
@@ -51,18 +46,22 @@ public class AuthorityService {
   public List<ProposalMessage> getProposals() {
     var proposals = new ArrayList<ProposalMessage>();
     try {
-      int numProposals = authorityManager.getProposalCount().send().intValue();
+      int numProposals = defaultAuthorityManager.getProposalCount().send().intValue();
       for (int i = 1; i <= numProposals; i++) {
-        var proposal = authorityManager.getProposal(BigInteger.valueOf(i)).send();
-        proposals.add(ImmutableProposalMessage.builder()
-            .id(i)
-            .proposalType(proposal.component1().intValue())
-            .isActive(proposal.component4())
-            .subject(proposal.component2())
-            .proposer(proposal.component3().get(0))
-            .voters(proposal.component3())
-            .build()
-        );
+        var proposal = defaultAuthorityManager.getProposal(BigInteger.valueOf(i)).send();
+
+        //If the proposal is active, we return it.
+        if(proposal.component4()) {
+          proposals.add(ImmutableProposalMessage.builder()
+              .id(i)
+              .proposalType(proposal.component1().intValue())
+              .isActive(proposal.component4())
+              .subject(proposal.component2())
+              .proposer(proposal.component3().get(0))
+              .voters(proposal.component3())
+              .build()
+          );
+        }
 
       }
     } catch (Exception e) {
@@ -73,7 +72,9 @@ public class AuthorityService {
 
   public boolean proposeAuthority(ProposalMessage propsal, String privateKey) {
     try {
-      authorityManager.propose(BigInteger.valueOf(propsal.proposalType().longValue()), propsal.subject()).send();
+      authorityManagerFactory
+          .fromPrivateKey(privateKey)
+          .propose(BigInteger.valueOf(propsal.proposalType().longValue()), propsal.subject()).send();
       return true;
     } catch (Exception e) {
       logger.error("Count not send proposal", e);
@@ -82,8 +83,26 @@ public class AuthorityService {
     return propsal.id().isEmpty();
   }
 
-  public String getOriginalAuthorityAddress() {
-    return credentials.get(0).getAddress();
+  public boolean voteOnProposal(int proposalId, String privateKey) {
+    try {
+      authorityManagerFactory
+          .fromPrivateKey(privateKey)
+          .voteOnProposal(BigInteger.valueOf(proposalId)).send();
+    } catch (Exception e) {
+      logger.error("Count not vote on proposal", e);
+    }
+    return true;
+  }
+
+  public boolean enactProposal(int proposalId, String privateKey)  {
+    try {
+      authorityManagerFactory
+          .fromPrivateKey(privateKey)
+          .enactProposal(BigInteger.valueOf(proposalId)).send();
+    } catch (Exception e) {
+      logger.error("Count not enact proposal", e);
+    }
+    return true;
   }
 
 }
