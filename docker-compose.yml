@@ -25,6 +25,7 @@ services:
       - ADDRESSES_PATH=./shared/addresses.json
       - BLOCKCHAIN_URI=http://blockchain:8545
       - CONTRACT_DIRECTORY=./shared/contracts
+      - DATABASE_PATH=/db
     volumes:
       - ./shared/:/shared/
     command: ./wait-for-it.sh -s blockchain:8545 -- bash -c 'until [[ $$(wc -l < shared/addresses.json) -ge 6 ]]; do sleep 1; done; ./gradlew bootRun'
