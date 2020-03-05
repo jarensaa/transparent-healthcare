@@ -22,7 +22,7 @@ const WrappingTableData = styled.td`
 `;
 
 const TableWrapper = styled.div`
-  height: 130px;
+  height: 150px;
   width: 410px;
 `;
 

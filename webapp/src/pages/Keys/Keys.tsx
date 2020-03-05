@@ -2,13 +2,8 @@ import React, { useContext, FunctionComponent } from "react";
 import KeyContext from "../../context/KeyContext";
 import KeyCard from "./components/KeyCard";
 import styled from "styled-components";
-import { Button, Popover, Position } from "@blueprintjs/core";
-import Web3Context from "../../context/Web3Context";
-import NewKeyPopoverContent from "./components/NewKeyPopoverContent";
-import GeneratedKey from "../../types/GeneratedKey";
-import ImportKeyPopoverContent from "./components/ImportKeyPopoverContent";
-import useAccountApi from "../../hooks/useAccountApi";
 import SendFundsPanel from "./components/SendFundsPanel";
+import AddKeyCard from "./components/AddKeyCard";
 
 const KeyAreaWrapper = styled.div`
   display: flex;
@@ -25,12 +20,16 @@ const AreaGrid = styled.div`
   grid-template-areas:
     "title none"
     "send send"
-    "buttons buttons"
+    "keystitle keystitle"
     "keys keys";
 `;
 
-const ButtonArea = styled.div`
-  grid-area: buttons;
+const KeysTitle = styled.div`
+  grid-area: keystitle;
+`;
+
+const KeysTitleHeader = styled.h2`
+  margin-top: 50px;
 `;
 
 const SendWrapper = styled.div`
@@ -40,41 +39,12 @@ const SendWrapper = styled.div`
   max-width: 1000px;
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 200px;
-  margin-bottom: 20px;
-`;
-
 const Keys: FunctionComponent = () => {
-  const { keys, addKey, balances } = useContext(KeyContext);
-  const { web3 } = useContext(Web3Context);
-  const { getNewGeneratedKey } = useAccountApi();
+  const { keys, balances } = useContext(KeyContext);
 
   const keyListing = keys.map((key, index) => (
     <KeyCard key={index} keyPair={key} balances={balances} />
   ));
-
-  const generateLocalKeyCallback = (keyname: string) => {
-    const keyPair = web3.eth.accounts.create();
-
-    const newKey: GeneratedKey = {
-      description: keyname,
-      address: keyPair.address,
-      privateKey: keyPair.privateKey
-    };
-
-    addKey(newKey);
-  };
-
-  const generateServerKeyCallback = (keyname: string) => {
-    getNewGeneratedKey().then(key => {
-      key.description = keyname;
-      addKey(key);
-    });
-  };
 
   return (
     <AreaGrid>
@@ -82,31 +52,13 @@ const Keys: FunctionComponent = () => {
       <SendWrapper>
         <SendFundsPanel />
       </SendWrapper>
-      <ButtonArea>
-        <h2>Key management</h2>
-        <ButtonWrapper>
-          <Popover
-            content={
-              <NewKeyPopoverContent
-                serverGenerateCallback={generateServerKeyCallback}
-                localGenerateCallback={generateLocalKeyCallback}
-              />
-            }
-            position={Position.BOTTOM_LEFT}
-            hasBackdrop
-          >
-            <Button intent={"primary"}>Generate key</Button>
-          </Popover>
-          <Popover
-            content={<ImportKeyPopoverContent callback={addKey} />}
-            position={Position.BOTTOM_LEFT}
-            hasBackdrop
-          >
-            <Button intent={"primary"}>Import key</Button>
-          </Popover>
-        </ButtonWrapper>
-      </ButtonArea>
-      <KeyAreaWrapper>{keyListing}</KeyAreaWrapper>
+      <KeysTitle>
+        <KeysTitleHeader>Key management</KeysTitleHeader>
+      </KeysTitle>
+      <KeyAreaWrapper>
+        {keyListing}
+        <AddKeyCard />
+      </KeyAreaWrapper>
     </AreaGrid>
   );
 };

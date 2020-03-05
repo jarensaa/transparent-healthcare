@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { Button, Colors, Switch, MenuItem } from "@blueprintjs/core";
 import KeyContext from "../../../context/KeyContext";
 import { Select, ItemRenderer, ItemPredicate } from "@blueprintjs/select";
-import GeneratedKey from "../../../types/GeneratedKey";
 import highlightText from "./highlighttext";
 import Key from "../../../types/Key";
 
