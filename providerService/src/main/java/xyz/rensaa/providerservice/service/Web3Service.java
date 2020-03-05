@@ -9,6 +9,7 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -47,12 +48,20 @@ public class Web3Service {
     return new BigInteger(String.valueOf(-1));
   }
 
-  void sendEth(Credentials sendingCredentials, String toAddress, BigDecimal eth) {
+  void sendEth(String sendingPrivateKey, String toAddress, BigDecimal eth) {
     try {
-      Transfer.sendFunds(web3j,sendingCredentials,toAddress, eth, Convert.Unit.ETHER).send();
+      Transfer.sendFunds(web3j,Credentials.create(sendingPrivateKey),toAddress, eth, Convert.Unit.ETHER).send();
     } catch (Exception e) {
       logger.error("Send eth failed", e);
     }
+  }
+
+  String getBalance(String address) throws IOException {
+    return web3j
+        .ethGetBalance(address, DefaultBlockParameterName.LATEST)
+        .send()
+        .getBalance()
+        .toString();
   }
 
 }

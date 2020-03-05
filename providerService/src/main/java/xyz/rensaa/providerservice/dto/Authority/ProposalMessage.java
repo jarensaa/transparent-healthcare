@@ -1,4 +1,4 @@
-package xyz.rensaa.providerservice.dto;
+package xyz.rensaa.providerservice.dto.Authority;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

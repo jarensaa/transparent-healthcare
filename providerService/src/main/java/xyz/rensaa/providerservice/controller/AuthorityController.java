@@ -2,16 +2,12 @@ package xyz.rensaa.providerservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.web3j.crypto.WalletUtils;
-import xyz.rensaa.providerservice.dto.ProposalMessage;
+import xyz.rensaa.providerservice.dto.Authority.ProposalMessage;
 import xyz.rensaa.providerservice.exceptions.UnauthorizedException;
-import xyz.rensaa.providerservice.repository.KeyAuthorizationRepository;
 import xyz.rensaa.providerservice.service.AuthorityService;
 import xyz.rensaa.providerservice.service.KeyRepositoryService;
 
-import javax.naming.AuthenticationException;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController

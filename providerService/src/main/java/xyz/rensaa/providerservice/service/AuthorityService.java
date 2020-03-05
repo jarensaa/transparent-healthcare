@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.rensaa.providerservice.AuthorityManager;
 import xyz.rensaa.providerservice.contracts.AuthorityManagerFactory;
-import xyz.rensaa.providerservice.dto.ImmutableProposalMessage;
-import xyz.rensaa.providerservice.dto.ProposalMessage;
+import xyz.rensaa.providerservice.dto.Authority.ImmutableProposalMessage;
+import xyz.rensaa.providerservice.dto.Authority.ProposalMessage;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -81,6 +81,23 @@ public class AuthorityService {
     }
 
     return propsal.id().isEmpty();
+  }
+
+  public ProposalMessage getProposal(int id) throws Exception {
+    var response = defaultAuthorityManager.getProposal(BigInteger.valueOf(id)).send();
+
+    if(response.component4()) {
+      return ImmutableProposalMessage.builder()
+          .id(id)
+          .proposalType(response.component1().intValue())
+          .subject(response.component2())
+          .voters(response.component3())
+          .proposer(response.component3().get(0))
+          .isActive(response.component4())
+          .build();
+    }
+    return null;
+
   }
 
   public boolean voteOnProposal(int proposalId, String privateKey) {

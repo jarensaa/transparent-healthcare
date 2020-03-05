@@ -2,12 +2,11 @@ package xyz.rensaa.providerservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.rensaa.providerservice.dto.KeyMessage;
 import xyz.rensaa.providerservice.service.AccountService;
-
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,6 +29,11 @@ public class AccountController {
     @GetMapping("/authority")
     public KeyMessage getAuthorityAccount() {
         return accountService.getAuthorityKey();
+    }
+
+    @GetMapping("/{address}/balance")
+    public String isAuthorized(@PathVariable("address") String address) {
+      return "100";
     }
 
     @GetMapping("/create")

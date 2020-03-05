@@ -8,6 +8,7 @@ import StompContext from "./StompContext";
 import ProposalEvent from "../dto/ProposalEvent";
 import endpoints from "../config/endpoints";
 import topics from "../config/topics";
+import ProposalEnactedEvent from "../dto/ProposalEnactedEvent";
 
 type AuthorityContext = {
   authorities: string[];
@@ -18,6 +19,11 @@ type AuthorityContext = {
 type AuthorityContextUpdate = {
   proposalEvents?: ProposalEvent[];
   authorities?: string[];
+  proposalVoteUpdate?: {
+    id: number;
+    voters: string[];
+  };
+  proposalEnactedUpdate?: number;
 };
 
 const AuthorityContext = React.createContext<AuthorityContext>({
@@ -59,6 +65,33 @@ const AuthorityContextProvider: FunctionComponent = ({ children }) => {
         );
       }
 
+      if (params.proposalVoteUpdate) {
+        const proposalPrevState = updatedState.proposalEventsMap.get(
+          params.proposalVoteUpdate.id
+        );
+        if (proposalPrevState) {
+          proposalPrevState.voters = params.proposalVoteUpdate.voters;
+          updatedState.proposalEventsMap.set(
+            params.proposalVoteUpdate.id,
+            proposalPrevState
+          );
+        }
+      }
+
+      if (params.proposalEnactedUpdate) {
+        const prevState = updatedState.proposalEventsMap.get(
+          params.proposalEnactedUpdate
+        );
+
+        if (prevState) {
+          prevState.isActive = false;
+          updatedState.proposalEventsMap.set(
+            params.proposalEnactedUpdate,
+            prevState
+          );
+        }
+      }
+
       return updatedState;
     });
   };
@@ -82,9 +115,23 @@ const AuthorityContextProvider: FunctionComponent = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    stomp.watch(topics.proposals).subscribe(message => {
+    stomp.watch(topics.proposals.new).subscribe(message => {
       const proposal: ProposalEvent = JSON.parse(message.body);
       addToAuthorityState({ proposalEvents: [proposal] });
+    });
+    stomp.watch(topics.proposals.vote).subscribe(message => {
+      const proposal: ProposalEvent = JSON.parse(message.body);
+      addToAuthorityState({
+        proposalVoteUpdate: { id: proposal.id!, voters: proposal.voters! }
+      });
+    });
+    stomp.watch(topics.proposals.enacted).subscribe(message => {
+      const proposalEnactedEvent: ProposalEnactedEvent = JSON.parse(
+        message.body
+      );
+      addToAuthorityState({
+        proposalEnactedUpdate: proposalEnactedEvent.proposalId
+      });
     });
   }, [stomp]);
 

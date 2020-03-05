@@ -69,8 +69,6 @@ const Proposal = (): JSX.Element => {
     ? voters.includes(activeKey.address)
     : false;
 
-  const isEnacted = proposal.isActive ? !proposal.isActive : false;
-
   const clickVoteButton = () => {
     if (!isAuthority) {
       showFailure(
@@ -87,7 +85,7 @@ const Proposal = (): JSX.Element => {
   };
 
   const clickEnactButton = () => {
-    if (isEnacted) {
+    if (!proposal.isActive) {
       showFailure("Proposal is allready enacted");
       return;
     }
@@ -116,8 +114,8 @@ const Proposal = (): JSX.Element => {
           </Button>
         </MarginWrapper>
         <Button
-          active={isEnacted}
-          intent={isEnacted ? Intent.NONE : Intent.PRIMARY}
+          active={!proposal.isActive}
+          intent={proposal.isActive ? Intent.PRIMARY : Intent.NONE}
           onClick={clickEnactButton}
         >
           Enact proposal
