@@ -11,6 +11,7 @@ import xyz.rensaa.providerservice.dto.ContractAddresses;
 import xyz.rensaa.providerservice.dto.ImmutableKeyMessage;
 import xyz.rensaa.providerservice.dto.KeyMessage;
 import xyz.rensaa.providerservice.dto.Keystore;
+import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
 import xyz.rensaa.providerservice.model.KeyAuthorization;
 import xyz.rensaa.providerservice.repository.KeyAuthorizationRepository;
 
@@ -63,9 +64,14 @@ public class AccountService {
         return getKeyMessage(creds);
     }
 
-    public KeyMessage getNewGeneratedKey() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
-        var generatedCredentials = Credentials.create(Keys.createEcKeyPair(random));
-        return getKeyMessage(generatedCredentials);
+    public KeyMessage getNewGeneratedKey() {
+        try {
+            var generatedCredentials = Credentials.create(Keys.createEcKeyPair(random));
+            return getKeyMessage(generatedCredentials);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new TransactionFailedException();
+        }
 
     }
 

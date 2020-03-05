@@ -7,6 +7,7 @@ import xyz.rensaa.providerservice.AuthorityManager;
 import xyz.rensaa.providerservice.contracts.AuthorityManagerFactory;
 import xyz.rensaa.providerservice.dto.Authority.ImmutableProposalMessage;
 import xyz.rensaa.providerservice.dto.Authority.ProposalMessage;
+import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -39,8 +40,8 @@ public class AuthorityService {
       return defaultAuthorityManager.getAuthorities().send();
     } catch (Exception e) {
       logger.error("Could not fetch authorities", e);
+      throw new TransactionFailedException();
     }
-    return List.of();
   }
 
   public List<ProposalMessage> getProposals() {
@@ -66,6 +67,7 @@ public class AuthorityService {
       }
     } catch (Exception e) {
       logger.error("Could not get number of proposals");
+      throw new TransactionFailedException();
     }
     return proposals;
   }
@@ -78,24 +80,28 @@ public class AuthorityService {
       return true;
     } catch (Exception e) {
       logger.error("Count not send proposal", e);
+      throw new TransactionFailedException();
     }
-
-    return propsal.id().isEmpty();
   }
 
-  public ProposalMessage getProposal(int id) throws Exception {
-    var response = defaultAuthorityManager.getProposal(BigInteger.valueOf(id)).send();
-
-    if(response.component4()) {
-      return ImmutableProposalMessage.builder()
-          .id(id)
-          .proposalType(response.component1().intValue())
-          .subject(response.component2())
-          .voters(response.component3())
-          .proposer(response.component3().get(0))
-          .isActive(response.component4())
-          .build();
+  public ProposalMessage getProposal(int id) {
+    try {
+      var response = defaultAuthorityManager.getProposal(BigInteger.valueOf(id)).send();
+      if(response.component4()) {
+        return ImmutableProposalMessage.builder()
+            .id(id)
+            .proposalType(response.component1().intValue())
+            .subject(response.component2())
+            .voters(response.component3())
+            .proposer(response.component3().get(0))
+            .isActive(response.component4())
+            .build();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException();
     }
+
     return null;
 
   }
@@ -105,10 +111,11 @@ public class AuthorityService {
       authorityManagerFactory
           .fromPrivateKey(privateKey)
           .voteOnProposal(BigInteger.valueOf(proposalId)).send();
+      return true;
     } catch (Exception e) {
       logger.error("Count not vote on proposal", e);
+      throw new TransactionFailedException();
     }
-    return true;
   }
 
   public boolean enactProposal(int proposalId, String privateKey)  {
@@ -116,10 +123,11 @@ public class AuthorityService {
       authorityManagerFactory
           .fromPrivateKey(privateKey)
           .enactProposal(BigInteger.valueOf(proposalId)).send();
+      return true;
     } catch (Exception e) {
       logger.error("Count not enact proposal", e);
+      throw new TransactionFailedException();
     }
-    return true;
   }
 
 }

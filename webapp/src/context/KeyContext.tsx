@@ -8,17 +8,21 @@ type KeyContext = {
   keys: Key[];
   activeKey?: Key;
   isOriginalAuthority: boolean;
+  balances: Map<string, bigint>;
   addKey(keys: Key): void;
   toggleIsAuthority(): void;
   setActiveKey(key: Key): void;
+  refreshBalances(keys: string[]): void;
 };
 
 const KeyContext = React.createContext<KeyContext>({
   keys: [],
   isOriginalAuthority: false,
+  balances: new Map(),
   toggleIsAuthority: () => {},
   addKey: () => {},
-  setActiveKey: () => {}
+  setActiveKey: () => {},
+  refreshBalances: () => {}
 });
 
 const serializeKeys = (keys: Key[]): string => {
@@ -77,6 +81,44 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
   const [isOriginalAuthrority, setIsOriginalAuthority] = useState<boolean>(
     true
   );
+  const [balances, setBalances] = useState<Map<string, bigint>>(new Map());
+
+  const addKey = (key: Key): void => {
+    setKeys(previousKeyState => {
+      const localStorageState = localStorage.getItem("keys");
+      const localStorageKeys = localStorageState
+        ? deserializeKeys(localStorageState)
+        : [];
+
+      localStorage.setItem("keys", serializeKeys([...localStorageKeys, key]));
+      getKeyBalances([key.address]);
+      return [...previousKeyState, key];
+    });
+  };
+
+  const getKeyBalances = async (keys: string[]) => {
+    const newBalances = new Map<string, bigint>();
+    for (let key of keys) {
+      const balance = await fetch(endpoints.accounts.balance(key));
+      const parsedBalance: bigint = (await balance.json()) ?? 0;
+      newBalances.set(key, parsedBalance);
+    }
+
+    setBalances(oldBalance => {
+      newBalances.forEach((value, key) => {
+        oldBalance.set(key, value);
+      });
+
+      oldBalance.forEach((value, key) => {
+        newBalances.set(key, value);
+      });
+      return newBalances;
+    });
+  };
+
+  useEffect(() => {
+    getKeyBalances(keys.map(key => key.address));
+  }, [keys]);
 
   useEffect(() => {
     const serlializedKeys = localStorage.getItem("keys");
@@ -108,28 +150,18 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
     }
   }, [isOriginalAuthrority]);
 
-  const addKey = (key: Key): void => {
-    setKeys(previousKeyState => {
-      const localStorageState = localStorage.getItem("keys");
-      const localStorageKeys = localStorageState
-        ? deserializeKeys(localStorageState)
-        : [];
-
-      localStorage.setItem("keys", serializeKeys([...localStorageKeys, key]));
-      return [...previousKeyState, key];
-    });
-  };
-
   return (
     <KeyContext.Provider
       value={{
         keys: keys,
         activeKey: activeKey,
+        balances: balances,
         isOriginalAuthority: isOriginalAuthrority,
         toggleIsAuthority: () =>
           setIsOriginalAuthority(prevState => !prevState),
         addKey: addKey,
-        setActiveKey: setActiveKey
+        setActiveKey: setActiveKey,
+        refreshBalances: getKeyBalances
       }}
     >
       {children}

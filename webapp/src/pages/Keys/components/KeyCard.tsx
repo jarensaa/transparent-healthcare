@@ -4,9 +4,11 @@ import styled from "styled-components";
 import Key from "../../../types/Key";
 import { isGeneratedKey } from "../../../types/GeneratedKey";
 import { isAuthorizationKey } from "../../../dto/KeyAuthorization";
+import constants from "../../../config/constants";
 
 interface KeyCardProps {
   keyPair: Key;
+  balances: Map<string, bigint>;
 }
 
 const CardWrapper = styled.div`
@@ -20,11 +22,11 @@ const WrappingTableData = styled.td`
 `;
 
 const TableWrapper = styled.div`
-  height: 110px;
+  height: 130px;
   width: 410px;
 `;
 
-const KeyCard: FunctionComponent<KeyCardProps> = ({ keyPair }) => {
+const KeyCard: FunctionComponent<KeyCardProps> = ({ keyPair, balances }) => {
   const headerName = keyPair.description
     ? keyPair.description
     : keyPair.address;
@@ -66,6 +68,15 @@ const KeyCard: FunctionComponent<KeyCardProps> = ({ keyPair }) => {
               <tr>
                 <th>Address</th>
                 <WrappingTableData>{keyPair.address}</WrappingTableData>
+              </tr>
+              <tr>
+                <th>Balance</th>
+                <WrappingTableData>
+                  {(balances.get(keyPair.address)
+                    ? Number(balances.get(keyPair.address)) /
+                      constants.weiPerEth
+                    : 0) + " ETH"}
+                </WrappingTableData>
               </tr>
               {detailsBlock()}
             </tbody>

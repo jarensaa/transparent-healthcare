@@ -8,6 +8,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
+import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,12 +32,12 @@ public class Web3Service {
   private static BigInteger wei = new BigInteger("1000000000000000000");
   private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-  double getAddressBalance(String address) {
+  public double getAddressBalance(String address) {
     double balance = getAddressBalanceInWei(address).doubleValue()/wei.doubleValue();
     return Double.parseDouble(decimalFormat.format(balance));
   }
 
-  BigInteger getAddressBalanceInWei(String address) {
+  public BigInteger getAddressBalanceInWei(String address) {
     try {
       return web3j
           .ethGetBalance(address, DefaultBlockParameterName.LATEST)
@@ -44,24 +45,16 @@ public class Web3Service {
           .get().getBalance();
     } catch (InterruptedException | ExecutionException e) {
       logger.error("Get balance failed. ", e);
+      throw new TransactionFailedException();
     }
-    return new BigInteger(String.valueOf(-1));
   }
 
-  void sendEth(String sendingPrivateKey, String toAddress, BigDecimal eth) {
+  public void sendEth(String sendingPrivateKey, String toAddress, BigInteger wei) {
     try {
-      Transfer.sendFunds(web3j,Credentials.create(sendingPrivateKey),toAddress, eth, Convert.Unit.ETHER).send();
+      Transfer.sendFunds(web3j,Credentials.create(sendingPrivateKey),toAddress, new BigDecimal(wei), Convert.Unit.WEI).send();
     } catch (Exception e) {
       logger.error("Send eth failed", e);
+      throw new TransactionFailedException();
     }
   }
-
-  String getBalance(String address) throws IOException {
-    return web3j
-        .ethGetBalance(address, DefaultBlockParameterName.LATEST)
-        .send()
-        .getBalance()
-        .toString();
-  }
-
 }

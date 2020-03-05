@@ -8,6 +8,7 @@ import NewKeyPopoverContent from "./components/NewKeyPopoverContent";
 import GeneratedKey from "../../types/GeneratedKey";
 import ImportKeyPopoverContent from "./components/ImportKeyPopoverContent";
 import useAccountApi from "../../hooks/useAccountApi";
+import SendFundsPanel from "./components/SendFundsPanel";
 
 const KeyAreaWrapper = styled.div`
   display: flex;
@@ -19,32 +20,41 @@ const KeyAreaWrapper = styled.div`
 
 const AreaGrid = styled.div`
   display: grid;
-  grid-template-rows: 80px 50px auto;
+  grid-template-rows: 80px auto auto auto;
   grid-template-columns: 200px auto;
   grid-template-areas:
     "title none"
+    "send send"
     "buttons buttons"
     "keys keys";
 `;
 
 const ButtonArea = styled.div`
   grid-area: buttons;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+`;
+
+const SendWrapper = styled.div`
+  grid-area: send;
+  padding-right: 70px;
+  padding-left: 10px;
+  max-width: 1000px;
 `;
 
 const ButtonWrapper = styled.div`
-  margin-right: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 200px;
+  margin-bottom: 20px;
 `;
 
 const Keys: FunctionComponent = () => {
-  const { keys, addKey } = useContext(KeyContext);
+  const { keys, addKey, balances } = useContext(KeyContext);
   const { web3 } = useContext(Web3Context);
   const { getNewGeneratedKey } = useAccountApi();
 
   const keyListing = keys.map((key, index) => (
-    <KeyCard key={index} keyPair={key} />
+    <KeyCard key={index} keyPair={key} balances={balances} />
   ));
 
   const generateLocalKeyCallback = (keyname: string) => {
@@ -68,8 +78,12 @@ const Keys: FunctionComponent = () => {
 
   return (
     <AreaGrid>
-      <h1>Keys</h1>
+      <h1>Keys and funds</h1>
+      <SendWrapper>
+        <SendFundsPanel />
+      </SendWrapper>
       <ButtonArea>
+        <h2>Key management</h2>
         <ButtonWrapper>
           <Popover
             content={
@@ -83,8 +97,6 @@ const Keys: FunctionComponent = () => {
           >
             <Button intent={"primary"}>Generate key</Button>
           </Popover>
-        </ButtonWrapper>
-        <ButtonWrapper>
           <Popover
             content={<ImportKeyPopoverContent callback={addKey} />}
             position={Position.BOTTOM_LEFT}

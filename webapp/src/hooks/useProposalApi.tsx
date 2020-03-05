@@ -47,6 +47,8 @@ const useProposalApi = (): ProposalApi => {
 
     if (response.ok) {
       showSuccess("Successfully posted proposal");
+    } else {
+      showFailure("Failed to submit transaction to the blockchain");
     }
 
     return true;
@@ -74,9 +76,11 @@ const useProposalApi = (): ProposalApi => {
 
     if (response.ok) {
       showSuccess("Successfully voted on proposal");
+    } else {
+      showFailure("Failed to submit transaction to the blockchain");
     }
 
-    return true;
+    return response.ok;
   };
 
   const enactProposal = async (id: number) => {
@@ -101,6 +105,8 @@ const useProposalApi = (): ProposalApi => {
 
     if (response.ok) {
       showSuccess("Successfully enacted proposal");
+    } else {
+      showFailure("Failed to submit transaction to the blockchain");
     }
 
     return true;

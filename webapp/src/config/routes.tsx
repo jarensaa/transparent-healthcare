@@ -36,14 +36,14 @@ const routes: RouteDefinition[] = [
     Component: Authority
   },
   {
-    title: "TreatmentProvider",
+    title: "Treatment Provider",
     path: "/treatmentProvider",
     exact: true,
     showInSidebar: true,
     Component: TreatmentProvider
   },
   {
-    title: "Keys",
+    title: "Keys and funds",
     path: "/keys",
     exact: true,
     showInSidebar: true,

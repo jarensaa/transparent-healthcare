@@ -56,7 +56,7 @@ const LeftMenu = () => {
     history.push(path);
   };
 
-  const accountRenderer: ItemRenderer<Key> = (item, { query, handleClick }) => {
+  const accountRenderer: ItemRenderer<Key> = (item, { query }) => {
     const label = item.description ? item.description : item.address;
     return (
       <MenuItem

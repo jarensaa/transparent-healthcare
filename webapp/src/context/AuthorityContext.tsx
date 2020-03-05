@@ -18,7 +18,8 @@ type AuthorityContext = {
 
 type AuthorityContextUpdate = {
   proposalEvents?: ProposalEvent[];
-  authorities?: string[];
+  authoritiesToAdd?: string[];
+  authoritiesToSet?: string[];
   proposalVoteUpdate?: {
     id: number;
     voters: string[];
@@ -48,11 +49,15 @@ const AuthorityContextProvider: FunctionComponent = ({ children }) => {
         proposalEventsMap: previousState.proposalEventsMap
       };
 
-      if (params.authorities) {
+      if (params.authoritiesToAdd) {
         updatedState.authorities = [
           ...updatedState.authorities,
-          ...params.authorities
+          ...params.authoritiesToAdd
         ];
+      }
+
+      if (params.authoritiesToSet) {
+        updatedState.authorities = params.authoritiesToSet;
       }
 
       if (params.proposalEvents) {
@@ -99,14 +104,13 @@ const AuthorityContextProvider: FunctionComponent = ({ children }) => {
   useEffect(() => {
     fetch(endpoints.authority.base)
       .then(res => res.json())
-      .then((res: string[]) => addToAuthorityState({ authorities: res }));
+      .then((res: string[]) => addToAuthorityState({ authoritiesToSet: res }));
   }, []);
 
   useEffect(() => {
     fetch(endpoints.authority.proposals)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         return res;
       })
       .then((res: ProposalEvent[]) =>
@@ -132,6 +136,12 @@ const AuthorityContextProvider: FunctionComponent = ({ children }) => {
       addToAuthorityState({
         proposalEnactedUpdate: proposalEnactedEvent.proposalId
       });
+
+      fetch(endpoints.authority.base)
+        .then(res => res.json())
+        .then((res: string[]) =>
+          addToAuthorityState({ authoritiesToSet: res })
+        );
     });
   }, [stomp]);
 

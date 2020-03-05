@@ -79,6 +79,7 @@ const Proposal = (): JSX.Element => {
 
     if (hasVoted) {
       showFailure("You have allready voted on this proposal");
+      return;
     }
 
     if (proposalId) voteOnProposal(Number(proposalId));
