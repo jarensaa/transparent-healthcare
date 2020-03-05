@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.gas.ContractGasProvider;
-import xyz.rensaa.providerservice.AuthorityManager;
+import xyz.rensaa.providerservice.Treatment;
 import xyz.rensaa.providerservice.dto.ContractAddresses;
 
 @Component
-public class AuthorityManagerFactory {
+public class CTreatmentFactory {
 
   @Autowired
   private Web3j web3j;
@@ -20,9 +20,9 @@ public class AuthorityManagerFactory {
   @Autowired
   private ContractAddresses contractAddresses;
 
-  public AuthorityManager fromPrivateKey(String privateKey) {
+  public Treatment fromPrivateKey(String privateKey) {
     var credentials = Credentials.create(privateKey);
-    return AuthorityManager.load(contractAddresses.getAuthorityAddress(),web3j,credentials, gasProvider);
+    return Treatment.load(contractAddresses.getAuthorityAddress(),web3j,credentials, gasProvider);
   }
-
 }
+

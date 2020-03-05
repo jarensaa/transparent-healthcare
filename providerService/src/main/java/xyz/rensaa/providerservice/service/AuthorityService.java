@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.rensaa.providerservice.AuthorityManager;
-import xyz.rensaa.providerservice.contracts.AuthorityManagerFactory;
+import xyz.rensaa.providerservice.contracts.CAuthorityManagerFactory;
 import xyz.rensaa.providerservice.dto.Authority.ImmutableProposalMessage;
 import xyz.rensaa.providerservice.dto.Authority.ProposalMessage;
 import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
@@ -20,7 +20,7 @@ public class AuthorityService {
   private AuthorityManager defaultAuthorityManager;
 
   @Autowired
-  private AuthorityManagerFactory authorityManagerFactory;
+  private CAuthorityManagerFactory CAuthorityManagerFactory;
 
   @Autowired
   private Logger logger;
@@ -74,7 +74,7 @@ public class AuthorityService {
 
   public boolean proposeAuthority(ProposalMessage propsal, String privateKey) {
     try {
-      authorityManagerFactory
+      CAuthorityManagerFactory
           .fromPrivateKey(privateKey)
           .propose(BigInteger.valueOf(propsal.proposalType().longValue()), propsal.subject()).send();
       return true;
@@ -108,7 +108,7 @@ public class AuthorityService {
 
   public boolean voteOnProposal(int proposalId, String privateKey) {
     try {
-      authorityManagerFactory
+      CAuthorityManagerFactory
           .fromPrivateKey(privateKey)
           .voteOnProposal(BigInteger.valueOf(proposalId)).send();
       return true;
@@ -120,7 +120,7 @@ public class AuthorityService {
 
   public boolean enactProposal(int proposalId, String privateKey)  {
     try {
-      authorityManagerFactory
+      CAuthorityManagerFactory
           .fromPrivateKey(privateKey)
           .enactProposal(BigInteger.valueOf(proposalId)).send();
       return true;
