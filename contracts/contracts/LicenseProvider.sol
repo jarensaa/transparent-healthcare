@@ -389,4 +389,20 @@ contract LicenseProvider is ILicenseProviderManager {
 
     }
 
+    function getAuthorityTrustingLicense(address _license)
+        external
+        view
+        returns (address)
+    {
+        return issuerTrustedByAuthority[_license];
+    }
+
+    function getAuthorityTrustingProvider(address _provider)
+        external
+        view
+        returns (address)
+    {
+        return providerTrustedByAuthority[_provider];
+    }
+
 }
