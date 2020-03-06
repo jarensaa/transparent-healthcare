@@ -1,6 +1,7 @@
 package xyz.rensaa.providerservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
@@ -22,25 +24,21 @@ import xyz.rensaa.providerservice.dto.ContractAddresses;
 import xyz.rensaa.providerservice.dto.GanacheKeys;
 
 @Configuration
-public class Web3jConfig  {
+public class Web3jConfig {
 
+  private static final ObjectMapper mapper = new ObjectMapper();
   @Value("${contracts.keyfile}")
   String keyFilePath;
-
   @Value("${contracts.addressesfile}")
   String addressesFilePath;
-
   @Value("${blockchain.uri}")
   String blockchainUri;
-
   @Autowired
   Logger logger;
 
-  private static ObjectMapper mapper = new ObjectMapper();
-
   @Bean
   public Web3j createWeb3jClient() throws IOException {
-    var client = Web3j.build(new HttpService(blockchainUri));
+    final var client = Web3j.build(new HttpService(blockchainUri));
 
     logger.info("Connected to client: {}", SafeArg.of("client", client.web3ClientVersion().send().getWeb3ClientVersion()));
     return client;
@@ -48,7 +46,7 @@ public class Web3jConfig  {
 
   @Bean("originalCredentials")
   public List<Credentials> createCredentialsFromGanacheFile() throws IOException {
-    GanacheKeys keys = mapper.readValue(new File(keyFilePath), GanacheKeys.class);
+    final GanacheKeys keys = mapper.readValue(new File(keyFilePath), GanacheKeys.class);
     return keys.getPrivateKeys().values().stream().map(Credentials::create).collect(Collectors.toList());
   }
 
@@ -59,6 +57,7 @@ public class Web3jConfig  {
 
   @Bean
   public ContractGasProvider createGasProvider() {
-    return new StaticGasProvider(BigInteger.valueOf(20000000000L),BigInteger.valueOf(300000L));
+    return new StaticGasProvider(BigInteger.valueOf(20000000000L), BigInteger.valueOf(300000L));
   }
+
 }

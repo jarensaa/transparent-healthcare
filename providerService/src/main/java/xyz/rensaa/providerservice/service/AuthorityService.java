@@ -26,10 +26,10 @@ public class AuthorityService {
   private Logger logger;
 
 
-  public boolean isAuthorized(String address) {
+  public boolean isAuthorized(final String address) {
     try {
       return defaultAuthorityManager.isAuthorized(address).send();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       logger.error("Could not process Authority.isAuthorized transaction", e);
     }
     return false;
@@ -38,21 +38,21 @@ public class AuthorityService {
   public List<String> getAuthorities() {
     try {
       return defaultAuthorityManager.getAuthorities().send();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       logger.error("Could not fetch authorities", e);
       throw new TransactionFailedException();
     }
   }
 
   public List<ProposalMessage> getProposals() {
-    var proposals = new ArrayList<ProposalMessage>();
+    final var proposals = new ArrayList<ProposalMessage>();
     try {
-      int numProposals = defaultAuthorityManager.getProposalCount().send().intValue();
+      final int numProposals = defaultAuthorityManager.getProposalCount().send().intValue();
       for (int i = 1; i <= numProposals; i++) {
-        var proposal = defaultAuthorityManager.getProposal(BigInteger.valueOf(i)).send();
+        final var proposal = defaultAuthorityManager.getProposal(BigInteger.valueOf(i)).send();
 
         //If the proposal is active, we return it.
-        if(proposal.component4()) {
+        if (proposal.component4()) {
           proposals.add(ImmutableProposalMessage.builder()
               .id(i)
               .proposalType(proposal.component1().intValue())
@@ -65,29 +65,29 @@ public class AuthorityService {
         }
 
       }
-    } catch (Exception e) {
+    } catch (final Exception e) {
       logger.error("Could not get number of proposals");
       throw new TransactionFailedException();
     }
     return proposals;
   }
 
-  public boolean proposeAuthority(ProposalMessage propsal, String privateKey) {
+  public boolean proposeAuthority(final ProposalMessage propsal, final String privateKey) {
     try {
       CAuthorityManagerFactory
           .fromPrivateKey(privateKey)
           .propose(BigInteger.valueOf(propsal.proposalType().longValue()), propsal.subject()).send();
       return true;
-    } catch (Exception e) {
+    } catch (final Exception e) {
       logger.error("Count not send proposal", e);
       throw new TransactionFailedException();
     }
   }
 
-  public ProposalMessage getProposal(int id) {
+  public ProposalMessage getProposal(final int id) {
     try {
-      var response = defaultAuthorityManager.getProposal(BigInteger.valueOf(id)).send();
-      if(response.component4()) {
+      final var response = defaultAuthorityManager.getProposal(BigInteger.valueOf(id)).send();
+      if (response.component4()) {
         return ImmutableProposalMessage.builder()
             .id(id)
             .proposalType(response.component1().intValue())
@@ -97,7 +97,7 @@ public class AuthorityService {
             .isActive(response.component4())
             .build();
       }
-    } catch (Exception e) {
+    } catch (final Exception e) {
       e.printStackTrace();
       throw new TransactionFailedException();
     }
@@ -106,25 +106,25 @@ public class AuthorityService {
 
   }
 
-  public boolean voteOnProposal(int proposalId, String privateKey) {
+  public boolean voteOnProposal(final int proposalId, final String privateKey) {
     try {
       CAuthorityManagerFactory
           .fromPrivateKey(privateKey)
           .voteOnProposal(BigInteger.valueOf(proposalId)).send();
       return true;
-    } catch (Exception e) {
+    } catch (final Exception e) {
       logger.error("Count not vote on proposal", e);
       throw new TransactionFailedException();
     }
   }
 
-  public boolean enactProposal(int proposalId, String privateKey)  {
+  public boolean enactProposal(final int proposalId, final String privateKey) {
     try {
       CAuthorityManagerFactory
           .fromPrivateKey(privateKey)
           .enactProposal(BigInteger.valueOf(proposalId)).send();
       return true;
-    } catch (Exception e) {
+    } catch (final Exception e) {
       logger.error("Count not enact proposal", e);
       throw new TransactionFailedException();
     }

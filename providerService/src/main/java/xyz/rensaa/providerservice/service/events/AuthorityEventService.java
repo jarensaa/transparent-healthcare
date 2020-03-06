@@ -42,7 +42,7 @@ public class AuthorityEventService {
         .subscribe(
             proposalEventEventResponse -> {
               logger.info(
-                "New proposal event: id:{},proposer:{}, subject:{}, type:{}",
+                  "New proposal event: id:{},proposer:{}, subject:{}, type:{}",
                   SafeArg.of("propsalID", proposalEventEventResponse._proposalID),
                   SafeArg.of("proposer", proposalEventEventResponse._proposer),
                   SafeArg.of("subject", proposalEventEventResponse._proposalSubject),
@@ -70,7 +70,7 @@ public class AuthorityEventService {
                   SafeArg.of("propsalID", proposalEventEventResponse._proposalID),
                   SafeArg.of("voter", proposalEventEventResponse._voter));
 
-              var proposal = authorityService.getProposal(proposalEventEventResponse._proposalID.intValue());
+              final var proposal = authorityService.getProposal(proposalEventEventResponse._proposalID.intValue());
 
               webSocketMessaging.convertAndSend("/authorities/proposal/vote", proposal);
             },
@@ -90,7 +90,7 @@ public class AuthorityEventService {
                   ImmutableProposalEnactedMessage.builder()
                       .propsalId(proposalEventEventResponse._proposalID.intValue())
                       .build()
-                  );
+              );
             },
 
             throwable -> logger.error("Failed to get proposalEnactedEvent ", throwable));

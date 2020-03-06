@@ -61,9 +61,10 @@ public class ContractConfig {
     return defaultContract;
   }
 
+
   @Bean
   public Measure createDefaultMeasure() throws IOException {
-    final var defaultContract = Measure.load(contractAddresses.getLicenseProviderAddress(),
+    final var defaultContract = Measure.load(contractAddresses.getMeasureAddress(),
         web3j, credentials.get(2), gasProvider);
     checkContractValidity(defaultContract, "Measure");
     return defaultContract;
@@ -71,7 +72,7 @@ public class ContractConfig {
 
   @Bean
   public Treatment createDefaultTreatment() throws IOException {
-    final var defaultContract = Treatment.load(contractAddresses.getLicenseProviderAddress(),
+    final var defaultContract = Treatment.load(contractAddresses.getTreatmentAddress(),
         web3j, credentials.get(3), gasProvider);
     checkContractValidity(defaultContract, "Treatment");
     return defaultContract;
@@ -79,7 +80,7 @@ public class ContractConfig {
 
   @Bean
   public TreatmentProvider createDefaultTreatmentProvider() throws IOException {
-    final var defaultContract = TreatmentProvider.load(contractAddresses.getLicenseProviderAddress(),
+    final var defaultContract = TreatmentProvider.load(contractAddresses.getTreatmentProviderAddress(),
         web3j, credentials.get(4), gasProvider);
     checkContractValidity(defaultContract, "TreatmentProvider");
     return defaultContract;
