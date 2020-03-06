@@ -6,7 +6,8 @@ contract TreatmentProvider is ITreatmentProviderManager {
     IAuthorization authorityContract;
     string stringStore;
 
-    mapping(address => bool) isProvider;
+    address[] providers;
+    mapping(address => uint256) providerIndex;
     mapping(address => address[]) providerTrustees;
     mapping(address => mapping(address => uint256)) providerTrusteesIndex;
     mapping(address => mapping(address => bool)) isProviderTrustee;
@@ -36,14 +37,19 @@ contract TreatmentProvider is ITreatmentProviderManager {
     }
 
     modifier targetIsProvider(address _target) {
-        require(isProvider[_target], "Target is not a provider");
+        require(providerIndex[_target] > 0, "Target is not a provider");
         _;
     }
 
     modifier targetIsNotProvider(address _target) {
-        require(!isProvider[_target], "Target is a provider");
+        require(providerIndex[_target] == 0, "Target is a provider");
         _;
     }
+
+    event NewTreatmentProviderEvent(address _provider);
+    event RemovedTreatmentProviderEvent(address _provider);
+    event TreatmentProviderTrustAdded(address _provider, address _authority);
+    event TreatmentProviderTrustRemoved(address _provider, address _authority);
 
     constructor(address _address) public {
         authorityContract = IAuthorization(_address);
@@ -55,7 +61,7 @@ contract TreatmentProvider is ITreatmentProviderManager {
         override
         returns (bool)
     {
-        if (!isProvider[_address]) {
+        if (providerIndex[_address] == 0) {
             return false;
         }
 
@@ -70,12 +76,45 @@ contract TreatmentProvider is ITreatmentProviderManager {
         return false;
     }
 
+    function getProviderTrustees(address _provider)
+        external
+        view
+        returns (address[] memory)
+    {
+        return providerTrustees[_provider];
+    }
+
+    // Function only intended for external getting. The pattern is expenise, and is not optimized for on-chain usage.
+    function getRegisteredProviders() external view returns (address[] memory) {
+        uint256 returnSize;
+
+        for (uint256 i = 0; i < providers.length; i++) {
+            if (providerIndex[providers[i]] == (i + 1)) {
+                returnSize++;
+            }
+        }
+
+        address[] memory filteredProviders = new address[](returnSize);
+        uint256 returnArrayPointer = 0;
+
+        for (uint256 i = 0; i < providers.length; i++) {
+            if (providerIndex[providers[i]] == (i + 1)) {
+                filteredProviders[returnArrayPointer] = providers[i];
+                returnArrayPointer++;
+            }
+        }
+
+        return filteredProviders;
+    }
+
     function addSenderAsProvider()
         external
         override
         targetIsNotProvider(msg.sender)
     {
-        isProvider[msg.sender] = true;
+        providers.push(msg.sender);
+        providerIndex[msg.sender] = providers.length;
+        emit NewTreatmentProviderEvent(msg.sender);
     }
 
     function removeSenderAsProvider()
@@ -83,13 +122,14 @@ contract TreatmentProvider is ITreatmentProviderManager {
         override
         targetIsProvider(msg.sender)
     {
-        delete isProvider[msg.sender];
+        delete providerIndex[msg.sender];
         for (uint256 i = 0; i < providerTrustees[msg.sender].length; i++) {
             address trustee = providerTrustees[msg.sender][i];
             delete providerTrusteesIndex[msg.sender][trustee];
             delete isProviderTrustee[msg.sender][trustee];
         }
         delete providerTrustees[msg.sender];
+        emit RemovedTreatmentProviderEvent(msg.sender);
     }
 
     function addTrustInProvider(address _address)
@@ -103,6 +143,7 @@ contract TreatmentProvider is ITreatmentProviderManager {
         providerTrustees[_address].push(msg.sender);
         isProviderTrustee[_address][msg.sender] = true;
         providerTrusteesIndex[_address][msg.sender] = trusteeNumber;
+        emit TreatmentProviderTrustAdded(_address, msg.sender);
     }
 
     function removeTrustInProvider(address _address)
@@ -124,6 +165,7 @@ contract TreatmentProvider is ITreatmentProviderManager {
         providerTrustees[_address].pop();
         delete isProviderTrustee[_address][msg.sender];
         delete providerTrusteesIndex[_address][msg.sender];
+        emit TreatmentProviderTrustRemoved(_address, msg.sender);
     }
 
 }

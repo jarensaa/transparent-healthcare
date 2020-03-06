@@ -69,11 +69,14 @@ contract("TreatmentProvider", accounts => {
   });
 
   it("Provider can be trusted by Account0", async () => {
-    await truffleAssert.passes(
-      treatmentProviderInstance.addTrustInProvider(accounts[5], {
+    const result = await treatmentProviderInstance.addTrustInProvider(
+      accounts[5],
+      {
         from: accounts[0]
-      })
+      }
     );
+
+    truffleAssert.eventEmitted(result, "TreatmentProviderTrustAdded");
   });
 
   it("Provider is trusted", async () => {
@@ -99,11 +102,13 @@ contract("TreatmentProvider", accounts => {
   });
 
   it("Trust in Provider can be removed by Account0", async () => {
-    await truffleAssert.passes(
-      treatmentProviderInstance.removeTrustInProvider(accounts[5], {
+    const result = await treatmentProviderInstance.removeTrustInProvider(
+      accounts[5],
+      {
         from: accounts[0]
-      })
+      }
     );
+    truffleAssert.eventEmitted(result, "TreatmentProviderTrustRemoved");
   });
 
   it("Provider is not trusted", async () => {
@@ -136,16 +141,46 @@ contract("TreatmentProvider", accounts => {
     );
   });
 
+  it("The number of providers should be 1", async () => {
+    const providers = await treatmentProviderInstance.getRegisteredProviders();
+    assert.ok(providers.length == 1);
+  });
+
   it("Account5 can remove themselves as provider", async () => {
-    await truffleAssert.passes(
-      treatmentProviderInstance.removeSenderAsProvider({ from: accounts[5] })
-    );
+    const result = await treatmentProviderInstance.removeSenderAsProvider({
+      from: accounts[5]
+    });
+
+    truffleAssert.eventEmitted(result, "RemovedTreatmentProviderEvent");
+  });
+
+  it("The number of providers should be 0", async () => {
+    const providers = await treatmentProviderInstance.getRegisteredProviders();
+    assert.ok(providers.length == 0);
   });
 
   it("Account5 can be added as provider again", async () => {
     await truffleAssert.passes(
       treatmentProviderInstance.addSenderAsProvider({ from: accounts[5] })
     );
+  });
+
+  it("The number of providers should be 1", async () => {
+    const providers = await treatmentProviderInstance.getRegisteredProviders();
+    assert.ok(providers.length == 1);
+  });
+
+  it("Account6 can be added as provider", async () => {
+    const result = await treatmentProviderInstance.addSenderAsProvider({
+      from: accounts[6]
+    });
+
+    truffleAssert.eventEmitted(result, "NewTreatmentProviderEvent");
+  });
+
+  it("The number of providers should be 2", async () => {
+    const providers = await treatmentProviderInstance.getRegisteredProviders();
+    assert.ok(providers.length == 2);
   });
 
   it("Provider is not trusted", async () => {
