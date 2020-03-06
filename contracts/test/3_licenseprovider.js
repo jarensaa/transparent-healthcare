@@ -26,6 +26,12 @@ contract("LicenseProvider", accounts => {
     );
   });
 
+  it("The number of licenseIssuers should be 1", async () => {
+    const response = await licenseProviderInstance.getIssuers();
+    const expectedLength = 1;
+    assert.ok(response.length == expectedLength);
+  });
+
   it("Account2 should not be a trusted licenseIssuer", async () => {
     const isTrusted = await licenseProviderInstance.isTrustedLicenseIssuer.call(
       accounts[2]
@@ -187,6 +193,12 @@ contract("LicenseProvider", accounts => {
     await truffleAssert.passes(
       licenseProviderInstance.registerSenderAsIssuer({ from: accounts[6] })
     );
+  });
+
+  it("The number of licenseIssuers should be 2", async () => {
+    const response = await licenseProviderInstance.getIssuers();
+    const expectedLength = 2;
+    assert.ok(response.length == expectedLength);
   });
 
   it("Account1 should be able to trust Account6 as issuer", async () => {

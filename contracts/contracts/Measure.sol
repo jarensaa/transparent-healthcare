@@ -1,4 +1,4 @@
-pragma solidity 0.6.1;
+pragma solidity ^0.6.1;
 import "./iface/ITreatment.sol";
 import "./iface/IMeasure.sol";
 

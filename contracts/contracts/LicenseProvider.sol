@@ -302,6 +302,7 @@ contract LicenseProvider is ILicenseProviderManager {
                     .trustingIssuer;
                 returnTrustingProviders[returnCount] = licenses[licenseAddress]
                     .trustingProvider;
+                returnCount++;
             }
         }
         return (
@@ -309,6 +310,30 @@ contract LicenseProvider is ILicenseProviderManager {
             returnTrustingIssuers,
             returnTrustingProviders
         );
+    }
+
+    function getIssuers() external view returns (address[] memory) {
+        uint256 issuerCount = 0;
+
+        for (uint256 i = 0; i < licenseIssuers.length; i++) {
+            address issuer = licenseIssuers[i];
+            if (isIssuer[issuer]) {
+                issuerCount++;
+            }
+        }
+
+        address[] memory returnArray = new address[](issuerCount);
+        uint256 returnCount = 0;
+
+        for (uint256 i = 0; i < licenseIssuers.length; i++) {
+            address issuer = licenseIssuers[i];
+            if (isIssuer[issuer]) {
+                returnArray[returnCount] = issuer;
+                returnCount++;
+            }
+        }
+
+        return returnArray;
     }
 
 }
