@@ -58,6 +58,21 @@ contract LicenseProvider is ILicenseProviderManager {
         _;
     }
 
+    event NewLicense(address _license, address _issuer);
+    event RemovedLicense(address _license);
+    event NewLicenseIssuer(address _issuer);
+    event RemovedLicenseIssuer(address _issuer);
+    event TrustInIssuerAdded(address _issuer, address _authority);
+    event TrustInIssuerRemoved(address _issuer, address _authority);
+    event IssuerMoveProposalAdded(address _license, address _issuer);
+    event IssuerMoveApproved(address _license, address _issuer);
+    event ProviderRegistered(address _provider);
+    event ProviderRemoved(address _provider);
+    event TrustInProviderAdded(address _provider, address _authority);
+    event TrustInProviderRemoved(address _provider, address _authority);
+    event ProviderMoveProposalAdded(address _license, address _provider);
+    event ProviderMoveApproved(address _license, address _provider);
+
     constructor(address _address) public {
         authorityContract = IAuthorization(_address);
     }
@@ -92,6 +107,7 @@ contract LicenseProvider is ILicenseProviderManager {
     {
         isIssuer[msg.sender] = true;
         licenseIssuers.push(msg.sender);
+        emit NewLicenseIssuer(msg.sender);
     }
 
     function removeSenderAsIssuer()
@@ -101,6 +117,7 @@ contract LicenseProvider is ILicenseProviderManager {
     {
         delete isIssuer[msg.sender];
         delete issuerTrustedByAuthority[msg.sender];
+        emit RemovedLicenseIssuer(msg.sender);
     }
 
     function isTrustedLicenseIssuer(address _address)
@@ -122,6 +139,7 @@ contract LicenseProvider is ILicenseProviderManager {
         addressIsIssuer(_address)
     {
         issuerTrustedByAuthority[_address] = msg.sender;
+        emit TrustInIssuerAdded(_address, msg.sender);
     }
 
     function removeTrustInLicenseIssuer(address _address)
@@ -134,6 +152,7 @@ contract LicenseProvider is ILicenseProviderManager {
             "issuer is not trusted by sending authority"
         );
         delete issuerTrustedByAuthority[_address];
+        emit TrustInIssuerRemoved(_address, msg.sender);
     }
 
     function issueLicenseToAddress(address _address)
@@ -143,6 +162,7 @@ contract LicenseProvider is ILicenseProviderManager {
     {
         licenses[_address] = License(msg.sender, address(0x0));
         licenseAddresses.push(_address);
+        emit NewLicense(_address, msg.sender);
     }
 
     function proposeMoveToLicenseIssuer(address _address)
@@ -152,6 +172,7 @@ contract LicenseProvider is ILicenseProviderManager {
         addressIsIssuer(_address)
     {
         issuerMoveProposed[msg.sender][_address] = true;
+        emit IssuerMoveProposalAdded(msg.sender, _address);
     }
 
     function approveMoveToLicenseIssuer(address _address)
@@ -166,6 +187,7 @@ contract LicenseProvider is ILicenseProviderManager {
         );
         licenses[_address].trustingIssuer = msg.sender;
         delete issuerMoveProposed[_address][msg.sender];
+        emit IssuerMoveApproved(_address, msg.sender);
     }
 
     function registerProvider()
@@ -175,11 +197,13 @@ contract LicenseProvider is ILicenseProviderManager {
     {
         isProvider[msg.sender] = true;
         licenseProvider.push(msg.sender);
+        emit ProviderRegistered(msg.sender);
     }
 
     function removeProvider() external override addressIsProvider(msg.sender) {
         delete isProvider[msg.sender];
         delete providerTrustedByAuthority[msg.sender];
+        emit ProviderRemoved(msg.sender);
     }
 
     function isTrustedProvider(address _address)
@@ -204,6 +228,7 @@ contract LicenseProvider is ILicenseProviderManager {
         addressIsAuthority(msg.sender)
     {
         providerTrustedByAuthority[_address] = msg.sender;
+        emit TrustInProviderAdded(_address, msg.sender);
     }
 
     function removeTrustInProvider(address _address)
@@ -216,6 +241,7 @@ contract LicenseProvider is ILicenseProviderManager {
             "Provider is not trusted by sending authority"
         );
         delete providerTrustedByAuthority[_address];
+        emit TrustInProviderRemoved(_address, msg.sender);
     }
 
     function proposeLicenseMovement(address _toAddress)
@@ -225,6 +251,7 @@ contract LicenseProvider is ILicenseProviderManager {
         addressIsProvider(_toAddress)
     {
         providerMoveProposed[msg.sender][_toAddress] = true;
+        emit ProviderMoveProposalAdded(msg.sender, _toAddress);
     }
 
     function approveLicenseMovement(address _licenseAddress)
@@ -239,6 +266,7 @@ contract LicenseProvider is ILicenseProviderManager {
         );
         licenses[_licenseAddress].trustingProvider = msg.sender;
         delete providerMoveProposed[_licenseAddress][msg.sender];
+        emit ProviderMoveApproved(_licenseAddress, msg.sender);
     }
 
     function isLicenseRegisteredWithProvider(
