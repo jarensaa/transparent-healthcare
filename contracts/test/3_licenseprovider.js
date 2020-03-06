@@ -56,11 +56,31 @@ contract("LicenseProvider", accounts => {
     assert.ok(isTrusted);
   });
 
+  it("The number of licenses should be 0", async () => {
+    const response = await licenseProviderInstance.getLicenses();
+    const expectedLength = 0;
+    assert.ok(
+      response[0].length == expectedLength &&
+        response[1].length == expectedLength &&
+        response[2].length == expectedLength
+    );
+  });
+
   it("Account2 should be able to issue license to Account5", async () => {
     await truffleAssert.passes(
       licenseProviderInstance.issueLicenseToAddress(accounts[5], {
         from: accounts[2]
       })
+    );
+  });
+
+  it("The number of licenses should be 1", async () => {
+    const response = await licenseProviderInstance.getLicenses();
+    const expectedLength = 1;
+    assert.ok(
+      response[0].length == expectedLength &&
+        response[1].length == expectedLength &&
+        response[2].length == expectedLength
     );
   });
 
@@ -98,6 +118,16 @@ contract("LicenseProvider", accounts => {
       licenseProviderInstance.approveLicenseMovement(accounts[5], {
         from: accounts[3]
       })
+    );
+  });
+
+  it("The number of licenses should be 1", async () => {
+    const response = await licenseProviderInstance.getLicenses();
+    const expectedLength = 1;
+    assert.ok(
+      response[0].length == expectedLength &&
+        response[1].length == expectedLength &&
+        response[2].length == expectedLength
     );
   });
 
@@ -164,6 +194,24 @@ contract("LicenseProvider", accounts => {
       licenseProviderInstance.addTrustInLicenseIssuer(accounts[6], {
         from: accounts[1]
       })
+    );
+  });
+
+  it("Account6 should be able to issue license to Account7", async () => {
+    await truffleAssert.passes(
+      licenseProviderInstance.issueLicenseToAddress(accounts[7], {
+        from: accounts[6]
+      })
+    );
+  });
+
+  it("The number of licenses should be 2", async () => {
+    const response = await licenseProviderInstance.getLicenses();
+    const expectedLength = 2;
+    assert.ok(
+      response[0].length == expectedLength &&
+        response[1].length == expectedLength &&
+        response[2].length == expectedLength
     );
   });
 

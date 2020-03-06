@@ -1,4 +1,4 @@
-pragma solidity 0.6.1;
+pragma solidity ^0.6.1;
 import "./iface/IAuthorization.sol";
 import "./iface/ILicenseProviderManager.sol";
 
@@ -9,6 +9,7 @@ contract LicenseProvider is ILicenseProviderManager {
     }
 
     IAuthorization authorityContract;
+
     mapping(address => License) licenses;
     mapping(address => bool) isIssuer;
     mapping(address => bool) isProvider;
@@ -16,6 +17,10 @@ contract LicenseProvider is ILicenseProviderManager {
     mapping(address => address) providerTrustedByAuthority;
     mapping(address => mapping(address => bool)) issuerMoveProposed;
     mapping(address => mapping(address => bool)) providerMoveProposed;
+
+    address[] licenseAddresses;
+    address[] licenseIssuers;
+    address[] licenseProvider;
 
     modifier addressIsLicense(address _address) {
         require(
@@ -86,6 +91,7 @@ contract LicenseProvider is ILicenseProviderManager {
         addressIsNotIssuer(msg.sender)
     {
         isIssuer[msg.sender] = true;
+        licenseIssuers.push(msg.sender);
     }
 
     function removeSenderAsIssuer()
@@ -136,6 +142,7 @@ contract LicenseProvider is ILicenseProviderManager {
         addressIsIssuer(msg.sender)
     {
         licenses[_address] = License(msg.sender, address(0x0));
+        licenseAddresses.push(_address);
     }
 
     function proposeMoveToLicenseIssuer(address _address)
@@ -167,6 +174,7 @@ contract LicenseProvider is ILicenseProviderManager {
         addressIsNotProvider(msg.sender)
     {
         isProvider[msg.sender] = true;
+        licenseProvider.push(msg.sender);
     }
 
     function removeProvider() external override addressIsProvider(msg.sender) {
@@ -265,6 +273,42 @@ contract LicenseProvider is ILicenseProviderManager {
         returns (address)
     {
         return licenses[_licenseAddress].trustingProvider;
+    }
+
+    function getLicenses()
+        external
+        view
+        returns (address[] memory, address[] memory, address[] memory)
+    {
+        uint256 licenseCount = 0;
+
+        for (uint256 i = 0; i < licenseAddresses.length; i++) {
+            address licenseAddress = licenseAddresses[i];
+            if (licenses[licenseAddress].trustingIssuer != address(0x0)) {
+                licenseCount++;
+            }
+        }
+
+        uint256 returnCount = 0;
+        address[] memory returnLicenseAddresses = new address[](licenseCount);
+        address[] memory returnTrustingIssuers = new address[](licenseCount);
+        address[] memory returnTrustingProviders = new address[](licenseCount);
+
+        for (uint256 i = 0; i < licenseAddresses.length; i++) {
+            address licenseAddress = licenseAddresses[i];
+            if (licenses[licenseAddress].trustingIssuer != address(0x0)) {
+                returnLicenseAddresses[returnCount] = licenseAddress;
+                returnTrustingIssuers[returnCount] = licenses[licenseAddress]
+                    .trustingIssuer;
+                returnTrustingProviders[returnCount] = licenses[licenseAddress]
+                    .trustingProvider;
+            }
+        }
+        return (
+            returnLicenseAddresses,
+            returnTrustingIssuers,
+            returnTrustingProviders
+        );
     }
 
 }
