@@ -97,10 +97,22 @@ contract("LicenseProvider", accounts => {
     assert.isFalse(isTrusted);
   });
 
+  it("The number of licenseProviders should be 0", async () => {
+    const response = await licenseProviderInstance.getLicenseProviders();
+    const expectedLength = 0;
+    assert.ok(response.length == expectedLength);
+  });
+
   it("Account3 should be able to register as a provider", async () => {
     await truffleAssert.passes(
       licenseProviderInstance.registerProvider({ from: accounts[3] })
     );
+  });
+
+  it("The number of licenseProviders should be 1", async () => {
+    const response = await licenseProviderInstance.getLicenseProviders();
+    const expectedLength = 1;
+    assert.ok(response.length == expectedLength);
   });
 
   it("Account0 should be able to trust Account3 as a provider", async () => {
@@ -248,5 +260,36 @@ contract("LicenseProvider", accounts => {
       accounts[5]
     );
     assert.ok(isTrusted);
+  });
+
+  it("Account3 should be able to deregister as a provider", async () => {
+    await truffleAssert.passes(
+      licenseProviderInstance.removeProvider({ from: accounts[3] })
+    );
+  });
+
+  it("The number of licenseProviders should be 0", async () => {
+    const response = await licenseProviderInstance.getLicenseProviders();
+    const expectedLength = 0;
+    assert.ok(response.length == expectedLength);
+  });
+
+  it("Account3 should be able to register as a provider", async () => {
+    await truffleAssert.passes(
+      licenseProviderInstance.registerProvider({ from: accounts[3] })
+    );
+  });
+
+  it("The number of licenseProviders should be 2 (we do not filter out duplicates)", async () => {
+    const response = await licenseProviderInstance.getLicenseProviders();
+    const expectedLength = 2;
+    assert.ok(response.length == expectedLength);
+  });
+
+  it("The license of account5 should not be trusted", async () => {
+    const isTrusted = await licenseProviderInstance.isLicenseTrusted.call(
+      accounts[5]
+    );
+    assert.ok(!isTrusted);
   });
 });

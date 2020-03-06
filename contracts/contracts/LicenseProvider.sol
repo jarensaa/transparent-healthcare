@@ -336,4 +336,29 @@ contract LicenseProvider is ILicenseProviderManager {
         return returnArray;
     }
 
+    function getLicenseProviders() external view returns (address[] memory) {
+        uint256 providerCount = 0;
+
+        for (uint256 i = 0; i < licenseProvider.length; i++) {
+            address provider = licenseProvider[i];
+            if (isProvider[provider]) {
+                providerCount++;
+            }
+        }
+
+        address[] memory returnArray = new address[](providerCount);
+        uint256 returnCount = 0;
+
+        for (uint256 i = 0; i < licenseProvider.length; i++) {
+            address provider = licenseProvider[i];
+            if (isProvider[provider]) {
+                returnArray[returnCount] = provider;
+                returnCount++;
+            }
+        }
+
+        return returnArray;
+
+    }
+
 }
