@@ -4,12 +4,14 @@ import Keys from "../pages/Keys/Keys";
 import TreatmentProvider from "../pages/TreatmentProvider/TreatmentProvider";
 import { FunctionComponent } from "react";
 import Proposal from "../pages/Proposal/Proposal";
+import SidebarArea from "../types/SidebarArea";
 
 interface RouteDefinition {
   title: string;
   path: string;
   exact: boolean;
   showInSidebar: boolean;
+  sidebarArea?: SidebarArea;
   Component: FunctionComponent;
 }
 
@@ -19,6 +21,7 @@ const routes: RouteDefinition[] = [
     path: "/",
     exact: true,
     showInSidebar: true,
+    sidebarArea: "home",
     Component: Home
   },
   {
@@ -33,6 +36,7 @@ const routes: RouteDefinition[] = [
     path: "/authority",
     exact: true,
     showInSidebar: true,
+    sidebarArea: "trust",
     Component: Authority
   },
   {
@@ -40,6 +44,7 @@ const routes: RouteDefinition[] = [
     path: "/treatmentProvider",
     exact: true,
     showInSidebar: true,
+    sidebarArea: "trust",
     Component: TreatmentProvider
   },
   {
@@ -47,6 +52,7 @@ const routes: RouteDefinition[] = [
     path: "/keys",
     exact: true,
     showInSidebar: true,
+    sidebarArea: "keys",
     Component: Keys
   }
 ];

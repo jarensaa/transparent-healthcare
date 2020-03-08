@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import routes from "../../../config/routes";
 import styled from "styled-components";
 import { Button, Colors, Switch, MenuItem } from "@blueprintjs/core";
 import KeyContext from "../../../context/KeyContext";
 import { Select, ItemRenderer, ItemPredicate } from "@blueprintjs/select";
 import highlightText from "./highlighttext";
 import Key from "../../../types/Key";
+import Navigation from "./Navigation";
 
 const LeftMenuContainer = styled.div`
   background-color: ${Colors.DARK_GRAY5};
@@ -16,9 +15,6 @@ const LeftMenuContainer = styled.div`
 
 const ButtonWrapper = styled.div`
   position: fixed;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 `;
 
 const BottomWrapper = styled.div`
@@ -41,8 +37,6 @@ const keyPredicate: ItemPredicate<Key> = (query, key) => {
 };
 
 const LeftMenu = () => {
-  const history = useHistory();
-  const location = useLocation();
   const {
     keys,
     isOriginalAuthority,
@@ -50,10 +44,6 @@ const LeftMenu = () => {
     activeKey,
     setActiveKey
   } = useContext(KeyContext);
-
-  const handleClick = (path: string) => {
-    history.push(path);
-  };
 
   const accountRenderer: ItemRenderer<Key> = (item, { query }) => {
     const label = item.description ? item.description : item.address;
@@ -71,22 +61,7 @@ const LeftMenu = () => {
   return (
     <LeftMenuContainer>
       <ButtonWrapper>
-        {routes
-          .filter(item => item.showInSidebar)
-          .map(item => (
-            <Button
-              style={{ color: Colors.LIGHT_GRAY2 }}
-              minimal
-              large
-              key={item.title}
-              className={`item ${
-                item.path === location.pathname ? "active" : ""
-              }`}
-              onClick={() => handleClick(item.path)}
-            >
-              {item.title}
-            </Button>
-          ))}
+        <Navigation />
       </ButtonWrapper>
       <BottomWrapper>
         <KeySelectWrapper>
