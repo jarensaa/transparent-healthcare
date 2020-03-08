@@ -21,9 +21,9 @@ public class CMeasureFactory {
   @Autowired
   private ContractAddresses contractAddresses;
 
-  public Measure fromPrivateKey(String privateKey) {
-    var credentials = Credentials.create(privateKey);
-    return Measure.load(contractAddresses.getAuthorityAddress(),web3j,credentials, gasProvider);
+  public Measure fromPrivateKey(final String privateKey) {
+    final var credentials = Credentials.create(privateKey);
+    return Measure.load(contractAddresses.getMeasureAddress(), web3j, credentials, gasProvider);
   }
 
 }

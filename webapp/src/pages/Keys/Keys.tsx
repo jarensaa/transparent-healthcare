@@ -34,9 +34,8 @@ const KeysTitleHeader = styled.h2`
 
 const SendWrapper = styled.div`
   grid-area: send;
-  padding-right: 70px;
+  padding-right: 20px;
   padding-left: 10px;
-  max-width: 1000px;
 `;
 
 const Keys: FunctionComponent = () => {

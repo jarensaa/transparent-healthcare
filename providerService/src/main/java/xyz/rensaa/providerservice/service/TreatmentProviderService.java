@@ -47,6 +47,15 @@ public class TreatmentProviderService {
     }
   }
 
+  public boolean isRegisteredProvider(final String address) {
+    try {
+      return defaultTreatmentProvider.isProvider(address).send();
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException();
+    }
+  }
+
   public List<String> getRegisteredProviders() {
     try {
       return defaultTreatmentProvider.getRegisteredProviders().send();
@@ -69,13 +78,25 @@ public class TreatmentProviderService {
 
   public List<TreatmentProviderMessage> getRegisteredTreatmentProvidersWithTrustees() {
     final var treatmentProviders = getRegisteredProviders();
+    if (treatmentProviders.size() == 0) return List.of();
     return treatmentProviders.stream().map(treatmentProvider -> {
       var trustees = getProviderTrustees(treatmentProvider);
+      var isTrusted = isProviderTrusted(treatmentProvider);
       return ImmutableTreatmentProviderMessage.builder()
           .address(treatmentProvider)
+          .isTrusted(isTrusted)
           .trustees(trustees)
           .build();
     }).collect(Collectors.toList());
+  }
+
+  public boolean isProviderTrusted(final String address) {
+    try {
+      return defaultTreatmentProvider.isTrustedProvider(address).send();
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException();
+    }
   }
 
   public void addTrustInProvider(final String privateKey, final String providerAddress) {

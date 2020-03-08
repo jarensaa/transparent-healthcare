@@ -19,8 +19,8 @@ public class CLicenseProviderFactory {
   @Autowired
   private ContractAddresses contractAddresses;
 
-  public LicenseProvider fromPrivateKey(String privateKey) {
-    var credentials = Credentials.create(privateKey);
-    return LicenseProvider.load(contractAddresses.getAuthorityAddress(),web3j,credentials, gasProvider);
+  public LicenseProvider fromPrivateKey(final String privateKey) {
+    final var credentials = Credentials.create(privateKey);
+    return LicenseProvider.load(contractAddresses.getLicenseProviderAddress(), web3j, credentials, gasProvider);
   }
 }

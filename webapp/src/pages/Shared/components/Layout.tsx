@@ -13,7 +13,7 @@ const StyledLayout = styled.div`
 
 const MainArea = styled.div`
   background-color: #f5f8fa;
-  padding: 50px 0px 100px 50px;
+  padding: 50px 50px 100px 50px;
 `;
 
 const Layout = () => {

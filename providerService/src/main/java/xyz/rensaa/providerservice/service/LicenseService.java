@@ -102,7 +102,7 @@ public class LicenseService {
       throw new TransactionFailedException();
     }
   }
-  
+
   public List<LicenseProviderMessage> getLicenseProviders() {
     try {
       final List<String> licenseProviderAddresses = defaultLicenseProvider.getLicenseProviders().send();

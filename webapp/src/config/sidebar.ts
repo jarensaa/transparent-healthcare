@@ -8,8 +8,20 @@ const SidebarConfig: Record<SidebarArea, SidebarItem> = {
   home: {
     headerName: "Home"
   },
-  trust: {
-    headerName: "Trust management"
+  authority: {
+    headerName: "Authority"
+  },
+  treatmentProvider: {
+    headerName: "Treatment Provider"
+  },
+  licenses: {
+    headerName: "Licenses"
+  },
+  practitioner: {
+    headerName: "Pracitioner view"
+  },
+  patient: {
+    headerName: "Patient view"
   },
   keys: {
     headerName: "Key management"

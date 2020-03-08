@@ -5,14 +5,14 @@ import TreatmentProvider from "../pages/TreatmentProvider/TreatmentProvider";
 import { FunctionComponent } from "react";
 import Proposal from "../pages/Proposal/Proposal";
 import SidebarArea from "../types/SidebarArea";
+import TreatmentProviderView from "../pages/Authority/TreatmentProviderView";
 
 interface RouteDefinition {
   title: string;
   path: string;
   exact: boolean;
-  showInSidebar: boolean;
-  sidebarArea?: SidebarArea;
   Component: FunctionComponent;
+  sidebarArea?: SidebarArea;
 }
 
 const routes: RouteDefinition[] = [
@@ -20,40 +20,42 @@ const routes: RouteDefinition[] = [
     title: "Home",
     path: "/",
     exact: true,
-    showInSidebar: true,
-    sidebarArea: "home",
-    Component: Home
+    Component: Home,
+    sidebarArea: "home"
   },
   {
     title: "Proposal",
     path: "/proposal/:proposalId",
     exact: true,
-    showInSidebar: false,
     Component: Proposal
   },
   {
     title: "Authority",
     path: "/authority",
     exact: true,
-    showInSidebar: true,
-    sidebarArea: "trust",
-    Component: Authority
+    Component: Authority,
+    sidebarArea: "authority"
   },
   {
-    title: "Treatment Provider",
+    title: "Treatment Providers",
+    path: "/authority/treatmentproviders",
+    exact: true,
+    Component: TreatmentProviderView,
+    sidebarArea: "authority"
+  },
+  {
+    title: "Treatment Providers",
     path: "/treatmentProvider",
     exact: true,
-    showInSidebar: true,
-    sidebarArea: "trust",
-    Component: TreatmentProvider
+    Component: TreatmentProvider,
+    sidebarArea: "treatmentProvider"
   },
   {
     title: "Keys and funds",
     path: "/keys",
     exact: true,
-    showInSidebar: true,
-    sidebarArea: "keys",
-    Component: Keys
+    Component: Keys,
+    sidebarArea: "keys"
   }
 ];
 

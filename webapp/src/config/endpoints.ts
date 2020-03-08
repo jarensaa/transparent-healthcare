@@ -17,6 +17,11 @@ const endpoints = {
       config.serverUrl + "/accounts/" + address + "/balance",
     send: (address: string, amount: bigint) =>
       config.serverUrl + "/accounts/" + address + "/send/" + amount
+  },
+  treatmentProvider: {
+    base: config.serverUrl + "/treatmentproviders",
+    getByAddress: (address: string) =>
+      config.serverUrl + "/treatmentproviders/" + address
   }
 };
 

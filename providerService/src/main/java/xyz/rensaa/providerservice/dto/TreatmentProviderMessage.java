@@ -18,4 +18,7 @@ public interface TreatmentProviderMessage {
 
   @JsonProperty("trustedBy")
   Optional<List<String>> trustees();
+
+  @JsonProperty("isTrusted")
+  Optional<Boolean> isTrusted();
 }

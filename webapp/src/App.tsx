@@ -6,6 +6,7 @@ import { AuthorityContextProvider } from "./context/AuthorityContext";
 import { StompContextProvider } from "./context/StompContext";
 import { Web3ContextProvider } from "./context/Web3Context";
 import { ToastContextProvider } from "./context/ToastContext";
+import { TreatmentProviderViewContextProvider } from "./context/TreatmentProviderViewContext";
 
 export default function App() {
   return (
@@ -13,11 +14,13 @@ export default function App() {
       <ToastContextProvider>
         <StompContextProvider>
           <Web3ContextProvider>
-            <AuthorityContextProvider>
-              <KeyContextProvider>
-                <Layout></Layout>
-              </KeyContextProvider>
-            </AuthorityContextProvider>
+            <KeyContextProvider>
+              <AuthorityContextProvider>
+                <TreatmentProviderViewContextProvider>
+                  <Layout></Layout>
+                </TreatmentProviderViewContextProvider>
+              </AuthorityContextProvider>
+            </KeyContextProvider>
           </Web3ContextProvider>
         </StompContextProvider>
       </ToastContextProvider>

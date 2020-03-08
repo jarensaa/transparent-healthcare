@@ -20,8 +20,8 @@ public class CTreatmentProviderFactory {
   @Autowired
   private ContractAddresses contractAddresses;
 
-  public TreatmentProvider fromPrivateKey(String privateKey) {
-    var credentials = Credentials.create(privateKey);
-    return TreatmentProvider.load(contractAddresses.getAuthorityAddress(),web3j,credentials, gasProvider);
+  public TreatmentProvider fromPrivateKey(final String privateKey) {
+    final var credentials = Credentials.create(privateKey);
+    return TreatmentProvider.load(contractAddresses.getTreatmentProviderAddress(), web3j, credentials, gasProvider);
   }
 }

@@ -55,6 +55,10 @@ contract TreatmentProvider is ITreatmentProviderManager {
         authorityContract = IAuthorization(_address);
     }
 
+    function isProvider(address _address) external view returns (bool) {
+        return providerIndex[_address] > 0;
+    }
+
     function isTrustedProvider(address _address)
         external
         view

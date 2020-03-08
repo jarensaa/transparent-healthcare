@@ -1,17 +1,17 @@
 package xyz.rensaa.providerservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import xyz.rensaa.providerservice.dto.ImmutableTreatmentProviderMessage;
 import xyz.rensaa.providerservice.dto.TreatmentProviderMessage;
+import xyz.rensaa.providerservice.exceptions.NoContentException;
 import xyz.rensaa.providerservice.service.KeyRepositoryService;
 import xyz.rensaa.providerservice.service.TreatmentProviderService;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/treatmentprovider")
+@RestController
+@RequestMapping("/treatmentproviders")
 public class TreatmentProviderController {
 
   @Autowired
@@ -25,18 +25,25 @@ public class TreatmentProviderController {
     return treatmentProviderService.getRegisteredTreatmentProvidersWithTrustees();
   }
 
-  @GetMapping("/{providerAddress}")
-  public TreatmentProviderMessage getTreatmentProvider(@RequestParam("providerAddress") final String address) {
+  @GetMapping("/{address}")
+  public TreatmentProviderMessage getTreatmentProvider(@PathVariable("address") final String address) {
+
+    final var isProvider = treatmentProviderService.isRegisteredProvider(address);
+
+    if (!isProvider) throw new NoContentException();
+
     return ImmutableTreatmentProviderMessage.builder()
         .address(address)
+        .isTrusted(treatmentProviderService.isProviderTrusted(address))
         .trustees(treatmentProviderService.getProviderTrustees(address))
         .build();
   }
 
   @PostMapping
-  public void addTreatmentProvider(@RequestHeader("Authorization") final String bearerToken) {
+  public boolean addTreatmentProvider(@RequestHeader("Authorization") final String bearerToken) {
     final var key = keyRepositoryService.getKeyFromBearerToken(bearerToken);
     treatmentProviderService.registerKeyAsProvider(key.getPrivateKey());
+    return true;
   }
 
   @PostMapping("/deregister")
@@ -46,14 +53,14 @@ public class TreatmentProviderController {
   }
 
   @PostMapping("/{providerAddress}/addtrust")
-  public void addTrustInTreatmentProvider(@RequestParam("providerAddress") final String providerAddress,
+  public void addTrustInTreatmentProvider(@PathVariable("providerAddress") final String providerAddress,
                                           @RequestHeader("Authorization") final String bearerToken) {
     final var key = keyRepositoryService.getKeyFromBearerToken(bearerToken);
     treatmentProviderService.addTrustInProvider(key.getPrivateKey(), providerAddress);
   }
 
   @PostMapping("/{providerAddress}/removetrust")
-  public void removeTrustInTreatmentProvider(@RequestParam("providerAddress") final String providerAddress,
+  public void removeTrustInTreatmentProvider(@PathVariable("providerAddress") final String providerAddress,
                                              @RequestHeader("Authorization") final String bearerToken) {
     final var key = keyRepositoryService.getKeyFromBearerToken(bearerToken);
     treatmentProviderService.removeTrustInProvider(key.getPrivateKey(), providerAddress);
