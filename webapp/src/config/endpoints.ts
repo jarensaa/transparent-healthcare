@@ -13,6 +13,7 @@ const endpoints = {
     base: config.serverUrl + "/accounts",
     authority: config.serverUrl + "/accounts/authority",
     generate: config.serverUrl + "/accounts/create",
+    valid: config.serverUrl + "/accounts/valid",
     balance: (address: string) =>
       config.serverUrl + "/accounts/" + address + "/balance",
     send: (address: string, amount: bigint) =>

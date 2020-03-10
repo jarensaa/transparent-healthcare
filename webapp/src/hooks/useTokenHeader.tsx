@@ -3,6 +3,14 @@ import { useContext } from "react";
 import KeyContext from "../context/KeyContext";
 import ToastContext from "../context/ToastContext";
 
+const getHeaderWithToken = (token: string): HeadersInit_ => {
+  return {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token
+  };
+};
+
 const useTokenHeader = () => {
   const { activeKey } = useContext(KeyContext);
   const { showFailure } = useContext(ToastContext);
@@ -12,15 +20,10 @@ const useTokenHeader = () => {
       showFailure("The selected key is not a server key");
       return {};
     }
-
-    return {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + activeKey.token
-    };
+    return getHeaderWithToken(activeKey.token);
   };
 
-  return { getHeader };
+  return { getHeader, getHeaderWithToken };
 };
 
 export default useTokenHeader;

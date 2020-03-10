@@ -6,7 +6,7 @@ import ToastContext from "../context/ToastContext";
 
 const useTreatmentProviderApi = () => {
   const { getHeader } = useTokenHeader();
-  const { showFailure } = useContext(ToastContext);
+  const { showFailure, showSuccess } = useContext(ToastContext);
 
   const getTreatmentProviders = async (): Promise<TreatmentProviderMessage[]> => {
     const response = await fetch(endpoints.treatmentProvider.base);
@@ -39,6 +39,7 @@ const useTreatmentProviderApi = () => {
     });
 
     if (response.status == 200) {
+      showSuccess("Successfully registered as a provider");
       return true;
     } else {
       showFailure("Failed to get provider info");

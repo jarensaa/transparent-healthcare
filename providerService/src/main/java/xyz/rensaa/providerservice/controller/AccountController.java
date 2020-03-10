@@ -14,47 +14,51 @@ import java.util.Map;
 @RequestMapping("/accounts")
 public class AccountController {
 
-    @Autowired
-    private AccountService accountService;
+  @Autowired
+  private AccountService accountService;
 
-    @Autowired
-    private Web3Service web3Service;
+  @Autowired
+  private Web3Service web3Service;
 
-    @Autowired
-    private KeyRepositoryService keyRepositoryService;
+  @Autowired
+  private KeyRepositoryService keyRepositoryService;
 
-    @GetMapping("/rich")
-    public Map<String, String> getRichAccounts() {
-        return accountService.getRichAccounts();
-    }
+  @GetMapping("/rich")
+  public Map<String, String> getRichAccounts() {
+    return accountService.getRichAccounts();
+  }
 
-    @GetMapping("/generated")
-    public Map<String, String> getGeneratedAccounts() {
-        return accountService.getGeneratedAccounts();
-    }
+  @GetMapping("/generated")
+  public Map<String, String> getGeneratedAccounts() {
+    return accountService.getGeneratedAccounts();
+  }
 
-    @GetMapping("/authority")
-    public KeyMessage getAuthorityAccount() {
-        return accountService.getAuthorityKey();
-    }
+  @GetMapping("/authority")
+  public KeyMessage getAuthorityAccount() {
+    return accountService.getAuthorityKey();
+  }
 
-    @GetMapping("/{address}/balance")
-    public BigInteger isAuthorized(@PathVariable("address") String address) {
-      return web3Service.getAddressBalanceInWei(address);
-    }
+  @GetMapping("/{address}/balance")
+  public BigInteger isAuthorized(@PathVariable("address") final String address) {
+    return web3Service.getAddressBalanceInWei(address);
+  }
 
-    @PostMapping("/{address}/send/{amount}")
-    public boolean send(@PathVariable("address") String address,
-                        @PathVariable("amount") String amount,
-                        @RequestHeader("Authorization") String bearerToken) {
-        String privateKey = keyRepositoryService.getKeyFromBearerToken(bearerToken).getPrivateKey();
-        web3Service.sendEth(privateKey, address, new BigInteger(amount));
-        return true;
-    }
+  @PostMapping("/{address}/send/{amount}")
+  public boolean send(@PathVariable("address") final String address,
+                      @PathVariable("amount") final String amount,
+                      @RequestHeader("Authorization") final String bearerToken) {
+    final String privateKey = keyRepositoryService.getKeyFromBearerToken(bearerToken).getPrivateKey();
+    web3Service.sendEth(privateKey, address, new BigInteger(amount));
+    return true;
+  }
 
+  @GetMapping("/valid")
+  public boolean isKeyValid(@RequestHeader("Authorization") final String bearerToken) {
+    return keyRepositoryService.isValidToken(bearerToken);
+  }
 
-    @GetMapping("/create")
-    public KeyMessage getNewGeneratedKey() throws Exception {
-        return accountService.getNewGeneratedKey();
-    }
+  @GetMapping("/create")
+  public KeyMessage getNewGeneratedKey() throws Exception {
+    return accountService.getNewGeneratedKey();
+  }
 }

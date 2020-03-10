@@ -3,6 +3,7 @@ import endpoints from "../config/endpoints";
 import Key from "../types/Key";
 import GeneratedKey, { isGeneratedKey } from "../types/GeneratedKey";
 import AuthorizationKey, { isAuthorizationKey } from "../dto/KeyAuthorization";
+import useTokenHeader from "../hooks/useTokenHeader";
 
 type KeyContext = {
   keys: Key[];
@@ -82,6 +83,7 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
     true
   );
   const [balances, setBalances] = useState<Map<string, bigint>>(new Map());
+  const { getHeaderWithToken } = useTokenHeader();
 
   const addKey = (key: Key): void => {
     setKeys(previousKeyState => {
@@ -124,7 +126,19 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
     const serlializedKeys = localStorage.getItem("keys");
     if (serlializedKeys != null) {
       const keys = deserializeKeys(serlializedKeys);
-      setKeys(keys);
+      const authorizationKeys = keys.filter(isAuthorizationKey);
+      const otherKeys = keys.filter(key => !isAuthorizationKey(key));
+      localStorage.setItem("keys", serializeKeys(otherKeys));
+      setKeys(otherKeys);
+      authorizationKeys.forEach(key => {
+        fetch(endpoints.accounts.valid, {
+          headers: getHeaderWithToken(key.token)
+        })
+          .then(res => res.json())
+          .then(keyIsValid => {
+            if (keyIsValid) addKey(key);
+          });
+      });
     }
   }, []);
 

@@ -11,14 +11,8 @@ import styled from "styled-components";
 import { Card, HTMLTable } from "@blueprintjs/core";
 
 const AreaGrid = styled.div`
-  display: grid;
-  grid-template-rows: 80px auto auto auto;
-  grid-template-columns: 500px auto;
-  grid-template-areas:
-    "title none"
-    "send send"
-    "keystitle keystitle"
-    "keys keys";
+  display: flex;
+  flex-direction: column;
 `;
 
 const CardAreaWrapper = styled.div`
@@ -102,7 +96,7 @@ const TreatmentProviderView = () => {
 
   return (
     <AreaGrid>
-      <h1>Treatment Provider trust management</h1>
+      <h1>Treatment Providers</h1>
       <CardAreaWrapper>{untrustedProviderCards}</CardAreaWrapper>
     </AreaGrid>
   );

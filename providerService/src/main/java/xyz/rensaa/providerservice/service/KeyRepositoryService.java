@@ -12,8 +12,13 @@ public class KeyRepositoryService {
   @Autowired
   private KeyAuthorizationRepository keyAuthorizationRepository;
 
-  public KeyAuthorization getKeyFromBearerToken(String bearerToken) {
-    var token = bearerToken.substring(7);
+  public KeyAuthorization getKeyFromBearerToken(final String bearerToken) {
+    final var token = bearerToken.substring(7);
     return keyAuthorizationRepository.findById(token).orElseThrow(UnauthorizedException::new);
+  }
+
+  public boolean isValidToken(final String bearerToken) {
+    final var token = bearerToken.substring(7);
+    return keyAuthorizationRepository.findById(token).isPresent();
   }
 }
