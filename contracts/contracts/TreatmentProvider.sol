@@ -15,7 +15,7 @@ contract TreatmentProvider is ITreatmentProviderManager {
     modifier senderIsAuthority() {
         require(
             authorityContract.isAuthorized(msg.sender),
-            "Sender not trusted by Authority"
+            "Sender is not an Authority"
         );
         _;
     }

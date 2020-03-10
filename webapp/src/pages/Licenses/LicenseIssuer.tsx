@@ -40,7 +40,7 @@ const LicenseIssuerPage: FunctionComponent = () => {
   if (!activeKey) {
     return (
       <div>
-        <h1>Treatment Provider</h1>
+        <h1>License Issuer</h1>
         <Callout>You must select a key to access this page</Callout>
       </div>
     );

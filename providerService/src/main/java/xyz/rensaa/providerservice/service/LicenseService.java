@@ -174,7 +174,7 @@ public class LicenseService {
       return licenseProviderAddresses.stream()
           .map(licenseProviderAddress -> ImmutableLicenseProviderMessage.builder()
               .address(licenseProviderAddress)
-              .isTrusted(isLicenseIssuerTrusted(licenseProviderAddress))
+              .isTrusted(isLicenseProviderTrusted(licenseProviderAddress))
               .trustingAuthority(getAuthorityTrustingLicenseProvider(licenseProviderAddress))
               .build()
           ).collect(Collectors.toList());
@@ -184,7 +184,32 @@ public class LicenseService {
     }
   }
 
-  public boolean registerAsProvider(final String privateKey, final String address) {
+  public LicenseProviderMessage getLicenseProvider(final String address) {
+    try {
+      final var isProvider = defaultLicenseProvider.isLicenseProvider(address).send();
+      if (!isProvider) throw new NoContentException();
+
+      final var isTrusted = defaultLicenseProvider.isTrustedProvider(address).send();
+      final var licenseProviderMessageBuilder = ImmutableLicenseProviderMessage.builder()
+          .address(address)
+          .isTrusted(isTrusted);
+
+      if (isTrusted) {
+        final var trustingAuthority = defaultLicenseProvider.getAuthorityTrustingLicenseProvider(address).send();
+        licenseProviderMessageBuilder.trustingAuthority(trustingAuthority);
+      }
+
+      return licenseProviderMessageBuilder.build();
+
+    } catch (final NoContentException e) {
+      throw e;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean registerAsProvider(final String privateKey) {
     try {
       cLicenseProviderFactory.fromPrivateKey(privateKey).registerProvider().send();
       return true;
@@ -194,7 +219,7 @@ public class LicenseService {
     }
   }
 
-  public boolean deregisterAsProvider(final String privateKey, final String address) {
+  public boolean deregisterAsProvider(final String privateKey) {
     try {
       cLicenseProviderFactory.fromPrivateKey(privateKey).removeProvider().send();
       return true;

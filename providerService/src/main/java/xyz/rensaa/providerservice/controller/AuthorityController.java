@@ -26,8 +26,10 @@ public class AuthorityController {
   }
 
   @GetMapping("/{address}/isAuthorized")
-  public boolean isAuthorized(@PathVariable("address") String address) {
-    if (!WalletUtils.isValidAddress(address)) { return false; }
+  public boolean isAuthorized(@PathVariable("address") final String address) {
+    if (!WalletUtils.isValidAddress(address)) {
+      return false;
+    }
     return authorityService.isAuthorized(address);
   }
 
@@ -37,25 +39,25 @@ public class AuthorityController {
   }
 
   @PostMapping("/proposals")
-  public boolean propose(@RequestBody ProposalMessage propsal,
-                         @RequestHeader("Authorization") String bearerToken) {
-    var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
-    if(!propsal.proposer().equals(storedAuthorization.getAddress())) throw new UnauthorizedException();
+  public boolean propose(@RequestBody final ProposalMessage propsal,
+                         @RequestHeader("Authorization") final String bearerToken) {
+    final var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+    if (!propsal.proposer().equals(storedAuthorization.getAddress())) throw new UnauthorizedException();
     authorityService.proposeAuthority(propsal, storedAuthorization.getPrivateKey());
     return true;
   }
 
   @PostMapping("/proposals/{proposalId}/vote")
-  public boolean voteOnProposal(@PathVariable("proposalId") int proposalId,
-                                @RequestHeader("Authorization") String bearerToken) {
-    var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+  public boolean voteOnProposal(@PathVariable("proposalId") final int proposalId,
+                                @RequestHeader("Authorization") final String bearerToken) {
+    final var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
     return authorityService.voteOnProposal(proposalId, storedAuthorization.getPrivateKey());
   }
 
   @PostMapping("/proposals/{proposalId}/enact")
-  public boolean enactProposal(@PathVariable("proposalId") int proposalId,
-                                @RequestHeader("Authorization") String bearerToken) {
-    var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+  public boolean enactProposal(@PathVariable("proposalId") final int proposalId,
+                               @RequestHeader("Authorization") final String bearerToken) {
+    final var storedAuthorization = keyRepositoryService.getKeyFromBearerToken(bearerToken);
     return authorityService.enactProposal(proposalId, storedAuthorization.getPrivateKey());
   }
 

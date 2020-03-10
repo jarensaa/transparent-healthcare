@@ -8,7 +8,8 @@ import SidebarArea from "../types/SidebarArea";
 import TreatmentProviderView from "../pages/Authority/TreatmentProviderView";
 import LicenseIssuerView from "../pages/Authority/LicenseIssuerView";
 import LicenseProviderView from "../pages/Authority/LicenseProviderView";
-import LicenseIssuerPage from "../pages/LicenseIssuer/LicenseIssuer";
+import LicenseIssuerPage from "../pages/Licenses/LicenseIssuer";
+import LicenseProviderPage from "../pages/Licenses/LicenseProvider";
 
 interface RouteDefinition {
   title: string;
@@ -72,6 +73,13 @@ const routes: RouteDefinition[] = [
     path: "/licenseissuer",
     exact: true,
     Component: LicenseIssuerPage,
+    sidebarArea: "licenses"
+  },
+  {
+    title: "Provider",
+    path: "/licenseprovider",
+    exact: true,
+    Component: LicenseProviderPage,
     sidebarArea: "licenses"
   },
   {

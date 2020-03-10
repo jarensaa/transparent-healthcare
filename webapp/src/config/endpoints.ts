@@ -3,7 +3,7 @@ import config from "./properties";
 const endpoints = {
   authority: {
     base: config.authorityBase,
-    proposals: config.authorityBase,
+    proposals: config.authorityBase + "/proposals",
     voteOnProposal: (id: number) =>
       config.authorityBase + "/proposals/" + id + "/vote",
     enactProposal: (id: number) =>
@@ -35,6 +35,15 @@ const endpoints = {
       config.licenseIssuerBase + "/" + address + "/addtrust",
     removeTrustInIssuer: (address: string) =>
       config.licenseIssuerBase + "/" + address + "/removetrust"
+  },
+  licenseProviders: {
+    base: config.licenseProviderBase,
+    getByAddress: (address: string) =>
+      config.licenseProviderBase + "/" + address,
+    addTrustInProvider: (address: string) =>
+      config.licenseProviderBase + "/" + address + "/addtrust",
+    removeTrustInProvider: (address: string) =>
+      config.licenseProviderBase + "/" + address + "/removetrust"
   }
 };
 

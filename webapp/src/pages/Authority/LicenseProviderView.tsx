@@ -1,10 +1,15 @@
-import React, { useContext, FunctionComponent, Fragment } from "react";
-import TreatmentProviderMessage from "../../dto/TreatmentProvider";
+import React, {
+  useContext,
+  FunctionComponent,
+  Fragment,
+  useState,
+  useEffect
+} from "react";
 import KeyContext from "../../context/KeyContext";
-import AuthorityViewsContext from "../../context/TreatmentProviderViewContext";
 import styled from "styled-components";
 import { Card, HTMLTable, Button, Intent, Callout } from "@blueprintjs/core";
-import useTreatmentProviderApi from "../../hooks/useTreatmentProviderApi";
+import LicenseProviderMessage from "../../dto/LicenseProviderMessage";
+import useLicenseProviderApi from "../../hooks/useLicenseProviderApi";
 
 const AreaGrid = styled.div`
   display: flex;
@@ -32,7 +37,7 @@ const WrappingTableData = styled.td`
 const TableWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 90px;
+  height: 110px;
   width: 410px;
 `;
 
@@ -41,7 +46,7 @@ const AddTrustButtonWrapper = styled.div`
 `;
 
 interface ProviderCardProps {
-  provider: TreatmentProviderMessage;
+  provider: LicenseProviderMessage;
   showTrustButton: boolean;
 }
 
@@ -50,17 +55,18 @@ const ProviderCard: FunctionComponent<ProviderCardProps> = ({
   showTrustButton
 }) => {
   const {
-    addTrustInProvider,
-    removeTrustInProvider
-  } = useTreatmentProviderApi();
+    addTrustInLicenseProvider,
+    removeTrustInLicenseProvider
+  } = useLicenseProviderApi();
+  const { activeKey } = useContext(KeyContext);
 
   const TrustButton = showTrustButton ? (
-    provider.isTrusted ? (
+    provider.isTrusted && provider.trustingAuthority == activeKey?.address ? (
       <AddTrustButtonWrapper>
         <Button
           minimal
           intent={Intent.DANGER}
-          onClick={() => removeTrustInProvider(provider.address)}
+          onClick={() => removeTrustInLicenseProvider(provider.address)}
           rightIcon="delete"
         >
           Remove trust
@@ -71,7 +77,7 @@ const ProviderCard: FunctionComponent<ProviderCardProps> = ({
         <Button
           minimal
           intent={Intent.PRIMARY}
-          onClick={() => addTrustInProvider(provider.address)}
+          onClick={() => addTrustInLicenseProvider(provider.address)}
           rightIcon="add"
         >
           Add trust
@@ -98,6 +104,12 @@ const ProviderCard: FunctionComponent<ProviderCardProps> = ({
                 <th>IsTrusted</th>
                 <td>{provider.isTrusted ? "true" : "false"}</td>
               </tr>
+              <tr>
+                <th>Trusted by</th>
+                <WrappingTableData>
+                  {provider.isTrusted ? provider.trustingAuthority : "None"}
+                </WrappingTableData>
+              </tr>
             </tbody>
           </HTMLTable>
           {TrustButton}
@@ -108,22 +120,25 @@ const ProviderCard: FunctionComponent<ProviderCardProps> = ({
 };
 
 const LicenseProviderView = () => {
-  const { treatmentProviders } = useContext(AuthorityViewsContext);
+  const [licenseProviders, setLicenseProviders] = useState<
+    LicenseProviderMessage[]
+  >([]);
   const { activeKey } = useContext(KeyContext);
+  const { getLicenseProviders } = useLicenseProviderApi();
 
-  const trustedProviders: TreatmentProviderMessage[] = [];
-  let untrustedProviders: TreatmentProviderMessage[] = [];
+  const trustedProviders: LicenseProviderMessage[] = [];
+  let untrustedProviders: LicenseProviderMessage[] = [];
 
   if (activeKey) {
-    treatmentProviders.forEach(provider => {
-      if (provider?.trustedBy?.includes(activeKey.address)) {
-        trustedProviders.push(provider);
+    licenseProviders.forEach(issuer => {
+      if (issuer?.trustingAuthority === activeKey.address) {
+        trustedProviders.push(issuer);
       } else {
-        untrustedProviders.push(provider);
+        untrustedProviders.push(issuer);
       }
     });
   } else {
-    untrustedProviders = treatmentProviders;
+    untrustedProviders = licenseProviders;
   }
 
   const showTrustButton = activeKey ? true : false;
@@ -145,14 +160,18 @@ const LicenseProviderView = () => {
   ));
 
   const CalloutFragment = activeKey ? (
-    <Callout>You do not trust any treatment providers yet</Callout>
+    <Callout>You do not trust any license providers yet</Callout>
   ) : (
-    <Callout>Please select a key to see trusted treatment providers</Callout>
+    <Callout>Please select a key to see your trusted license providers</Callout>
   );
+
+  useEffect(() => {
+    getLicenseProviders().then(setLicenseProviders);
+  }, []);
 
   return (
     <AreaGrid>
-      <h1>Treatment Providers</h1>
+      <h1>License Providers</h1>
       <p>
         License providers are organizations who hire license holders. Examples
         of such organizations include hospitals, clinics, second opinion
@@ -167,12 +186,12 @@ const LicenseProviderView = () => {
       ) : (
         CalloutFragment
       )}
-      <h2>Treatment providers who you do not trust</h2>
+      <h2>License providers who you do not trust</h2>
       {untrustedProviderCards.length > 0 ? (
         <CardAreaWrapper>{untrustedProviderCards}</CardAreaWrapper>
       ) : (
         <Callout>
-          There is no Treatment Providers who's not trusted by you.
+          There are no License Providers who's not trusted by you.
         </Callout>
       )}
     </AreaGrid>

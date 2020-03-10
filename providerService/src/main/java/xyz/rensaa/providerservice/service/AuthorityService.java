@@ -31,8 +31,8 @@ public class AuthorityService {
       return defaultAuthorityManager.isAuthorized(address).send();
     } catch (final Exception e) {
       logger.error("Could not process Authority.isAuthorized transaction", e);
+      throw new TransactionFailedException(e.getMessage());
     }
-    return false;
   }
 
   public List<String> getAuthorities() {
@@ -40,7 +40,7 @@ public class AuthorityService {
       return defaultAuthorityManager.getAuthorities().send();
     } catch (final Exception e) {
       logger.error("Could not fetch authorities", e);
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -67,7 +67,7 @@ public class AuthorityService {
       }
     } catch (final Exception e) {
       logger.error("Could not get number of proposals");
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
     return proposals;
   }
@@ -80,7 +80,7 @@ public class AuthorityService {
       return true;
     } catch (final Exception e) {
       logger.error("Count not send proposal", e);
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -99,7 +99,7 @@ public class AuthorityService {
       }
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
 
     return null;
@@ -114,7 +114,7 @@ public class AuthorityService {
       return true;
     } catch (final Exception e) {
       logger.error("Count not vote on proposal", e);
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -126,7 +126,7 @@ public class AuthorityService {
       return true;
     } catch (final Exception e) {
       logger.error("Count not enact proposal", e);
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 

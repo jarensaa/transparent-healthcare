@@ -53,9 +53,12 @@ const ProviderCard: FunctionComponent<ProviderCardProps> = ({
     addTrustInProvider,
     removeTrustInProvider
   } = useTreatmentProviderApi();
+  const { activeKey } = useContext(KeyContext);
 
   const TrustButton = showTrustButton ? (
-    provider.isTrusted ? (
+    provider.isTrusted &&
+    activeKey?.address &&
+    provider.trustedBy?.includes(activeKey?.address) ? (
       <AddTrustButtonWrapper>
         <Button
           minimal

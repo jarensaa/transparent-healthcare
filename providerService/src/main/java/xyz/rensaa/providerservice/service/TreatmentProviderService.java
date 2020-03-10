@@ -43,7 +43,7 @@ public class TreatmentProviderService {
     } catch (final Exception e) {
       logger.warn("Failed to remove sender as treatmentProvider. {}", e.getMessage());
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -52,7 +52,7 @@ public class TreatmentProviderService {
       return defaultTreatmentProvider.isProvider(address).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -62,7 +62,7 @@ public class TreatmentProviderService {
     } catch (final Exception e) {
       logger.warn("Failed to get registered providers. {}", e.getMessage());
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -72,7 +72,7 @@ public class TreatmentProviderService {
     } catch (final Exception e) {
       logger.warn("Failed to get provider trustees. {}", e.getMessage());
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -95,7 +95,7 @@ public class TreatmentProviderService {
       return defaultTreatmentProvider.isTrustedProvider(address).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -105,7 +105,7 @@ public class TreatmentProviderService {
     } catch (final Exception e) {
       logger.warn("Failed to add trust in provider. {}", e.getMessage());
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -115,7 +115,7 @@ public class TreatmentProviderService {
     } catch (final Exception e) {
       logger.warn("Failed to remove trust in provider. {}", e.getMessage());
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
