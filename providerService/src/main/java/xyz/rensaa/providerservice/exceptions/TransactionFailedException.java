@@ -5,5 +5,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
-public class TransactionFailedException extends RuntimeException{
+public class TransactionFailedException extends RuntimeException {
+  public TransactionFailedException() {
+  }
+
+  public TransactionFailedException(final String message) {
+    super(message);
+  }
 }

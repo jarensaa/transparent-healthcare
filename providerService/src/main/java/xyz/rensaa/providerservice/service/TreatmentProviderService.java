@@ -32,7 +32,7 @@ public class TreatmentProviderService {
     } catch (final Exception e) {
       logger.warn("Failed to register sender as TreatmentProvider. {}", e.getMessage());
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 

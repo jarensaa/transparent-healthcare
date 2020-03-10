@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import xyz.rensaa.providerservice.LicenseProvider;
 import xyz.rensaa.providerservice.contracts.CLicenseProviderFactory;
 import xyz.rensaa.providerservice.dto.*;
+import xyz.rensaa.providerservice.exceptions.NoContentException;
 import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class LicenseService {
           .collect(Collectors.toList());
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -46,16 +47,59 @@ public class LicenseService {
       return defaultLicenseProvider.isLicenseTrusted(address).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
-  public void registerLicense(final String issuerPrivateKey, final String licenseAddress) {
+  public void issueLicense(final String issuerPrivateKey, final String licenseAddress) {
     try {
       cLicenseProviderFactory.fromPrivateKey(issuerPrivateKey).issueLicenseToAddress(licenseAddress).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public LicenseIssuer getIssuer(final String address) {
+    try {
+      final boolean isIssuer = defaultLicenseProvider.isLicenseIssuer(address).send();
+      if (!isIssuer) throw new NoContentException();
+      final boolean isTrusted = defaultLicenseProvider.isTrustedLicenseIssuer(address).send();
+
+      final var issuerBuilder = ImmutableLicenseIssuer.builder().address(address).isTrusted(isTrusted);
+
+      if (isTrusted) {
+        final String trustingAuthority = defaultLicenseProvider.getAuthorityTrustingLicenseIssuer(address).send();
+        issuerBuilder.trustingAuthority(trustingAuthority);
+      }
+
+      return issuerBuilder.build();
+
+    } catch (final NoContentException e) {
+      throw new NoContentException();
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean registerAsIssuer(final String privateKey) {
+    try {
+      cLicenseProviderFactory.fromPrivateKey(privateKey).registerSenderAsIssuer().send();
+      return true;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean deregisterAsIssuer(final String privateKey) {
+    try {
+      cLicenseProviderFactory.fromPrivateKey(privateKey).removeSenderAsIssuer().send();
+      return true;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -64,7 +108,27 @@ public class LicenseService {
       return defaultLicenseProvider.isTrustedLicenseIssuer(address).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean addTrustInIssuer(final String privateKey, final String address) {
+    try {
+      cLicenseProviderFactory.fromPrivateKey(privateKey).addTrustInLicenseIssuer(address).send();
+      return true;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean removeTrustInIssuer(final String privateKey, final String address) {
+    try {
+      cLicenseProviderFactory.fromPrivateKey(privateKey).removeTrustInLicenseIssuer(address).send();
+      return true;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -75,31 +139,31 @@ public class LicenseService {
       return licenseIssuerAddresses.stream()
           .map(address -> ImmutableLicenseIssuer.builder()
               .address(address)
-              .trustingAuthority(getAuthorityTrustingLicense(address))
+              .trustingAuthority(getAuthorityTrustingLicenseIssuer(address))
               .isTrusted(isLicenseIssuerTrusted(address))
               .build())
           .collect(Collectors.toList());
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
-  public String getAuthorityTrustingLicense(final String licenseAddress) {
+  public String getAuthorityTrustingLicenseIssuer(final String licenseAddress) {
     try {
-      return defaultLicenseProvider.getAuthorityTrustingLicense(licenseAddress).send();
+      return defaultLicenseProvider.getAuthorityTrustingLicenseIssuer(licenseAddress).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
   public boolean isLicenseIssuerTrusted(final String licenseAddress) {
     try {
-      return defaultLicenseProvider.isLicenseTrusted(licenseAddress).send();
+      return defaultLicenseProvider.isTrustedLicenseIssuer(licenseAddress).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -116,7 +180,27 @@ public class LicenseService {
           ).collect(Collectors.toList());
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean registerAsProvider(final String privateKey, final String address) {
+    try {
+      cLicenseProviderFactory.fromPrivateKey(privateKey).registerProvider().send();
+      return true;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean deregisterAsProvider(final String privateKey, final String address) {
+    try {
+      cLicenseProviderFactory.fromPrivateKey(privateKey).removeProvider().send();
+      return true;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
@@ -125,16 +209,36 @@ public class LicenseService {
       return defaultLicenseProvider.isTrustedProvider(providerAddress).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean addTrustInLicenseProvider(final String privateKey, final String providerAddress) {
+    try {
+      cLicenseProviderFactory.fromPrivateKey(privateKey).addTrustInProvider(providerAddress).send();
+      return true;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
+  public boolean removeTrustInLicenseProvider(final String privateKey, final String providerAddress) {
+    try {
+      cLicenseProviderFactory.fromPrivateKey(privateKey).removeTrustInProvider(providerAddress).send();
+      return true;
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 
   public String getAuthorityTrustingLicenseProvider(final String licenseProvider) {
     try {
-      return defaultLicenseProvider.getAuthorityTrustingProvider(licenseProvider).send();
+      return defaultLicenseProvider.getAuthorityTrustingLicenseProvider(licenseProvider).send();
     } catch (final Exception e) {
       e.printStackTrace();
-      throw new TransactionFailedException();
+      throw new TransactionFailedException(e.getMessage());
     }
   }
 

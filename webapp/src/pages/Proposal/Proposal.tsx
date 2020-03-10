@@ -1,7 +1,6 @@
-import React, { useEffect, useContext, Fragment, useState } from "react";
+import React, { useContext, Fragment } from "react";
 import { useParams } from "react-router-dom";
 import AuthorityContext from "../../context/AuthorityContext";
-import ProposalEvent from "../../dto/ProposalEvent";
 import styled from "styled-components";
 import { Spinner, Button, Intent } from "@blueprintjs/core";
 import ProposalInfoTable from "./components/ProposalInfoTable";

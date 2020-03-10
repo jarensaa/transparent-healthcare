@@ -1,40 +1,28 @@
-import TreatmentProviderMessage from "../dto/TreatmentProvider";
 import endpoints from "../config/endpoints";
 import useTokenHeader from "./useTokenHeader";
 import { useContext } from "react";
 import ToastContext from "../context/ToastContext";
+import LicenseIssuerMessage from "../dto/LicenseIssuerMessage";
 
-const useTreatmentProviderApi = () => {
+const useLicenseIssuerApi = () => {
   const { getHeader } = useTokenHeader();
   const { showFailure, showSuccess } = useContext(ToastContext);
 
-  const getTreatmentProviders = async (): Promise<TreatmentProviderMessage[]> => {
-    const response = await fetch(endpoints.treatmentProvider.base);
+  const getLicenseIssuers = async (): Promise<LicenseIssuerMessage[]> => {
+    const response = await fetch(endpoints.licenseIssuers.base);
 
     if (response.ok) {
       return response.json();
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return [];
     }
-
-    return [];
   };
 
-  const getTreatmentProvider = async (
-    address: string
-  ): Promise<TreatmentProviderMessage | undefined> => {
+  const addTrustInLicenseIssuer = async (address: string): Promise<boolean> => {
     const response = await fetch(
-      endpoints.treatmentProvider.getByAddress(address)
-    );
-
-    if (response.status === 200) {
-      return response.json();
-    }
-
-    return;
-  };
-
-  const addTrustInProvider = async (address: string): Promise<boolean> => {
-    const response = await fetch(
-      endpoints.treatmentProvider.addTrustInAddress(address),
+      endpoints.licenseIssuers.addTrustInIssuer(address),
       {
         method: "POST",
         headers: getHeader()
@@ -42,7 +30,7 @@ const useTreatmentProviderApi = () => {
     );
 
     if (response.ok) {
-      showSuccess("Sucessfully added trust in provider");
+      showSuccess("Sucessfully added trust in license issuer");
       return true;
     } else {
       const errorText = await response.json();
@@ -51,9 +39,11 @@ const useTreatmentProviderApi = () => {
     }
   };
 
-  const removeTrustInProvider = async (address: string): Promise<boolean> => {
+  const removeTrustInLicenseIssuer = async (
+    address: string
+  ): Promise<boolean> => {
     const response = await fetch(
-      endpoints.treatmentProvider.removeTrustInAddress(address),
+      endpoints.licenseIssuers.removeTrustInIssuer(address),
       {
         method: "POST",
         headers: getHeader()
@@ -61,7 +51,7 @@ const useTreatmentProviderApi = () => {
     );
 
     if (response.ok) {
-      showSuccess("Sucessfully removed trust in provider");
+      showSuccess("Sucessfully removed trust in license issuer");
       return true;
     } else {
       const errorText = await response.json();
@@ -71,13 +61,13 @@ const useTreatmentProviderApi = () => {
   };
 
   const registerKey = async (): Promise<boolean> => {
-    const response = await fetch(endpoints.treatmentProvider.base, {
+    const response = await fetch(endpoints.licenseIssuers.base, {
       method: "POST",
       headers: getHeader()
     });
 
     if (response.status === 200) {
-      showSuccess("Successfully registered as a provider");
+      showSuccess("Successfully registered as a license issuer");
       return true;
     } else {
       const parsedResponse = await response.json();
@@ -88,12 +78,11 @@ const useTreatmentProviderApi = () => {
   };
 
   return {
-    getTreatmentProviders,
-    getTreatmentProvider,
-    addTrustInProvider,
-    removeTrustInProvider,
+    getLicenseIssuers,
+    addTrustInLicenseIssuer,
+    removeTrustInLicenseIssuer,
     registerKey
   };
 };
 
-export default useTreatmentProviderApi;
+export default useLicenseIssuerApi;

@@ -107,7 +107,7 @@ const ProviderCard: FunctionComponent<ProviderCardProps> = ({
   );
 };
 
-const TreatmentProviderView = () => {
+const LicenseProviderView = () => {
   const { treatmentProviders } = useContext(AuthorityViewsContext);
   const { activeKey } = useContext(KeyContext);
 
@@ -154,12 +154,12 @@ const TreatmentProviderView = () => {
     <AreaGrid>
       <h1>Treatment Providers</h1>
       <p>
-        Treatment providers are organizations who issue treatments to patients.
-        These can for example be clinics, hospitals, etc. Top level authorities
-        can add trust to treatment providers to add legitimacy to them, and thus
-        allow them to issue treatments. If Treatment Providers misbehave, the
-        trusting authority can remove their trust in them, thus preventing them
-        from issuing new treatments on the blockchain.
+        License providers are organizations who hire license holders. Examples
+        of such organizations include hospitals, clinics, second opinion
+        services and e-health apps. A license must be assoicated with a trusted
+        license provider to be trusted. If License Providers misbehave, the
+        trusting authority can remove their trust in them, thus preventing the
+        used licenses from being trusted.
       </p>
       <h2>Treatment providers who you trust</h2>
       {trustedProviderCards.length > 0 ? (
@@ -179,4 +179,4 @@ const TreatmentProviderView = () => {
   );
 };
 
-export default TreatmentProviderView;
+export default LicenseProviderView;

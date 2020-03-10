@@ -120,6 +120,10 @@ contract LicenseProvider is ILicenseProviderManager {
         emit RemovedLicenseIssuer(msg.sender);
     }
 
+    function isLicenseIssuer(address _address) external view returns (bool) {
+        return isIssuer[_address];
+    }
+
     function isTrustedLicenseIssuer(address _address)
         external
         view
@@ -204,6 +208,10 @@ contract LicenseProvider is ILicenseProviderManager {
         delete isProvider[msg.sender];
         delete providerTrustedByAuthority[msg.sender];
         emit ProviderRemoved(msg.sender);
+    }
+
+    function isLicenseProvider(address _address) external view returns (bool) {
+        return isProvider[_address];
     }
 
     function isTrustedProvider(address _address)
@@ -389,7 +397,7 @@ contract LicenseProvider is ILicenseProviderManager {
 
     }
 
-    function getAuthorityTrustingLicense(address _license)
+    function getAuthorityTrustingLicenseIssuer(address _license)
         external
         view
         returns (address)
@@ -397,7 +405,7 @@ contract LicenseProvider is ILicenseProviderManager {
         return issuerTrustedByAuthority[_license];
     }
 
-    function getAuthorityTrustingProvider(address _provider)
+    function getAuthorityTrustingLicenseProvider(address _provider)
         external
         view
         returns (address)

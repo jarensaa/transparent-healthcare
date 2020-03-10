@@ -1,4 +1,4 @@
-import React, { useContext, FunctionComponent } from "react";
+import React, { useContext } from "react";
 import KeyContext from "../../context/KeyContext";
 import { Callout, Card, Button, Intent, Spinner } from "@blueprintjs/core";
 import TreatmentProviderContext, {

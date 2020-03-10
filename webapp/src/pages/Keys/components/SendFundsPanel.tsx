@@ -96,10 +96,6 @@ const SendFundsPanel: FunctionComponent = () => {
     ? balances.get(firstAccount.address) ?? 0
     : 0;
 
-  const secondBalance = secondAccount?.address
-    ? balances.get(secondAccount.address) ?? 0
-    : 0;
-
   const isAmountOk = amount < firstBalance;
 
   const isAllOk =

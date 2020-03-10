@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 
 import java.util.List;
+import java.util.Optional;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableLicenseIssuer.class)
@@ -16,7 +17,7 @@ public interface LicenseIssuer {
   String address();
 
   @JsonProperty("trustingAuthority")
-  String trustingAuthority();
+  Optional<String> trustingAuthority();
 
   @JsonProperty("isTrusted")
   boolean isTrusted();

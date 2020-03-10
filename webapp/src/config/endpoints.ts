@@ -2,12 +2,12 @@ import config from "./properties";
 
 const endpoints = {
   authority: {
-    base: config.serverUrl + "/authorities",
-    proposals: config.serverUrl + "/authorities/proposals",
+    base: config.authorityBase,
+    proposals: config.authorityBase,
     voteOnProposal: (id: number) =>
-      config.serverUrl + "/authorities/proposals/" + id + "/vote",
+      config.authorityBase + "/proposals/" + id + "/vote",
     enactProposal: (id: number) =>
-      config.serverUrl + "/authorities/proposals/" + id + "/enact"
+      config.authorityBase + "/proposals/" + id + "/enact"
   },
   accounts: {
     base: config.serverUrl + "/accounts",
@@ -22,7 +22,19 @@ const endpoints = {
   treatmentProvider: {
     base: config.serverUrl + "/treatmentproviders",
     getByAddress: (address: string) =>
-      config.serverUrl + "/treatmentproviders/" + address
+      config.treatmentProviderBase + "/" + address,
+    addTrustInAddress: (address: string) =>
+      config.treatmentProviderBase + "/" + address + "/addtrust",
+    removeTrustInAddress: (address: string) =>
+      config.treatmentProviderBase + "/" + address + "/removetrust"
+  },
+  licenseIssuers: {
+    base: config.licenseIssuerBase,
+    getByAddress: (address: string) => config.licenseIssuerBase + "/" + address,
+    addTrustInIssuer: (address: string) =>
+      config.licenseIssuerBase + "/" + address + "/addtrust",
+    removeTrustInIssuer: (address: string) =>
+      config.licenseIssuerBase + "/" + address + "/removetrust"
   }
 };
 

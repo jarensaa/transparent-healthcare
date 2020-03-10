@@ -6,6 +6,9 @@ import { FunctionComponent } from "react";
 import Proposal from "../pages/Proposal/Proposal";
 import SidebarArea from "../types/SidebarArea";
 import TreatmentProviderView from "../pages/Authority/TreatmentProviderView";
+import LicenseIssuerView from "../pages/Authority/LicenseIssuerView";
+import LicenseProviderView from "../pages/Authority/LicenseProviderView";
+import LicenseIssuerPage from "../pages/LicenseIssuer/LicenseIssuer";
 
 interface RouteDefinition {
   title: string;
@@ -44,11 +47,32 @@ const routes: RouteDefinition[] = [
     sidebarArea: "authority"
   },
   {
+    title: "License Issuers",
+    path: "/authority/licenseissuers",
+    exact: true,
+    Component: LicenseIssuerView,
+    sidebarArea: "authority"
+  },
+  {
+    title: "License Providers",
+    path: "/authority/licenseproviders",
+    exact: true,
+    Component: LicenseProviderView,
+    sidebarArea: "authority"
+  },
+  {
     title: "Treatment Providers",
     path: "/treatmentProvider",
     exact: true,
     Component: TreatmentProvider,
     sidebarArea: "treatmentProvider"
+  },
+  {
+    title: "Issuer",
+    path: "/licenseissuer",
+    exact: true,
+    Component: LicenseIssuerPage,
+    sidebarArea: "licenses"
   },
   {
     title: "Keys and funds",

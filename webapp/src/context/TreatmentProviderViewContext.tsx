@@ -1,21 +1,16 @@
 import React, { useState, FunctionComponent, useEffect } from "react";
 import TreatmentProviderMessage from "../dto/TreatmentProvider";
-import endpoints from "../config/endpoints";
 import useTreatmentProviderApi from "../hooks/useTreatmentProviderApi";
 
-type TreatmentProviderViewPropos = {
+type AuthorityViewsContextProps = {
   treatmentProviders: TreatmentProviderMessage[];
 };
 
-const TreatmentProviderViewContext = React.createContext<
-  TreatmentProviderViewPropos
->({
+const AuthorityViewsContext = React.createContext<AuthorityViewsContextProps>({
   treatmentProviders: []
 });
 
-const TreatmentProviderViewContextProvider: FunctionComponent = ({
-  children
-}) => {
+const AuthorityViewsContextProvider: FunctionComponent = ({ children }) => {
   const [treatmentProviders, setTreatmentProviders] = useState<
     TreatmentProviderMessage[]
   >([]);
@@ -32,15 +27,15 @@ const TreatmentProviderViewContextProvider: FunctionComponent = ({
   }, []);
 
   return (
-    <TreatmentProviderViewContext.Provider
+    <AuthorityViewsContext.Provider
       value={{
         treatmentProviders: treatmentProviders
       }}
     >
       {children}
-    </TreatmentProviderViewContext.Provider>
+    </AuthorityViewsContext.Provider>
   );
 };
 
-export { TreatmentProviderViewContextProvider };
-export default TreatmentProviderViewContext;
+export { AuthorityViewsContextProvider };
+export default AuthorityViewsContext;

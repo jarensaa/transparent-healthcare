@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import ProposalEvent from "../dto/ProposalEvent";
 import KeyContext from "../context/KeyContext";
 import { isAuthorizationKey } from "../dto/KeyAuthorization";

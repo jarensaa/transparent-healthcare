@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { type } from "os";
+import { useContext } from "react";
 import AuthorizationKey from "../dto/KeyAuthorization";
 import endpoints from "../config/endpoints";
 import Key from "../types/Key";
@@ -45,6 +44,9 @@ const useAccountApi = (): AccountApi => {
       showSuccess(
         `Successfully sent ${amount}wei from ${fromKey.address} to ${toKey.address}`
       );
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
     }
 
     return true;
