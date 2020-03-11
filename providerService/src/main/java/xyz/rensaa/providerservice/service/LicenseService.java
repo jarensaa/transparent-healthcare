@@ -22,6 +22,42 @@ public class LicenseService {
   @Autowired
   CLicenseProviderFactory cLicenseProviderFactory;
 
+  public boolean approveLicenseIssuerMove(final String issuerPrivateKey, final String licenseAddress) {
+    Web3Service.submitTransaction(
+        cLicenseProviderFactory
+            .fromPrivateKey(issuerPrivateKey)
+            .approveMoveToLicenseIssuer(licenseAddress)
+    );
+    return true;
+  }
+
+  public boolean proposeLicenseProviderMove(final String licensePrivateKey, final String licenseProviderAddress) {
+    Web3Service.submitTransaction(
+        cLicenseProviderFactory
+            .fromPrivateKey(licensePrivateKey)
+            .proposeLicenseProviderMovement(licenseProviderAddress)
+    );
+    return true;
+  }
+
+  public boolean approveLicenseProviderMove(final String licenseProviderPrivateKey, final String licenseAddress) {
+    Web3Service.submitTransaction(
+        cLicenseProviderFactory
+            .fromPrivateKey(licenseProviderPrivateKey)
+            .approveLicenseProviderMovement(licenseAddress)
+    );
+    return true;
+  }
+
+  public boolean proposeLicenseIsserMove(final String licensePrivateKey, final String issuerAddress) {
+    Web3Service.submitTransaction(
+        cLicenseProviderFactory
+            .fromPrivateKey(licensePrivateKey)
+            .proposeMoveToLicenseIssuer(issuerAddress)
+    );
+    return true;
+  }
+
   public License getLicenseFromAddress(final String address) {
     try {
       final var isLicense = defaultLicenseProvider.isLicense(address).send();
@@ -72,13 +108,10 @@ public class LicenseService {
   }
 
   public boolean issueLicense(final String issuerPrivateKey, final String licenseAddress) {
-    try {
-      cLicenseProviderFactory.fromPrivateKey(issuerPrivateKey).issueLicenseToAddress(licenseAddress).send();
-      return true;
-    } catch (final Exception e) {
-      e.printStackTrace();
-      throw new TransactionFailedException(e.getMessage());
-    }
+    Web3Service.submitTransaction(
+        cLicenseProviderFactory.fromPrivateKey(issuerPrivateKey).issueLicenseToAddress(licenseAddress)
+    );
+    return true;
   }
 
   public LicenseIssuer getIssuer(final String address) {

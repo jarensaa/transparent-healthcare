@@ -5,7 +5,8 @@ import LicenseMessage from "../dto/LicenseMessage";
 import endpoints from "../config/endpoints";
 
 const useLicenseApi = () => {
-  const { showFailure } = useContext(ToastContext);
+  const { showFailure, showSuccess } = useContext(ToastContext);
+  const { getHeader } = useTokenHeader();
 
   const getLicenses = async (): Promise<LicenseMessage[]> => {
     const response = await fetch(endpoints.licenses.base);
@@ -35,9 +36,91 @@ const useLicenseApi = () => {
     }
   };
 
+  const proposeIssuerMove = async (issuerAddress: string) => {
+    const response = await fetch(
+      endpoints.licenses.proposeIssuerMove(issuerAddress),
+      {
+        method: "POST",
+        headers: getHeader()
+      }
+    );
+
+    if (response.status === 200) {
+      showSuccess("Proposal to move isser successfully submitted.");
+      return response.json();
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return undefined;
+    }
+  };
+
+  const approveIssuerMove = async (licenseAddress: string) => {
+    const response = await fetch(
+      endpoints.licenses.approveIssuerMove(licenseAddress),
+      {
+        method: "POST",
+        headers: getHeader()
+      }
+    );
+
+    if (response.status === 200) {
+      showSuccess("Successfully approved proposal to move issuer of license.");
+      return response.json();
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return undefined;
+    }
+  };
+
+  const proposeProviderMove = async (providerAddress: string) => {
+    const response = await fetch(
+      endpoints.licenses.proposeProviderMove(providerAddress),
+      {
+        method: "POST",
+        headers: getHeader()
+      }
+    );
+
+    if (response.status === 200) {
+      showSuccess("Proposal to move license provider successfully submitted.");
+      return response.json();
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return undefined;
+    }
+  };
+
+  const approveProviderMove = async (licenseAddress: string) => {
+    const response = await fetch(
+      endpoints.licenses.approveIssuerMove(licenseAddress),
+      {
+        method: "POST",
+        headers: getHeader()
+      }
+    );
+
+    if (response.status === 200) {
+      showSuccess(
+        "Successfully approved proposal to move provider of license."
+      );
+      return response.json();
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return undefined;
+    }
+  };
+
   return {
     getLicenses,
-    getLicenseFromAddress
+    getLicenseFromAddress,
+    proposeIssuerMove,
+    approveIssuerMove,
+    proposeProviderMove,
+    approveProviderMove
   };
 };
 

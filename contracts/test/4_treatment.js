@@ -84,10 +84,10 @@ contract("Treatment", accounts => {
     });
 
     // Set account4 as trusted provider for license
-    await licenseProviderInstance.proposeLicenseMovement(accounts[4], {
+    await licenseProviderInstance.proposeLicenseProviderMovement(accounts[4], {
       from: accounts[5]
     });
-    await licenseProviderInstance.approveLicenseMovement(accounts[5], {
+    await licenseProviderInstance.approveLicenseProviderMovement(accounts[5], {
       from: accounts[4]
     });
   });

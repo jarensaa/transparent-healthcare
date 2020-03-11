@@ -1,4 +1,4 @@
-pragma solidity 0.6.1;
+pragma solidity ^0.6.1;
 
 interface ILicenseProviderManager {
     function isLicenseTrusted(address _licenseAddress)
@@ -24,8 +24,8 @@ interface ILicenseProviderManager {
     function addTrustInProvider(address _address) external;
     function removeTrustInProvider(address _address) external;
 
-    function proposeLicenseMovement(address _toAddress) external;
-    function approveLicenseMovement(address _licenseAddress) external;
+    function proposeLicenseProviderMovement(address _toAddress) external;
+    function approveLicenseProviderMovement(address _licenseAddress) external;
     function isLicenseRegisteredWithProvider(
         address _license,
         address _provider

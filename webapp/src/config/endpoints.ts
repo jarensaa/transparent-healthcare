@@ -49,7 +49,15 @@ const endpoints = {
   },
   licenses: {
     base: config.licenseBase,
-    getByAddress: (address: string) => config.licenseBase + "/" + address
+    getByAddress: (address: string) => config.licenseBase + "/" + address,
+    proposeIssuerMove: (issuerAddress: string) =>
+      config.licenseBase + "/issuer/move/" + issuerAddress,
+    approveIssuerMove: (licenseAddress: string) =>
+      config.licenseBase + "/issuer/approve/" + licenseAddress,
+    proposeProviderMove: (providerAddress: string) =>
+      config.licenseBase + "/provider/move/" + providerAddress,
+    approveProviderMove: (licenseAddress: string) =>
+      config.licenseBase + "/provider/approve/" + licenseAddress
   },
   treatments: {
     base: config.treatmentsBase,

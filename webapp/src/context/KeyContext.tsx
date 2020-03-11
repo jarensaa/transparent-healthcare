@@ -127,9 +127,13 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
     if (serlializedKeys != null) {
       const keys = deserializeKeys(serlializedKeys);
       const authorizationKeys = keys.filter(isAuthorizationKey);
-      const otherKeys = keys.filter(key => !isAuthorizationKey(key));
+      const otherKeys = keys
+        .filter(key => !isAuthorizationKey(key))
+        .filter(key => key.address != undefined);
+
       localStorage.setItem("keys", serializeKeys(otherKeys));
       setKeys(otherKeys);
+
       authorizationKeys.forEach(key => {
         fetch(endpoints.accounts.valid, {
           headers: getHeaderWithToken(key.token)

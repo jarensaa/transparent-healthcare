@@ -23,6 +23,7 @@ import LicenseIssuerMessage from "../../../dto/LicenseIssuerMessage";
 import useLicenseProviderApi from "../../../hooks/useLicenseProviderApi";
 import LicenseProviderMessage from "../../../dto/LicenseProviderMessage";
 import FlexRow from "../../../styles/FlexRow";
+import useLicenseApi from "../../../hooks/useLicenseApi";
 
 interface FancyCardProps {
   license: LicenseMessage;
@@ -46,6 +47,7 @@ const FancyLicenseIssuerCard: FunctionComponent<FancyCardProps> = ({
   license
 }) => {
   const { getIssuer } = useLicenseIssuerApi();
+  const { proposeIssuerMove } = useLicenseApi();
   const [isser, setIssuer] = useState<LicenseIssuerMessage | undefined>();
   const [issuerMoveAddress, setIssuerMoveAddress] = useState<string>("");
 
@@ -86,7 +88,7 @@ const FancyLicenseIssuerCard: FunctionComponent<FancyCardProps> = ({
                 </HTMLTable>
                 <h3>Switch your license issuer</h3>
                 <FormGroup
-                  helperText="The issuer must approve for the change to happen"
+                  helperText="The target issuer must approve for the change to happen"
                   labelFor="text-input"
                   labelInfo="(required)"
                 >
@@ -105,6 +107,7 @@ const FancyLicenseIssuerCard: FunctionComponent<FancyCardProps> = ({
                       minimal
                       rightIcon="arrow-right"
                       onClick={() => {
+                        proposeIssuerMove(issuerMoveAddress);
                         setIssuerMoveAddress("");
                       }}
                     >
@@ -131,6 +134,7 @@ const FancyLicenseProviderCard: FunctionComponent<FancyCardProps> = ({
     LicenseProviderMessage | undefined
   >();
   const [issuerMoveAddress, setIssuerMoveAddress] = useState<string>("");
+  const { proposeProviderMove } = useLicenseApi();
 
   useEffect(() => {
     getLicenseProvider(license.licenseProvider).then(setProvider);
@@ -177,7 +181,7 @@ const FancyLicenseProviderCard: FunctionComponent<FancyCardProps> = ({
                 : "Set your license provider"}
             </h3>
             <FormGroup
-              helperText="The provider must approve for the change to happen"
+              helperText="The target provider must approve for the change to happen"
               labelFor="text-input"
               labelInfo="(required)"
             >
@@ -196,6 +200,7 @@ const FancyLicenseProviderCard: FunctionComponent<FancyCardProps> = ({
                   minimal
                   rightIcon="arrow-right"
                   onClick={() => {
+                    proposeProviderMove(issuerMoveAddress);
                     setIssuerMoveAddress("");
                   }}
                 >

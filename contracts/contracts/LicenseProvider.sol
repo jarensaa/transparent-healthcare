@@ -267,7 +267,7 @@ contract LicenseProvider is ILicenseProviderManager {
         emit TrustInProviderRemoved(_address, msg.sender);
     }
 
-    function proposeLicenseMovement(address _toAddress)
+    function proposeLicenseProviderMovement(address _toAddress)
         external
         override
         addressIsLicense(msg.sender)
@@ -277,7 +277,7 @@ contract LicenseProvider is ILicenseProviderManager {
         emit ProviderMoveProposalAdded(msg.sender, _toAddress);
     }
 
-    function approveLicenseMovement(address _licenseAddress)
+    function approveLicenseProviderMovement(address _licenseAddress)
         external
         override
         addressIsLicense(_licenseAddress)

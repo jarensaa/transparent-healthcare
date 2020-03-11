@@ -135,7 +135,7 @@ contract("LicenseProvider", accounts => {
   });
 
   it("Account5 should be able to propose registration of their license with Account3", async () => {
-    const result = await licenseProviderInstance.proposeLicenseMovement(
+    const result = await licenseProviderInstance.proposeLicenseProviderMovement(
       accounts[3],
       {
         from: accounts[5]
@@ -145,7 +145,7 @@ contract("LicenseProvider", accounts => {
   });
 
   it("Account3 should be able to approve proposition to register license of Account5 with it", async () => {
-    const result = await licenseProviderInstance.approveLicenseMovement(
+    const result = await licenseProviderInstance.approveLicenseProviderMovement(
       accounts[5],
       {
         from: accounts[3]
