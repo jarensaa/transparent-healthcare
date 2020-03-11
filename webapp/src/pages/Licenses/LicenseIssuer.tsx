@@ -2,21 +2,53 @@ import React, {
   useContext,
   FunctionComponent,
   useState,
-  useEffect
+  useEffect,
+  ChangeEvent,
+  Fragment
 } from "react";
 import KeyContext from "../../context/KeyContext";
-import { Callout, Card, Button, Intent, Spinner } from "@blueprintjs/core";
+import {
+  Callout,
+  Button,
+  Intent,
+  Spinner,
+  InputGroup
+} from "@blueprintjs/core";
 import LicenseIssuerMessage from "../../dto/LicenseIssuerMessage";
 import useLicenseIssuerApi from "../../hooks/useLicenseIssuerApi";
 import endpoints from "../../config/endpoints";
+import styled from "styled-components";
+import {
+  TopRightMarginWrapper,
+  TopMarginWrapper
+} from "../../styles/MarginWrappers";
+import useLicenseApi from "../../hooks/useLicenseApi";
+import LicenseStore from "./types/LicenseStore";
+import CardAreaWrapper from "../../styles/CardAreaWrapper";
+import LicenseCard from "./components/LicenseCard";
+import FlexColumn from "../../styles/FlexColumn";
+
+const IssueLicenseWrapper = styled.div`
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(auto, 350px) 220px;
+`;
 
 const LicenseIssuerPage: FunctionComponent = () => {
+  const { activeKey } = useContext(KeyContext);
+  const { registerKey, issueLicense } = useLicenseIssuerApi();
+  const { getLicenses } = useLicenseApi();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [licenseIssuer, setLicenseIssuer] = useState<
     LicenseIssuerMessage | undefined
   >(undefined);
-  const { activeKey } = useContext(KeyContext);
-  const { registerKey } = useLicenseIssuerApi();
+
+  const [issueLicenseAddress, setIssueLicenseAddress] = useState<string>("");
+  const [licenseStore, setLicenseStore] = useState<LicenseStore>({
+    associatedLicenses: [],
+    unassociatedLicenses: []
+  });
 
   useEffect(() => {
     if (activeKey) {
@@ -37,11 +69,28 @@ const LicenseIssuerPage: FunctionComponent = () => {
     }
   }, [activeKey]);
 
+  useEffect(() => {
+    if (activeKey) {
+      getLicenses().then(licenses => {
+        setLicenseStore({
+          associatedLicenses: licenses.filter(
+            license => license.issuer === activeKey.address
+          ),
+          unassociatedLicenses: licenses.filter(
+            license => license.issuer !== activeKey.address
+          )
+        });
+      });
+    }
+  }, [activeKey]);
+
   if (!activeKey) {
     return (
       <div>
         <h1>License Issuer</h1>
-        <Callout>You must select a key to access this page</Callout>
+        <Callout intent={Intent.WARNING}>
+          You must select a key to access this page
+        </Callout>
       </div>
     );
   }
@@ -51,18 +100,86 @@ const LicenseIssuerPage: FunctionComponent = () => {
   }
 
   const NotRegisteredView = (
-    <Card>
-      <h4>You are not registered as a License Issuer</h4>
-      <Button intent={Intent.SUCCESS} onClick={() => registerKey()}>
-        Register
-      </Button>
-    </Card>
+    <div>
+      <Callout intent={Intent.WARNING}>
+        You are not a registed license issuer
+      </Callout>
+      <TopRightMarginWrapper>
+        <Button
+          intent={Intent.SUCCESS}
+          minimal
+          rightIcon="arrow-right"
+          onClick={() => registerKey()}
+        >
+          Register
+        </Button>
+      </TopRightMarginWrapper>
+    </div>
   );
 
-  const RegisteredView = <Card>You are a registered License Issuer</Card>;
+  const associatedLicensesCards = (
+    <CardAreaWrapper>
+      {licenseStore.associatedLicenses.map((license, index) => (
+        <LicenseCard key={index} license={license} />
+      ))}
+    </CardAreaWrapper>
+  );
+
+  const unassociatedLicensesCards = (
+    <CardAreaWrapper>
+      {licenseStore.unassociatedLicenses.map((license, index) => (
+        <LicenseCard key={index} license={license} />
+      ))}
+    </CardAreaWrapper>
+  );
+
+  const RegisteredView = (
+    <Fragment>
+      <Callout intent={Intent.SUCCESS}>
+        You are a registered License Issuer
+      </Callout>
+      <TopMarginWrapper>
+        {licenseIssuer?.isTrusted ? (
+          <Callout intent={Intent.SUCCESS}>
+            You are trusted by an authority
+          </Callout>
+        ) : (
+          <Callout intent={Intent.WARNING}>
+            You are not trusted by an authority
+          </Callout>
+        )}
+      </TopMarginWrapper>
+      <h2>Proposed license moves to you</h2>
+      <Callout intent={Intent.PRIMARY}>TODO</Callout>
+      <h2>Issue a new license</h2>
+      <IssueLicenseWrapper>
+        <InputGroup
+          id="text-input"
+          placeholder="Address of license"
+          value={issueLicenseAddress}
+          onChange={(change: ChangeEvent<HTMLInputElement>) =>
+            setIssueLicenseAddress(change.currentTarget.value)
+          }
+        />
+        <Button
+          intent={Intent.SUCCESS}
+          minimal
+          rightIcon="arrow-right"
+          onClick={() => {
+            issueLicense(issueLicenseAddress);
+            setIssueLicenseAddress("");
+          }}
+        >
+          Issue license to address
+        </Button>
+      </IssueLicenseWrapper>
+      <h2>Licenses where you are the registered issuer</h2>
+      {associatedLicensesCards}
+    </Fragment>
+  );
 
   return (
-    <div>
+    <FlexColumn>
       <h1>License Issuer</h1>
       <p>
         License issuers are organizations who can issue medical licenses to
@@ -75,8 +192,11 @@ const LicenseIssuerPage: FunctionComponent = () => {
         preventing them from issuing new licenses on the blockchain. In this
         case, all licenses registered with them will become untrusted.
       </p>
+      <h2>Your issuer status</h2>
       {licenseIssuer ? RegisteredView : NotRegisteredView}
-    </div>
+      <h2>{licenseIssuer ? "All other licenses" : "Issued licenses"}</h2>
+      {unassociatedLicensesCards}
+    </FlexColumn>
   );
 };
 

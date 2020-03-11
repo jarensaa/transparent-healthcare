@@ -22,6 +22,26 @@ public class LicenseService {
   @Autowired
   CLicenseProviderFactory cLicenseProviderFactory;
 
+  public License getLicenseFromAddress(final String address) {
+    try {
+      final var isLicense = defaultLicenseProvider.isLicense(address).send();
+      if (!isLicense) throw new NoContentException();
+      final var licenseData = defaultLicenseProvider.getLicense(address).send();
+      final var isLicenseTrusted = defaultLicenseProvider.isLicenseTrusted(address).send();
+      return ImmutableLicense.builder()
+          .address(address)
+          .issuer(licenseData.component1())
+          .licenseProvider(licenseData.component2())
+          .isTrusted(isLicenseTrusted)
+          .build();
+    } catch (final NoContentException e) {
+      throw new NoContentException();
+    } catch (final Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
   public List<License> getLicenses() {
     try {
       final var licenses = defaultLicenseProvider.getLicenses().send();
@@ -51,9 +71,10 @@ public class LicenseService {
     }
   }
 
-  public void issueLicense(final String issuerPrivateKey, final String licenseAddress) {
+  public boolean issueLicense(final String issuerPrivateKey, final String licenseAddress) {
     try {
       cLicenseProviderFactory.fromPrivateKey(issuerPrivateKey).issueLicenseToAddress(licenseAddress).send();
+      return true;
     } catch (final Exception e) {
       e.printStackTrace();
       throw new TransactionFailedException(e.getMessage());

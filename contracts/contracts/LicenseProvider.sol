@@ -77,6 +77,21 @@ contract LicenseProvider is ILicenseProviderManager {
         authorityContract = IAuthorization(_address);
     }
 
+    function isLicense(address _licenseAddress) external view returns (bool) {
+        return licenses[_licenseAddress].trustingIssuer != address(0x0);
+    }
+
+    function getLicense(address _licenseAddress)
+        external
+        view
+        returns (address, address)
+    {
+        return (
+            licenses[_licenseAddress].trustingIssuer,
+            licenses[_licenseAddress].trustingProvider
+        );
+    }
+
     function isLicenseTrusted(address _licenseAddress)
         external
         view

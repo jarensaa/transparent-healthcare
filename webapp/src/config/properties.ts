@@ -7,7 +7,8 @@ const config = {
   treatmentProviderBase: serverUrl + "/treatmentproviders",
   licenseIssuerBase: serverUrl + "/licenseissuers",
   licenseProviderBase: serverUrl + "/licenseproviders",
-  treatmentsBase: serverUrl + "/treatments"
+  treatmentsBase: serverUrl + "/treatments",
+  licenseBase: serverUrl + "/licenses"
 };
 
 export default config;

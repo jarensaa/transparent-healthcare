@@ -77,11 +77,32 @@ const useLicenseIssuerApi = () => {
     return false;
   };
 
+  const issueLicense = async (address: string): Promise<boolean> => {
+    const response = await fetch(
+      endpoints.licenseIssuers.issueLicense(address),
+      {
+        method: "POST",
+        headers: getHeader()
+      }
+    );
+
+    if (response.status === 200) {
+      showSuccess("Successfully issued license");
+      return true;
+    } else {
+      const parsedResponse = await response.json();
+      showFailure(parsedResponse.message);
+    }
+
+    return false;
+  };
+
   return {
     getLicenseIssuers,
     addTrustInLicenseIssuer,
     removeTrustInLicenseIssuer,
-    registerKey
+    registerKey,
+    issueLicense
   };
 };
 
