@@ -30,6 +30,16 @@ const LicenseCard: FunctionComponent<LicenseCardProps> = ({
   approvable,
   approveCallback
 }) => {
+  const issuerText =
+    license.issuer !== "0x0000000000000000000000000000000000000000"
+      ? license.issuer
+      : "None";
+
+  const providerText =
+    license.licenseProvider !== "0x0000000000000000000000000000000000000000"
+      ? license.licenseProvider
+      : "None";
+
   return (
     <CardWrapper>
       <Card>
@@ -44,11 +54,11 @@ const LicenseCard: FunctionComponent<LicenseCardProps> = ({
             <tbody>
               <tr>
                 <th>License Issuer</th>
-                <WrappingTableData>{license.issuer}</WrappingTableData>
+                <WrappingTableData>{issuerText}</WrappingTableData>
               </tr>
               <tr>
                 <th>License Provider</th>
-                <WrappingTableData>{license.licenseProvider}</WrappingTableData>
+                <WrappingTableData>{providerText}</WrappingTableData>
               </tr>
               <tr>
                 <th>Is Trusted?</th>

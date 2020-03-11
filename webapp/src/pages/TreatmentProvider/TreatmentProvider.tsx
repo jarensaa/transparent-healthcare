@@ -7,6 +7,7 @@ import TreatmentProviderContext, {
 import useTreatmentProviderApi from "../../hooks/useTreatmentProviderApi";
 import useTreatmentApi from "../../hooks/useTreatmentApi";
 import TreatmentMessage from "../../dto/TreatmentMessage";
+import { TopRightMarginWrapper } from "../../styles/MarginWrappers";
 
 const TreatmentProviderPage = () => {
   const { activeKey } = useContext(KeyContext);
@@ -27,7 +28,9 @@ const TreatmentProviderPage = () => {
     return (
       <div>
         <h1>Treatment Provider</h1>
-        <Callout>You must select a key to access this page</Callout>
+        <Callout intent={Intent.WARNING}>
+          You must select a key to access this page
+        </Callout>
       </div>
     );
   }
@@ -37,12 +40,21 @@ const TreatmentProviderPage = () => {
   }
 
   const NotRegisteredView = (
-    <Card>
-      <h4>You are not registered as a Treatment Provider.</h4>
-      <Button intent={Intent.SUCCESS} onClick={registerKey}>
-        Register
-      </Button>
-    </Card>
+    <div>
+      <Callout intent={Intent.WARNING}>
+        You are not a registed license provider
+      </Callout>
+      <TopRightMarginWrapper>
+        <Button
+          intent={Intent.SUCCESS}
+          minimal
+          rightIcon="arrow-right"
+          onClick={registerKey}
+        >
+          Register
+        </Button>
+      </TopRightMarginWrapper>
+    </div>
   );
 
   const RegisteredView = <Card>You are a registered treatment provider.</Card>;

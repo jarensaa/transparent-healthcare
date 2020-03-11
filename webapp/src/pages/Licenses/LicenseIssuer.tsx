@@ -194,7 +194,7 @@ const LicenseIssuerPage: FunctionComponent = () => {
       </p>
       <h2>Your issuer status</h2>
       {licenseIssuer ? RegisteredView : NotRegisteredView}
-      <h2>{licenseIssuer ? "All other licenses" : "Issued licenses"}</h2>
+      <h2>{licenseIssuer ? "All other licenses" : "Licenses"}</h2>
       {unassociatedLicensesCards}
     </FlexColumn>
   );

@@ -2,13 +2,23 @@ import React, {
   useContext,
   FunctionComponent,
   useState,
-  useEffect
+  useEffect,
+  Fragment
 } from "react";
 import KeyContext from "../../context/KeyContext";
 import { Callout, Card, Button, Intent, Spinner } from "@blueprintjs/core";
 import endpoints from "../../config/endpoints";
 import LicenseProviderMessage from "../../dto/LicenseProviderMessage";
 import useLicenseProviderApi from "../../hooks/useLicenseProviderApi";
+import FlexColumn from "../../styles/FlexColumn";
+import {
+  TopRightMarginWrapper,
+  TopMarginWrapper
+} from "../../styles/MarginWrappers";
+import LicenseStore from "./types/LicenseStore";
+import useLicenseApi from "../../hooks/useLicenseApi";
+import CardAreaWrapper from "../../styles/CardAreaWrapper";
+import LicenseCard from "./components/LicenseCard";
 
 const LicenseProviderPage: FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -17,6 +27,12 @@ const LicenseProviderPage: FunctionComponent = () => {
   >(undefined);
   const { activeKey } = useContext(KeyContext);
   const { registerKey } = useLicenseProviderApi();
+  const { getLicenses } = useLicenseApi();
+
+  const [licenseStore, setLicenseStore] = useState<LicenseStore>({
+    associatedLicenses: [],
+    unassociatedLicenses: []
+  });
 
   useEffect(() => {
     if (activeKey) {
@@ -32,8 +48,22 @@ const LicenseProviderPage: FunctionComponent = () => {
           setIsLoading(false);
         }
       );
+      getLicenses().then(licenses => {
+        setLicenseStore({
+          associatedLicenses: licenses.filter(
+            license => license.issuer === activeKey.address
+          ),
+          unassociatedLicenses: licenses.filter(
+            license => license.issuer !== activeKey.address
+          )
+        });
+      });
     } else {
       setLicenseProvider(undefined);
+      setLicenseStore({
+        associatedLicenses: [],
+        unassociatedLicenses: []
+      });
     }
   }, [activeKey]);
 
@@ -41,7 +71,9 @@ const LicenseProviderPage: FunctionComponent = () => {
     return (
       <div>
         <h1>License Provider</h1>
-        <Callout>You must select a key to access this page</Callout>
+        <Callout intent={Intent.WARNING}>
+          You must select a key to access this page
+        </Callout>
       </div>
     );
   }
@@ -50,19 +82,65 @@ const LicenseProviderPage: FunctionComponent = () => {
     return <Spinner />;
   }
 
-  const NotRegisteredView = (
-    <Card>
-      <h4>You are not registered as a License Provider</h4>
-      <Button intent={Intent.SUCCESS} onClick={() => registerKey()}>
-        Register
-      </Button>
-    </Card>
+  const associatedLicensesCards = (
+    <CardAreaWrapper>
+      {licenseStore.associatedLicenses.map((license, index) => (
+        <LicenseCard key={index} license={license} />
+      ))}
+    </CardAreaWrapper>
   );
 
-  const RegisteredView = <Card>You are a registered License Provider</Card>;
+  const unassociatedLicensesCards = (
+    <CardAreaWrapper>
+      {licenseStore.unassociatedLicenses.map((license, index) => (
+        <LicenseCard key={index} license={license} />
+      ))}
+    </CardAreaWrapper>
+  );
+
+  const NotRegisteredView = (
+    <div>
+      <Callout intent={Intent.WARNING}>
+        You are not a registed license provider
+      </Callout>
+      <TopRightMarginWrapper>
+        <Button
+          intent={Intent.SUCCESS}
+          minimal
+          rightIcon="arrow-right"
+          onClick={() => registerKey()}
+        >
+          Register
+        </Button>
+      </TopRightMarginWrapper>
+    </div>
+  );
+
+  const RegisteredView = (
+    <Fragment>
+      <Callout intent={Intent.SUCCESS}>
+        You are a registered License Provider
+      </Callout>
+      <TopMarginWrapper>
+        {licenseProvider?.isTrusted ? (
+          <Callout intent={Intent.SUCCESS}>
+            You are trusted by an authority
+          </Callout>
+        ) : (
+          <Callout intent={Intent.WARNING}>
+            You are not trusted by an authority
+          </Callout>
+        )}
+      </TopMarginWrapper>
+      <h2>Proposed license moves to you</h2>
+      <Callout intent={Intent.PRIMARY}>TODO</Callout>
+      <h2>Licenses where you are the registered provider</h2>
+      {associatedLicensesCards}
+    </Fragment>
+  );
 
   return (
-    <div>
+    <FlexColumn>
       <h1>License Provider</h1>
       <p>
         License providers are organizations who hire license holders. Examples
@@ -72,8 +150,11 @@ const LicenseProviderPage: FunctionComponent = () => {
         trusting authority can remove their trust in them, thus preventing the
         used licenses from being trusted.
       </p>
+      <h2>Your license provider status</h2>
       {licenseProvider ? RegisteredView : NotRegisteredView}
-    </div>
+      <h2>{licenseProvider ? "All other licenses" : "Licenses"}</h2>
+      {unassociatedLicensesCards}
+    </FlexColumn>
   );
 };
 
