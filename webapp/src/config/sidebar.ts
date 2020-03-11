@@ -11,11 +11,11 @@ const SidebarConfig: Record<SidebarArea, SidebarItem> = {
   authority: {
     headerName: "Authority"
   },
-  treatmentProvider: {
-    headerName: "Treatment Provider"
-  },
   licenses: {
     headerName: "Licenses"
+  },
+  treatmentProvider: {
+    headerName: "Treatment Provider"
   },
   practitioner: {
     headerName: "Pracitioner view"

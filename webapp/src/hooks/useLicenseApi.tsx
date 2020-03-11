@@ -19,8 +19,25 @@ const useLicenseApi = () => {
     }
   };
 
+  const getLicenseFromAddress = async (
+    address: string
+  ): Promise<LicenseMessage | undefined> => {
+    const response = await fetch(endpoints.licenses.getByAddress(address));
+
+    if (response.status === 200) {
+      return response.json();
+    } else if (response.status === 204) {
+      return undefined;
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return undefined;
+    }
+  };
+
   return {
-    getLicenses
+    getLicenses,
+    getLicenseFromAddress
   };
 };
 

@@ -42,7 +42,7 @@ const TreatmentProviderPage = () => {
   const NotRegisteredView = (
     <div>
       <Callout intent={Intent.WARNING}>
-        You are not a registed license provider
+        You are not a registed treatment provider
       </Callout>
       <TopRightMarginWrapper>
         <Button

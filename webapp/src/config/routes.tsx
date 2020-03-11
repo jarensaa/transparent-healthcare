@@ -10,6 +10,7 @@ import LicenseIssuerView from "../pages/Authority/LicenseIssuerView";
 import LicenseProviderView from "../pages/Authority/LicenseProviderView";
 import LicenseIssuerPage from "../pages/Licenses/LicenseIssuer";
 import LicenseProviderPage from "../pages/Licenses/LicenseProvider";
+import ManageLicensePage from "../pages/Practitioner/ManageLicense";
 
 interface RouteDefinition {
   title: string;
@@ -81,6 +82,13 @@ const routes: RouteDefinition[] = [
     exact: true,
     Component: LicenseProviderPage,
     sidebarArea: "licenses"
+  },
+  {
+    title: "Manage license",
+    path: "/license",
+    exact: true,
+    Component: ManageLicensePage,
+    sidebarArea: "practitioner"
   },
   {
     title: "Keys and funds",

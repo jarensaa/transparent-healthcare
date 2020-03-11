@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, Fragment } from "react";
+import React, { FunctionComponent, useState, Fragment, Component } from "react";
 import {
   Card,
   Colors,
@@ -44,7 +44,7 @@ const ColumnWrapper = styled.div`
 
 const AddKeyCard: FunctionComponent = () => {
   const [panelNumber, setPanelNumber] = useState<number>(0);
-  const [panel, setPanel] = useState();
+  const [panel, setPanel] = useState<JSX.Element | undefined>(undefined);
 
   const InitialPanel: FunctionComponent = () => {
     return (

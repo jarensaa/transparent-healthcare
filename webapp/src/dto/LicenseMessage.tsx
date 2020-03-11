@@ -1,7 +1,7 @@
 type LicenseMessage = {
-  address: String;
-  issuer: String;
-  licenseProvider: String;
+  address: string;
+  issuer: string;
+  licenseProvider: string;
   isTrusted: boolean;
 };
 

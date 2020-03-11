@@ -20,6 +20,24 @@ const useLicenseIssuerApi = () => {
     }
   };
 
+  const getIssuer = async (
+    address: string
+  ): Promise<LicenseIssuerMessage | undefined> => {
+    const response = await fetch(
+      endpoints.licenseIssuers.getByAddress(address)
+    );
+
+    if (response.status === 200) {
+      return response.json();
+    } else if (response.status === 204) {
+      return undefined;
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return undefined;
+    }
+  };
+
   const addTrustInLicenseIssuer = async (address: string): Promise<boolean> => {
     const response = await fetch(
       endpoints.licenseIssuers.addTrustInIssuer(address),
@@ -102,7 +120,8 @@ const useLicenseIssuerApi = () => {
     addTrustInLicenseIssuer,
     removeTrustInLicenseIssuer,
     registerKey,
-    issueLicense
+    issueLicense,
+    getIssuer
   };
 };
 

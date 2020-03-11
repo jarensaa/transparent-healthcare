@@ -20,6 +20,24 @@ const useLicenseProviderApi = () => {
     }
   };
 
+  const getLicenseProvider = async (
+    address: string
+  ): Promise<LicenseProviderMessage | undefined> => {
+    const response = await fetch(
+      endpoints.licenseProviders.getByAddress(address)
+    );
+
+    if (response.status === 200) {
+      return response.json();
+    } else if (response.status === 204) {
+      return undefined;
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return undefined;
+    }
+  };
+
   const addTrustInLicenseProvider = async (
     address: string
   ): Promise<boolean> => {
@@ -81,6 +99,7 @@ const useLicenseProviderApi = () => {
 
   return {
     getLicenseProviders,
+    getLicenseProvider,
     addTrustInLicenseProvider,
     removeTrustInLicenseProvider,
     registerKey
