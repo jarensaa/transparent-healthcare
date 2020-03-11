@@ -229,4 +229,38 @@ contract("Treatment", accounts => {
 
     assert.ok(treatmentObject.isSpent);
   });
+
+  it("It should be possible to get all treatment addresses", async () => {
+    const treatmentArray = await treatmentInstance.getTreatmentAddresses();
+
+    assert.ok(
+      treatmentArray[0] === accounts[6] && treatmentArray[1] === accounts[7]
+    );
+  });
+
+  it("It should be possible to get all treatment data", async () => {
+    const treatmentArrays = await treatmentInstance.getTreatmentsWithData();
+
+    const firstTreatment = [
+      treatmentArrays[1][0],
+      treatmentArrays[2][0],
+      treatmentArrays[3][0],
+      treatmentArrays[4][0],
+      treatmentArrays[5][0]
+    ];
+
+    const secondTreatment = [
+      treatmentArrays[1][1],
+      treatmentArrays[2][1],
+      treatmentArrays[3][1],
+      treatmentArrays[4][1],
+      treatmentArrays[5][1]
+    ];
+
+    assert.ok(
+      treatmentArrays[0].length == 2 &&
+        treatmentObjectMapper(firstTreatment).fullDataURL === treatmentURL &&
+        treatmentObjectMapper(secondTreatment).fullDataURL === treatmentURL
+    );
+  });
 });

@@ -1,4 +1,5 @@
 pragma solidity ^0.6.1;
+pragma experimental ABIEncoderV2; //Although marked as experimental, it's considered stable from v0.6.0.
 import "./iface/ILicenseProviderManager.sol";
 import "./iface/ITreatmentProviderManager.sol";
 import "./iface/ITreatment.sol";
@@ -10,6 +11,7 @@ contract Treatment is ITreatment {
     IMeasure measureContract;
     address creator;
 
+    address[] treatmentsLog;
     mapping(address => TreatmentInstance) treatments;
     mapping(address => address[]) treatmentsPerformedByLicense;
 
@@ -73,6 +75,7 @@ contract Treatment is ITreatment {
         treatments[_treatmentAddress].fullDataHash = _datahash;
         treatments[_treatmentAddress].fullDataURL = _dataLocationURL;
         treatments[_treatmentAddress].isInstanced = true;
+        treatmentsLog.push(_treatmentAddress);
     }
 
     function approveTreatment(address _treatmentAddress)
@@ -102,6 +105,52 @@ contract Treatment is ITreatment {
             "Treatment is allready spent"
         );
         treatments[_treatmentAddress].isSpent = true;
+    }
+
+    function getTreatmentAddresses() external view returns (address[] memory) {
+        return treatmentsLog;
+    }
+
+    // We do not return a struct as Web3j does not support this as of writing.
+    function getTreatmentsWithData()
+        external
+        view
+        returns (
+            address[] memory,
+            address[] memory,
+            address[] memory,
+            bytes32[] memory,
+            string[] memory,
+            bool[] memory
+        )
+    {
+        uint256 numTreatments = treatmentsLog.length;
+
+        address[] memory returnApprovingLicenses = new address[](numTreatments);
+        address[] memory returnTreatmentProvider = new address[](numTreatments);
+        bytes32[] memory returnFullDataHash = new bytes32[](numTreatments);
+        string[] memory returnFullDataURL = new string[](numTreatments);
+        bool[] memory returnIsSpent = new bool[](numTreatments);
+
+        for (uint256 i = 0; i < numTreatments; i++) {
+            address treatmentAddress = treatmentsLog[i];
+            returnApprovingLicenses[i] = treatments[treatmentAddress]
+                .approvingLicense;
+            returnTreatmentProvider[i] = treatments[treatmentAddress]
+                .treatmentProvider;
+            returnFullDataHash[i] = treatments[treatmentAddress].fullDataHash;
+            returnFullDataURL[i] = treatments[treatmentAddress].fullDataURL;
+            returnIsSpent[i] = treatments[treatmentAddress].isSpent;
+        }
+
+        return (
+            treatmentsLog,
+            returnApprovingLicenses,
+            returnTreatmentProvider,
+            returnFullDataHash,
+            returnFullDataURL,
+            returnIsSpent
+        );
     }
 
     function getTreatmentsForLicense(address _licenseAddress)

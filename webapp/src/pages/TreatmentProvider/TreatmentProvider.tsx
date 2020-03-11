@@ -1,15 +1,27 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import KeyContext from "../../context/KeyContext";
 import { Callout, Card, Button, Intent, Spinner } from "@blueprintjs/core";
 import TreatmentProviderContext, {
   TreatmentProviderContextProvider
 } from "./context/TreatmentProviderContext";
 import useTreatmentProviderApi from "../../hooks/useTreatmentProviderApi";
+import useTreatmentApi from "../../hooks/useTreatmentApi";
+import TreatmentMessage from "../../dto/TreatmentMessage";
 
 const TreatmentProviderPage = () => {
   const { activeKey } = useContext(KeyContext);
   const { isLoading, treatmentProvider } = useContext(TreatmentProviderContext);
+
+  const [treatments, setTreatments] = useState<TreatmentMessage[]>([]);
+
   const { registerKey } = useTreatmentProviderApi();
+  const { getTreatments } = useTreatmentApi();
+
+  useEffect(() => {
+    if (activeKey) {
+      getTreatments().then(setTreatments);
+    }
+  }, [activeKey]);
 
   if (!activeKey) {
     return (

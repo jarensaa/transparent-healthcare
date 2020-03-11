@@ -44,6 +44,10 @@ const endpoints = {
       config.licenseProviderBase + "/" + address + "/addtrust",
     removeTrustInProvider: (address: string) =>
       config.licenseProviderBase + "/" + address + "/removetrust"
+  },
+  treatments: {
+    base: config.treatmentsBase,
+    getByAddress: (address: string) => config.treatmentsBase + "/" + address
   }
 };
 
