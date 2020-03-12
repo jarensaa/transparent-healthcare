@@ -7,6 +7,8 @@ import xyz.rensaa.providerservice.contracts.CLicenseProviderFactory;
 import xyz.rensaa.providerservice.dto.*;
 import xyz.rensaa.providerservice.exceptions.NoContentException;
 import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
+import xyz.rensaa.providerservice.repository.LicenseIssuerMoveProposalRepository;
+import xyz.rensaa.providerservice.repository.ProviderMoveProposalRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +23,12 @@ public class LicenseService {
 
   @Autowired
   CLicenseProviderFactory cLicenseProviderFactory;
+
+  @Autowired
+  LicenseIssuerMoveProposalRepository licenseIssuerMoveProposalRepository;
+
+  @Autowired
+  ProviderMoveProposalRepository providerMoveProposalRepository;
 
   public boolean approveLicenseIssuerMove(final String issuerPrivateKey, final String licenseAddress) {
     Web3Service.submitTransaction(
@@ -56,6 +64,26 @@ public class LicenseService {
             .proposeMoveToLicenseIssuer(issuerAddress)
     );
     return true;
+  }
+
+  public List<LicenseProposalMessage> getLicenseIssuerProposals(String issuerAddress) {
+    var proposals = licenseIssuerMoveProposalRepository.findAllByTargetAddress(issuerAddress);
+    return proposals.stream().map(proposal ->
+      ImmutableLicenseProposalMessage.builder()
+              .licenseAddress(proposal.getLicenseAddress())
+              .targetAddress(proposal.getTargetAddress())
+              .build()
+    ).collect(Collectors.toList());
+  }
+
+  public List<LicenseProposalMessage> getLicenseProviderProposals(String providerAddress) {
+    var proposals = providerMoveProposalRepository.findAllByTargetAddress(providerAddress);
+    return proposals.stream().map(proposal ->
+            ImmutableLicenseProposalMessage.builder()
+            .targetAddress(proposal.getTargetAddress())
+            .licenseAddress(proposal.getLicenseAddress())
+            .build()
+    ).collect(Collectors.toList());
   }
 
   public License getLicenseFromAddress(final String address) {

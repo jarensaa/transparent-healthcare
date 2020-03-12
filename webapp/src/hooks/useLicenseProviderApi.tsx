@@ -3,6 +3,7 @@ import useTokenHeader from "./useTokenHeader";
 import { useContext } from "react";
 import ToastContext from "../context/ToastContext";
 import LicenseProviderMessage from "../dto/LicenseProviderMessage";
+import LicenseProposalMessage from "../dto/LicenseProposalMessage";
 
 const useLicenseProviderApi = () => {
   const { getHeader } = useTokenHeader();
@@ -97,11 +98,29 @@ const useLicenseProviderApi = () => {
     return false;
   };
 
+  const getLicenseProviderProposals = async (
+    address: string
+  ): Promise<LicenseProposalMessage[]> => {
+    const response = await fetch(
+      endpoints.licenseProviders.getProposals(address)
+    );
+
+    if (response.status === 200) {
+      const proposals: LicenseProposalMessage[] = await response.json();
+      return proposals;
+    } else {
+      const parsedResponse = await response.json();
+      showFailure(parsedResponse.message);
+      return [];
+    }
+  };
+
   return {
     getLicenseProviders,
     getLicenseProvider,
     addTrustInLicenseProvider,
     removeTrustInLicenseProvider,
+    getLicenseProviderProposals,
     registerKey
   };
 };

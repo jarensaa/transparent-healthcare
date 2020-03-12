@@ -27,12 +27,16 @@ import xyz.rensaa.providerservice.dto.GanacheKeys;
 public class Web3jConfig {
 
   private static final ObjectMapper mapper = new ObjectMapper();
+
   @Value("${contracts.keyfile}")
   String keyFilePath;
+
   @Value("${contracts.addressesfile}")
   String addressesFilePath;
+
   @Value("${blockchain.uri}")
   String blockchainUri;
+  
   @Autowired
   Logger logger;
 

@@ -16,7 +16,7 @@ const KeyAreaWrapper = styled.div`
 const AreaGrid = styled.div`
   display: grid;
   grid-template-rows: 80px auto auto auto;
-  grid-template-columns: 200px auto;
+  grid-template-columns: auto auto;
   grid-template-areas:
     "title none"
     "send send"

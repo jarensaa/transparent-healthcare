@@ -5,12 +5,24 @@ import java.util.Objects;
 
 public class LicenseProposalId implements Serializable {
 
-  private final String licenseAddress;
-  private final String targetAddress;
+  private String targetAddress;
+
+  private String licenseAddress;
+
+  public LicenseProposalId() {
+  }
 
   public LicenseProposalId(final String licenseAddress, final String targetAddress) {
     this.licenseAddress = licenseAddress;
     this.targetAddress = targetAddress;
+  }
+
+  public String getLicenseAddress() {
+    return licenseAddress;
+  }
+
+  public String getTargetAddress() {
+    return targetAddress;
   }
 
   @Override

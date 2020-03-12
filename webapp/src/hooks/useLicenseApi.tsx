@@ -95,7 +95,7 @@ const useLicenseApi = () => {
 
   const approveProviderMove = async (licenseAddress: string) => {
     const response = await fetch(
-      endpoints.licenses.approveIssuerMove(licenseAddress),
+      endpoints.licenses.approveProviderMove(licenseAddress),
       {
         method: "POST",
         headers: getHeader()

@@ -123,27 +123,43 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
   }, [keys]);
 
   useEffect(() => {
-    const serlializedKeys = localStorage.getItem("keys");
-    if (serlializedKeys != null) {
-      const keys = deserializeKeys(serlializedKeys);
-      const authorizationKeys = keys.filter(isAuthorizationKey);
-      const otherKeys = keys
-        .filter(key => !isAuthorizationKey(key))
-        .filter(key => key.address != undefined);
+    const loadKeys = async () => {
+      const serlializedKeys = localStorage.getItem("keys");
+      if (serlializedKeys != null) {
+        const allkeys = deserializeKeys(serlializedKeys);
 
-      localStorage.setItem("keys", serializeKeys(otherKeys));
-      setKeys(otherKeys);
+        // First, filter out duplicates
+        const foundAddresses = new Set<string>();
+        const keys: Key[] = [];
 
-      authorizationKeys.forEach(key => {
-        fetch(endpoints.accounts.valid, {
-          headers: getHeaderWithToken(key.token)
-        })
-          .then(res => res.json())
-          .then(keyIsValid => {
-            if (keyIsValid) addKey(key);
+        for (var key of allkeys) {
+          if (!foundAddresses.has(key.address)) {
+            foundAddresses.add(key.address);
+            keys.push(key);
+          }
+        }
+
+        const authorizationKeys = keys.filter(isAuthorizationKey);
+        const otherKeys = keys
+          .filter(key => !isAuthorizationKey(key))
+          .filter(key => key.address != undefined);
+
+        localStorage.setItem("keys", serializeKeys(otherKeys));
+        setKeys(otherKeys);
+
+        authorizationKeys.forEach(async key => {
+          const reponse = await fetch(endpoints.accounts.valid, {
+            headers: getHeaderWithToken(key.token)
           });
-      });
-    }
+
+          const keyIsValid = await reponse.json();
+          if (keyIsValid) {
+            addKey(key);
+          }
+        });
+      }
+    };
+    loadKeys();
   }, []);
 
   useEffect(() => {

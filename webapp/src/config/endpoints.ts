@@ -36,7 +36,9 @@ const endpoints = {
     removeTrustInIssuer: (address: string) =>
       config.licenseIssuerBase + "/" + address + "/removetrust",
     issueLicense: (address: string) =>
-      config.licenseBase + "/" + address + "/issue"
+      config.licenseBase + "/" + address + "/issue",
+    getProposals: (isserAddress: string) => 
+      config.licenseIssuerBase + "/" + isserAddress + "/proposals"
   },
   licenseProviders: {
     base: config.licenseProviderBase,
@@ -45,7 +47,9 @@ const endpoints = {
     addTrustInProvider: (address: string) =>
       config.licenseProviderBase + "/" + address + "/addtrust",
     removeTrustInProvider: (address: string) =>
-      config.licenseProviderBase + "/" + address + "/removetrust"
+      config.licenseProviderBase + "/" + address + "/removetrust",
+    getProposals: (isserAddress: string) => 
+      config.licenseProviderBase + "/" + isserAddress + "/proposals"
   },
   licenses: {
     base: config.licenseBase,

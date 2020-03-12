@@ -7,10 +7,12 @@ import org.web3j.abi.datatypes.Event;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.EthFilter;
-import org.web3j.protocol.core.methods.response.EthLog;
 import org.web3j.protocol.core.methods.response.Log;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import xyz.rensaa.providerservice.LicenseProvider;
+import xyz.rensaa.providerservice.model.LicenseIsserMoveProposal;
+import xyz.rensaa.providerservice.model.LicenseProviderMoveProposal;
+import xyz.rensaa.providerservice.repository.LicenseIssuerMoveProposalRepository;
+import xyz.rensaa.providerservice.repository.ProviderMoveProposalRepository;
 
 import javax.annotation.PostConstruct;
 
@@ -25,10 +27,18 @@ public class LicenseEventsService {
   private final static String encodedProviderMoveApprovedEvent = EventEncoder.encode(providerMoveApprovedEvent);
   private final static String encodedIssuerMoveProposedEvent = EventEncoder.encode(issuerMoveProposedEvent);
   private final static String encodedIssuerMoveApprovedEvent = EventEncoder.encode(issuerMoveApprovedEvent);
+
   @Autowired
   LicenseProvider licenseProvider;
+
   @Autowired
   Web3j web3j;
+
+  @Autowired
+  ProviderMoveProposalRepository providerMoveProposalRepository;
+
+  @Autowired
+  LicenseIssuerMoveProposalRepository licenseIssuerMoveProposalRepository;
 
   private static void handleProviderMoveEventLog(final Log log) {
     final var parameters = LicenseProvider.staticExtractEventParameters(providerMoveProposedEvent, log);
@@ -64,21 +74,21 @@ public class LicenseEventsService {
 
       if (transactionReciept.isPresent()) {
         if (log.getTopics().contains(encodedProviderMoveProposedEvent)) {
-          final var event = licenseProvider.getProviderMoveProposalAddedEvents(transactionReciept.get()).get(0);
-          System.out.println(event);
+          final var event = licenseProvider.getProviderMoveProposalAddedEvents(
+                  transactionReciept.get()
+          ).get(0);
+          var proposal = new LicenseProviderMoveProposal(event._license, event._provider);
+          providerMoveProposalRepository.save(proposal);
         }
 
         if (log.getTopics().contains(encodedIssuerMoveProposedEvent)) {
-
+          final var event = licenseProvider.getIssuerMoveProposalAddedEvents(
+                  transactionReciept.get()
+          ).get(0);
+          var proposal = new LicenseIsserMoveProposal(event._license, event._issuer);
+          licenseIssuerMoveProposalRepository.save(proposal);
         }
-
       }
-
-
-      //final Contract.EventValuesWithLog eventValues = LicenseProvider.staticExtractEventParameters()
-      //final LicenseProvider.TrustInIssuerRemovedEventResponse typedResponse =
-      //new LicenseProvider.TrustInIssuerRemovedEventResponse();
     });
-
   }
 }

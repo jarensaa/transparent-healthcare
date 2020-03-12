@@ -3,6 +3,7 @@ package xyz.rensaa.providerservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.rensaa.providerservice.dto.LicenseIssuer;
+import xyz.rensaa.providerservice.dto.LicenseProposalMessage;
 import xyz.rensaa.providerservice.service.KeyRepositoryService;
 import xyz.rensaa.providerservice.service.LicenseService;
 
@@ -41,6 +42,10 @@ public class LicenseIssuerController {
     return licenseService.getIssuer(address);
   }
 
+  @GetMapping("/{address}/proposals")
+  public List<LicenseProposalMessage> getLicenseIssuerProposals(@PathVariable("address") final String address) {
+    return licenseService.getLicenseIssuerProposals(address);
+  }
 
   @PostMapping("/{address}/addtrust")
   public boolean addTrustInIssuer(@PathVariable("address") final String address,

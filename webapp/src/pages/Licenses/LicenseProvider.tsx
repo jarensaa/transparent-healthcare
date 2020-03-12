@@ -19,6 +19,8 @@ import LicenseStore from "./types/LicenseStore";
 import useLicenseApi from "../../hooks/useLicenseApi";
 import CardAreaWrapper from "../../styles/CardAreaWrapper";
 import LicenseCard from "./components/LicenseCard";
+import LicenseProposalMessage from "../../dto/LicenseProposalMessage";
+import ProposalCard from "./components/ProposalCard";
 
 const LicenseProviderPage: FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -26,13 +28,14 @@ const LicenseProviderPage: FunctionComponent = () => {
     LicenseProviderMessage | undefined
   >(undefined);
   const { activeKey } = useContext(KeyContext);
-  const { registerKey } = useLicenseProviderApi();
-  const { getLicenses } = useLicenseApi();
+  const { registerKey, getLicenseProviderProposals } = useLicenseProviderApi();
+  const { getLicenses, approveProviderMove } = useLicenseApi();
 
   const [licenseStore, setLicenseStore] = useState<LicenseStore>({
     associatedLicenses: [],
     unassociatedLicenses: []
   });
+  const [proposals, setProposals] = useState<LicenseProposalMessage[]>([]);
 
   useEffect(() => {
     if (activeKey) {
@@ -51,15 +54,18 @@ const LicenseProviderPage: FunctionComponent = () => {
       getLicenses().then(licenses => {
         setLicenseStore({
           associatedLicenses: licenses.filter(
-            license => license.issuer === activeKey.address
+            license => license.licenseProvider === activeKey.address
           ),
           unassociatedLicenses: licenses.filter(
-            license => license.issuer !== activeKey.address
+            license => license.licenseProvider !== activeKey.address
           )
         });
       });
+
+      getLicenseProviderProposals(activeKey.address).then(setProposals);
     } else {
       setLicenseProvider(undefined);
+      setProposals([]);
       setLicenseStore({
         associatedLicenses: [],
         unassociatedLicenses: []
@@ -116,6 +122,22 @@ const LicenseProviderPage: FunctionComponent = () => {
     </div>
   );
 
+  const proposalCards =
+    proposals.length > 0 ? (
+      <CardAreaWrapper>
+        {proposals.map((proposal, index) => (
+          <ProposalCard
+            approvable
+            approveCallback={approveProviderMove}
+            key={index}
+            proposal={proposal}
+          />
+        ))}
+      </CardAreaWrapper>
+    ) : (
+      <Callout intent={Intent.SUCCESS}> There are no pending proposals</Callout>
+    );
+
   const RegisteredView = (
     <Fragment>
       <Callout intent={Intent.SUCCESS}>
@@ -133,7 +155,7 @@ const LicenseProviderPage: FunctionComponent = () => {
         )}
       </TopMarginWrapper>
       <h2>Proposed license moves to you</h2>
-      <Callout intent={Intent.PRIMARY}>TODO</Callout>
+      {proposalCards}
       <h2>Licenses where you are the registered provider</h2>
       {associatedLicensesCards}
     </Fragment>

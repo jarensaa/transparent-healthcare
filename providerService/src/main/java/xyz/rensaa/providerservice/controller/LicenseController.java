@@ -39,7 +39,7 @@ public class LicenseController {
   public boolean approveLicenseProviderMove(@PathVariable("address") final String licenseAddress,
                                             @RequestHeader("Authorization") final String bearerToken) {
     final var keyPair = keyRepositoryService.getKeyFromBearerToken(bearerToken);
-    return licenseService.proposeLicenseProviderMove(keyPair.getPrivateKey(), licenseAddress);
+    return licenseService.approveLicenseProviderMove(keyPair.getPrivateKey(), licenseAddress);
   }
 
   @PostMapping("/issuer/move/{address}")
