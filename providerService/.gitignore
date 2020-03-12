@@ -6,7 +6,7 @@ build/
 !**/src/test/**
 bin/
 build/
-
+stale_outputs_checked
 
 ### STS ###
 .apt_generated

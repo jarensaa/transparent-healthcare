@@ -2,3 +2,6 @@ addresses
 .vscode
 build
 node_modules
+shared/contracts/*
+shared/addresses.json
+shared/contractsbundle.json
