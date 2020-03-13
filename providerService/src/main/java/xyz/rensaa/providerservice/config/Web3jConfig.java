@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;

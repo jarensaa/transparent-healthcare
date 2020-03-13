@@ -11,6 +11,11 @@ import LicenseProviderView from "../pages/Authority/LicenseProviderView";
 import LicenseIssuerPage from "../pages/Licenses/LicenseIssuer";
 import LicenseProviderPage from "../pages/Licenses/LicenseProvider";
 import ManageLicensePage from "../pages/Practitioner/ManageLicense";
+import IssueTreatmentPage from "../pages/TreatmentProvider/IssueTreatmentPage";
+import ApproveTreatmentsPage from "../pages/Practitioner/ApproveTreatmentsPage";
+import PatientMyJournalPage from "../pages/Patient/PatientMyJournalPage";
+import EvaluateTreatmentsPage from "../pages/Patient/EvaluateTreatmentsPage";
+import PractitionersList from "../pages/Patient/PractitionersList";
 
 interface RouteDefinition {
   title: string;
@@ -21,13 +26,6 @@ interface RouteDefinition {
 }
 
 const routes: RouteDefinition[] = [
-  {
-    title: "Home",
-    path: "/",
-    exact: true,
-    Component: Home,
-    sidebarArea: "home"
-  },
   {
     title: "Proposal",
     path: "/proposal/:proposalId",
@@ -63,13 +61,6 @@ const routes: RouteDefinition[] = [
     sidebarArea: "authority"
   },
   {
-    title: "Treatment Providers",
-    path: "/treatmentProvider",
-    exact: true,
-    Component: TreatmentProvider,
-    sidebarArea: "treatmentProvider"
-  },
-  {
     title: "Issuer",
     path: "/licenseissuer",
     exact: true,
@@ -84,11 +75,53 @@ const routes: RouteDefinition[] = [
     sidebarArea: "licenses"
   },
   {
+    title: "Treatment Providers",
+    path: "/treatmentProvider",
+    exact: true,
+    Component: TreatmentProvider,
+    sidebarArea: "treatmentProvider"
+  },
+  {
+    title: "Issue treatment",
+    path: "/issuetreatment",
+    exact: true,
+    Component: IssueTreatmentPage,
+    sidebarArea: "treatmentProvider"
+  },
+  {
     title: "Manage license",
     path: "/license",
     exact: true,
     Component: ManageLicensePage,
     sidebarArea: "practitioner"
+  },
+  {
+    title: "Treatments",
+    path: "/license/treatments",
+    exact: true,
+    Component: ApproveTreatmentsPage,
+    sidebarArea: "practitioner"
+  },
+  {
+    title: "My journal",
+    path: "/patient/journal",
+    exact: true,
+    Component: PatientMyJournalPage,
+    sidebarArea: "patient"
+  },
+  {
+    title: "My evaluations",
+    path: "/patient/evaluations",
+    exact: true,
+    Component: EvaluateTreatmentsPage,
+    sidebarArea: "patient"
+  },
+  {
+    title: "Practitioners view",
+    path: "/license/list",
+    exact: true,
+    Component: PractitionersList,
+    sidebarArea: "patient"
   },
   {
     title: "Keys and funds",

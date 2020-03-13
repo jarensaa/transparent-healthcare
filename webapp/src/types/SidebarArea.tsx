@@ -1,5 +1,4 @@
 type SidebarArea =
-  | "home"
   | "authority"
   | "treatmentProvider"
   | "licenses"

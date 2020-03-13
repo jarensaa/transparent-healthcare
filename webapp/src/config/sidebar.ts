@@ -5,9 +5,6 @@ interface SidebarItem {
 }
 
 const SidebarConfig: Record<SidebarArea, SidebarItem> = {
-  home: {
-    headerName: "Home"
-  },
   authority: {
     headerName: "Authority"
   },
@@ -21,7 +18,7 @@ const SidebarConfig: Record<SidebarArea, SidebarItem> = {
     headerName: "Pracitioner view"
   },
   patient: {
-    headerName: "Patient view"
+    headerName: "Patient"
   },
   keys: {
     headerName: "Key management"

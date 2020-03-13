@@ -10,7 +10,7 @@ import Navigation from "./Navigation";
 const LeftMenuContainer = styled.div`
   background-color: ${Colors.DARK_GRAY5};
   padding-left: 30px;
-  padding-top: 100px;
+  padding-top: 70px;
 `;
 
 const ButtonWrapper = styled.div`
