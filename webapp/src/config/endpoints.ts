@@ -37,7 +37,7 @@ const endpoints = {
       config.licenseIssuerBase + "/" + address + "/removetrust",
     issueLicense: (address: string) =>
       config.licenseBase + "/" + address + "/issue",
-    getProposals: (isserAddress: string) => 
+    getProposals: (isserAddress: string) =>
       config.licenseIssuerBase + "/" + isserAddress + "/proposals"
   },
   licenseProviders: {
@@ -48,7 +48,7 @@ const endpoints = {
       config.licenseProviderBase + "/" + address + "/addtrust",
     removeTrustInProvider: (address: string) =>
       config.licenseProviderBase + "/" + address + "/removetrust",
-    getProposals: (isserAddress: string) => 
+    getProposals: (isserAddress: string) =>
       config.licenseProviderBase + "/" + isserAddress + "/proposals"
   },
   licenses: {
@@ -62,6 +62,13 @@ const endpoints = {
       config.licenseBase + "/provider/move/" + providerAddress,
     approveProviderMove: (licenseAddress: string) =>
       config.licenseBase + "/provider/approve/" + licenseAddress
+  },
+  patient: {
+    base: config.patientBase,
+    getToken: config.patientBase + "/token",
+    getChallange: config.patientBase + "/challenge",
+    registerKey: config.patientBase + "/registerkey",
+    valid: config.patientBase + "/validkey"
   },
   treatments: {
     base: config.treatmentsBase,

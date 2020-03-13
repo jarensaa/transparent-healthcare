@@ -5,6 +5,7 @@ import Key from "../../../types/Key";
 import { isGeneratedKey } from "../../../types/GeneratedKey";
 import { isAuthorizationKey } from "../../../dto/KeyAuthorization";
 import constants from "../../../config/constants";
+import { IsPatientKey } from "../../../types/PatientKey";
 
 interface KeyCardProps {
   keyPair: Key;
@@ -22,7 +23,7 @@ const WrappingTableData = styled.td`
 `;
 
 const TableWrapper = styled.div`
-  height: 150px;
+  height: 160px;
   width: 410px;
 `;
 
@@ -47,6 +48,21 @@ const KeyCard: FunctionComponent<KeyCardProps> = ({ keyPair, balances }) => {
           <th>Access token</th>
           <WrappingTableData>{keyPair.token}</WrappingTableData>
         </tr>
+      );
+    }
+
+    if (IsPatientKey(keyPair)) {
+      return (
+        <Fragment>
+          <tr>
+            <th>Private key</th>
+            <WrappingTableData>{keyPair.patientPrivateKey}</WrappingTableData>
+          </tr>
+          <tr>
+            <th>Token</th>
+            <WrappingTableData>{keyPair.patientToken}</WrappingTableData>
+          </tr>
+        </Fragment>
       );
     }
 

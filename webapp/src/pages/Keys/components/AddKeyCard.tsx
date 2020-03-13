@@ -8,7 +8,7 @@ import {
   Intent
 } from "@blueprintjs/core";
 import styled from "styled-components";
-import ImportKeyPanel from "./ImportKeyPanel";
+import NewPatientKeyPanel from "./NewPatientKeyPanel";
 import AddServerKeyPanel from "./AddServerKeyPanel";
 import AddLocalKeyPanel from "./AddLocalKeyPanel";
 
@@ -62,8 +62,8 @@ const AddKeyCard: FunctionComponent = () => {
   };
 
   const ButtonsPanel: FunctionComponent = () => {
-    const handleImportButtonClick = () => {
-      setPanel(<ImportKeyPanel callback={completedCallback} />);
+    const handleNewPatientButtonClick = () => {
+      setPanel(<NewPatientKeyPanel callback={completedCallback} />);
       setPanelNumber(number => number + 1);
     };
 
@@ -96,16 +96,16 @@ const AddKeyCard: FunctionComponent = () => {
               <Button
                 minimal
                 intent={Intent.SUCCESS}
-                onClick={handleLocalGeneration}
+                onClick={handleNewPatientButtonClick}
               >
-                Create new key locally
+                Register new patient key
               </Button>
               <Button
                 minimal
                 intent={Intent.SUCCESS}
-                onClick={handleImportButtonClick}
+                onClick={handleLocalGeneration}
               >
-                Import private key
+                Create new key locally
               </Button>
             </ColumnWrapper>
           </FormGroup>

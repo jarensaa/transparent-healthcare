@@ -4,6 +4,7 @@ import Key from "../types/Key";
 import GeneratedKey, { isGeneratedKey } from "../types/GeneratedKey";
 import AuthorizationKey, { isAuthorizationKey } from "../dto/KeyAuthorization";
 import useTokenHeader from "../hooks/useTokenHeader";
+import PatientKey, { IsPatientKey } from "../types/PatientKey";
 
 type KeyContext = {
   keys: Key[];
@@ -34,6 +35,8 @@ const serializeKeys = (keys: Key[]): string => {
         return `generated;${key.address};${key.privateKey};${description}`;
       } else if (isAuthorizationKey(key)) {
         return `authorization;${key.address};${key.token};${description}`;
+      } else if (IsPatientKey(key)) {
+        return `patient;${key.address};${key.patientPrivateKey};${key.patientToken};${description}`;
       }
 
       return "";
@@ -56,6 +59,16 @@ const deserializeKeys = (serlializedKeys: string): Key[] => {
             address: keyParts[1],
             privateKey: keyParts[2],
             description: keyParts[3]
+          };
+          return key;
+        }
+
+        if (keyParts[0] === "patient") {
+          const key: PatientKey = {
+            address: keyParts[1],
+            patientPrivateKey: keyParts[2],
+            patientToken: keyParts[3],
+            description: keyParts[4]
           };
           return key;
         }
@@ -139,17 +152,31 @@ const KeyContextProvider: FunctionComponent = ({ children }) => {
           }
         }
 
+        // Then, divide into authorization, patient and generated keys
         const authorizationKeys = keys.filter(isAuthorizationKey);
-        const otherKeys = keys
-          .filter(key => !isAuthorizationKey(key))
-          .filter(key => key.address != undefined);
+        const patientKeys = keys.filter(IsPatientKey);
+        const generatedKeys = keys.filter(isGeneratedKey);
 
-        localStorage.setItem("keys", serializeKeys(otherKeys));
-        setKeys(otherKeys);
+        // Generated keys has no server state, so we just set those.
+        localStorage.setItem("keys", serializeKeys(generatedKeys));
+        setKeys(generatedKeys);
 
+        // This is mostly for development purposes. We check if authorization keys are valid.
         authorizationKeys.forEach(async key => {
           const reponse = await fetch(endpoints.accounts.valid, {
             headers: getHeaderWithToken(key.token)
+          });
+
+          const keyIsValid = await reponse.json();
+          if (keyIsValid) {
+            addKey(key);
+          }
+        });
+
+        // Finally, we check if the patient keys are valid.
+        patientKeys.forEach(async key => {
+          const reponse = await fetch(endpoints.patient.valid, {
+            headers: getHeaderWithToken(key.patientToken)
           });
 
           const keyIsValid = await reponse.json();

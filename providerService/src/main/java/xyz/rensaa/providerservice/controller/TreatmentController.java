@@ -24,6 +24,7 @@ public class TreatmentController {
 
   @GetMapping("/{address}")
   public TreatmentMessage getTreatmentByAddress(@PathVariable("address") final String address) {
+
     return treatmentService.getTreatmentFromAddress(address);
   }
 }
