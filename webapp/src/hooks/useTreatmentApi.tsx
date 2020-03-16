@@ -2,9 +2,13 @@ import { useContext } from "react";
 import ToastContext from "../context/ToastContext";
 import TreatmentMessage from "../dto/TreatmentMessage";
 import endpoints from "../config/endpoints";
+import useTokenHeader from "./useTokenHeader";
+import TreatmentCreationDTO from "../dto/Treatments/TreatmentCreationDTO";
+import TreatmentPatientInfoDTO from "../dto/Treatments/TreatmentPatientIntoDTO";
 
 const useTreatmentApi = () => {
-  const { showFailure } = useContext(ToastContext);
+  const { showFailure, showSuccess } = useContext(ToastContext);
+  const { getHeader } = useTokenHeader();
 
   const getTreatmentFromAddress = async (
     address: string
@@ -36,9 +40,42 @@ const useTreatmentApi = () => {
     return [];
   };
 
+  const proposeTreatment = async (
+    proposal: TreatmentCreationDTO
+  ): Promise<boolean> => {
+    const response = await fetch(endpoints.treatments.create, {
+      method: "POST",
+      headers: getHeader(),
+      body: JSON.stringify(proposal)
+    });
+
+    if (response.status === 200) {
+      showSuccess("Successfully created treatment proposal");
+      return true;
+    }
+
+    const error = await response.json();
+    showFailure("Failed to create proposall. " + error.message);
+    return false;
+  };
+
+  const getPatientTreatmentProposals = async (): Promise<TreatmentPatientInfoDTO[]> => {
+    const response = await fetch(endpoints.treatments.patientProposals);
+
+    if (response.status === 200) {
+      return response.json();
+    }
+
+    const error = await response.json();
+    showFailure(error.message);
+    return [];
+  };
+
   return {
     getTreatmentFromAddress,
-    getTreatments
+    getTreatments,
+    proposeTreatment,
+    getPatientTreatmentProposals
   };
 };
 

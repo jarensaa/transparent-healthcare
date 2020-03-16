@@ -11,6 +11,7 @@ import styled from "styled-components";
 import FancyImageCard from "../../../components/FancyImageCard";
 import { ReactComponent as TreatmentImage } from "../../../images/undraw_medicine_b1ol.svg";
 import useAddress from "../../../hooks/useAddress";
+import useTreatmentApi from "../../../hooks/useTreatmentApi";
 
 const InputGrid = styled.div`
   display: grid;
@@ -22,6 +23,8 @@ const InputGrid = styled.div`
 const FancyIssueTreatmentsCard = () => {
   const { address, isValidAddress, setAddress } = useAddress();
   const [treatmentDescription, setTreatmentDescription] = useState<string>("");
+
+  const { proposeTreatment } = useTreatmentApi();
 
   const isValidDescription = treatmentDescription.length > 10;
 
@@ -59,6 +62,10 @@ const FancyIssueTreatmentsCard = () => {
               minimal
               rightIcon="arrow-right"
               onClick={() => {
+                proposeTreatment({
+                  patientAddress: address,
+                  treatmentDescription: treatmentDescription
+                });
                 setTreatmentDescription("");
                 setAddress("");
               }}

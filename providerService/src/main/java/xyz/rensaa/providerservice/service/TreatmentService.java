@@ -1,17 +1,23 @@
 package xyz.rensaa.providerservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.stereotype.Service;
 import org.web3j.tuples.generated.Tuple5;
 import xyz.rensaa.providerservice.Treatment;
 import xyz.rensaa.providerservice.contracts.CTreatmentFactory;
 import xyz.rensaa.providerservice.dto.ImmutableTreatmentMessage;
 import xyz.rensaa.providerservice.dto.TreatmentMessage;
+import xyz.rensaa.providerservice.dto.Treatments.*;
 import xyz.rensaa.providerservice.exceptions.NoContentException;
 import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
+import xyz.rensaa.providerservice.exceptions.UnauthorizedException;
+import xyz.rensaa.providerservice.model.Treatments.TreatmentProposal;
+import xyz.rensaa.providerservice.repository.TreatmentProposalRepository;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -22,7 +28,13 @@ public class TreatmentService {
   CTreatmentFactory cTreatmentFactory;
 
   @Autowired
+  LicenseService licenseService;
+
+  @Autowired
   Treatment defaultTreatmentContract;
+
+  @Autowired
+  TreatmentProposalRepository treatmentProposalRepository;
 
   public TreatmentMessage getTreatmentFromAddress(final String address) {
     try {
@@ -66,5 +78,39 @@ public class TreatmentService {
       e.printStackTrace();
       throw new TransactionFailedException(e.getMessage());
     }
+  }
+
+  public boolean createTreatmentProposal(String licenseAddress, TreatmentCreationDTO treatmentCreationDTO) {
+    var isTrustedLicense = licenseService.isLicenseTrusted(licenseAddress);
+    if(!isTrustedLicense) throw new UnauthorizedException("Address is not a trusted license");
+
+    var tempId = UUID.randomUUID().toString();
+
+    var treatmentProposal = new TreatmentProposal(
+            tempId,
+            licenseAddress,
+            treatmentCreationDTO.patientAddress(),
+            treatmentCreationDTO.treatmentDescription());
+
+    treatmentProposalRepository.save(treatmentProposal);
+    return true;
+  }
+
+  public List<TreatmentPatientInfoDTO> getTreatmentProposalsForPatient(String patientAddress) {
+    return treatmentProposalRepository
+      .findAllByPatientAddress(patientAddress)
+      .stream()
+      .map(treatmentProposal -> ImmutableTreatmentPatientInfoDTO.builder()
+              .treatmentId(treatmentProposal.getTempId())
+              .description(treatmentProposal.getDescription())
+              .licenseAddress(treatmentProposal.getLicenseAddress())
+              .build()
+      ).collect(Collectors.toList());
+  }
+
+  public boolean patientApproveTreatment(String patientAddress, TreatmentApprovePatientDTO treatmentApprovePatientDTO) {
+
+    System.out.println("Received treatment patient approval");
+    return true;
   }
 }

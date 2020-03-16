@@ -74,7 +74,9 @@ const endpoints = {
   },
   treatments: {
     base: config.treatmentsBase,
-    getByAddress: (address: string) => config.treatmentsBase + "/" + address
+    getByAddress: (address: string) => config.treatmentsBase + "/" + address,
+    create: config.treatmentsBase + "/create",
+    patientProposals: config.treatmentsBase + "/proposals"
   }
 };
 
