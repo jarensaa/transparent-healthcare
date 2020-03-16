@@ -114,13 +114,26 @@ const useLicenseApi = () => {
     }
   };
 
+  const isLicenseTrusted = async (licenseAddress: string): Promise<boolean> => {
+    const response = await fetch(endpoints.licenses.isTrusted(licenseAddress));
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return false;
+    }
+  };
+
   return {
     getLicenses,
     getLicenseFromAddress,
     proposeIssuerMove,
     approveIssuerMove,
     proposeProviderMove,
-    approveProviderMove
+    approveProviderMove,
+    isLicenseTrusted
   };
 };
 

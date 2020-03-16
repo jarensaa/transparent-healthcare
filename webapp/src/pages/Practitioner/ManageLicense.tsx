@@ -6,15 +6,14 @@ import React, {
   Fragment
 } from "react";
 import KeyContext from "../../context/KeyContext";
-import { Callout, Intent, Spinner } from "@blueprintjs/core";
+import { Callout, Intent, Spinner, H1, H2 } from "@blueprintjs/core";
 import FlexColumn from "../../styles/FlexColumn";
 import { TopMarginWrapper } from "../../styles/MarginWrappers";
 import useLicenseApi from "../../hooks/useLicenseApi";
 import LicenseMessage from "../../dto/LicenseMessage";
-import {
-  FancyLicenseIssuerCard,
-  FancyLicenseProviderCard
-} from "./components/FancyLicenseCards";
+import FancyLicenseTrustedCard from "./components/FancyLicenseTrustedCard";
+import FancyLicenseIssuerCard from "./components/FancyLicenseIssuerCard";
+import FancyLicenseProviderCard from "./components/FancyLicenseProviderCard";
 
 const ManageLicensePage: FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -49,7 +48,7 @@ const ManageLicensePage: FunctionComponent = () => {
 
   return (
     <FlexColumn>
-      <h1>Manage your license</h1>
+      <H1>Manage your license</H1>
       <p>
         A license is the proof a practitioner holds to show their certification
         to practice medicine. If a practitioner has a trusted license, they may
@@ -58,16 +57,17 @@ const ManageLicensePage: FunctionComponent = () => {
         be trusted it must be associated with a trusted license issuer and a
         trusted license provider.
       </p>
-
+      <H2>License status</H2>
+      <FancyLicenseTrustedCard />
       {license ? (
         <Fragment>
-          <h2>License info</h2>
+          <H2>License info</H2>
           <FancyLicenseIssuerCard license={license} />
           <FancyLicenseProviderCard license={license} />
         </Fragment>
       ) : (
         <Fragment>
-          <h2>Your license provider status</h2>
+          <H2>Your license provider status</H2>
           <Callout intent={Intent.WARNING}>
             You do not have a license. You must get a license issuer to issue
             one for you.

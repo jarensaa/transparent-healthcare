@@ -12,7 +12,7 @@ import LicenseIssuerPage from "../pages/Licenses/LicenseIssuer";
 import LicenseProviderPage from "../pages/Licenses/LicenseProvider";
 import ManageLicensePage from "../pages/Practitioner/ManageLicense";
 import IssueTreatmentPage from "../pages/TreatmentProvider/IssueTreatmentPage";
-import ApproveTreatmentsPage from "../pages/Practitioner/ApproveTreatmentsPage";
+import PractitionerTreatmentPage from "../pages/Practitioner/PractitionerTreatmentsPage";
 import PatientMyJournalPage from "../pages/Patient/PatientMyJournalPage";
 import EvaluateTreatmentsPage from "../pages/Patient/EvaluateTreatmentsPage";
 import PractitionersList from "../pages/Patient/PractitionersList";
@@ -99,7 +99,7 @@ const routes: RouteDefinition[] = [
     title: "Treatments",
     path: "/license/treatments",
     exact: true,
-    Component: ApproveTreatmentsPage,
+    Component: PractitionerTreatmentPage,
     sidebarArea: "practitioner"
   },
   {

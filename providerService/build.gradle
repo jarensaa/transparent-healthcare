@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.2.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'idea'
 	id 'org.inferred.processors' version '3.3.0'
 }
 
@@ -22,6 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-configuration-processor'
 	implementation 'org.web3j:core:4.5.5'
 	implementation 'org.web3j:codegen:4.5.14'
 	implementation 'com.palantir.safe-logging:safe-logging:1.13.0'
@@ -48,8 +50,7 @@ task generateContractWrappers {
 	doLast {
 		def contractEnvVariable = System.getenv('CONTRACT_DIRECTORY')
 		def contractPath = contractEnvVariable != null ? contractEnvVariable : "../contracts/shared/contracts"
-		PatternFilterable tree = fileTree(contractPath).include("*.json")
-		tree.each { File file ->
+		fileTree(contractPath).include("*.json").each { File file ->
 			javaexec {
 				description = "Generates java wrapper classes based compiled .json truffle contracts"
 				classpath = sourceSets.main.runtimeClasspath

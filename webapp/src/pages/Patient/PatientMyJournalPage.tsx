@@ -18,8 +18,7 @@ const PatientMyJournalPage: FunctionComponent = () => {
     });
 
     const challange = await challangeResponse.text();
-    console.log(token);
-    console.log(challange);
+
     const account = web3.eth.accounts.create();
     console.log(account.address);
     const signedMessage = account.sign(challange);

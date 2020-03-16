@@ -28,6 +28,11 @@ public class LicenseController {
     return licenseService.getLicenseFromAddress(address);
   }
 
+  @GetMapping("/{address}/istrusted")
+  public boolean isLicenseTrusted(@PathVariable("address") final String address) {
+    return licenseService.isLicenseTrusted(address);
+  }
+
   @PostMapping("/provider/move/{address}")
   public boolean moveLicenseToProvider(@PathVariable("address") final String providerAddress,
                                        @RequestHeader("Authorization") final String bearerToken) {

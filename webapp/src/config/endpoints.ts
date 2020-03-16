@@ -61,7 +61,9 @@ const endpoints = {
     proposeProviderMove: (providerAddress: string) =>
       config.licenseBase + "/provider/move/" + providerAddress,
     approveProviderMove: (licenseAddress: string) =>
-      config.licenseBase + "/provider/approve/" + licenseAddress
+      config.licenseBase + "/provider/approve/" + licenseAddress,
+    isTrusted: (licenseAddress: string) =>
+      config.licenseBase + "/" + licenseAddress + "/istrusted"
   },
   patient: {
     base: config.patientBase,
