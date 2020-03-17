@@ -110,13 +110,6 @@ const routes: RouteDefinition[] = [
     sidebarArea: "patient"
   },
   {
-    title: "My evaluations",
-    path: "/patient/evaluations",
-    exact: true,
-    Component: EvaluateTreatmentsPage,
-    sidebarArea: "patient"
-  },
-  {
     title: "Practitioners view",
     path: "/license/list",
     exact: true,

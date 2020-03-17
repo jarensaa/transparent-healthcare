@@ -5,7 +5,7 @@ interface PatientKey extends Key {
   patientToken: string;
 }
 
-const IsPatientKey = (key: Key): key is PatientKey => {
+const IsPatientKey = (key: Key | undefined): key is PatientKey => {
   if ((key as PatientKey).patientPrivateKey) return true;
   return false;
 };

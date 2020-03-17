@@ -4,11 +4,16 @@ import TreatmentMessage from "../dto/TreatmentMessage";
 import endpoints from "../config/endpoints";
 import useTokenHeader from "./useTokenHeader";
 import TreatmentCreationDTO from "../dto/Treatments/TreatmentCreationDTO";
-import TreatmentPatientInfoDTO from "../dto/Treatments/TreatmentPatientIntoDTO";
+import TreatmentPatientInfoDTO from "../dto/Treatments/TreatmentPatientInfoDTO";
+import Web3Context from "../context/Web3Context";
+import KeyContext from "../context/KeyContext";
+import { IsPatientKey } from "../types/PatientKey";
 
 const useTreatmentApi = () => {
   const { showFailure, showSuccess } = useContext(ToastContext);
   const { getHeader } = useTokenHeader();
+  const { web3 } = useContext(Web3Context);
+  const { activeKey } = useContext(KeyContext);
 
   const getTreatmentFromAddress = async (
     address: string
@@ -60,7 +65,9 @@ const useTreatmentApi = () => {
   };
 
   const getPatientTreatmentProposals = async (): Promise<TreatmentPatientInfoDTO[]> => {
-    const response = await fetch(endpoints.treatments.patientProposals);
+    const response = await fetch(endpoints.treatments.patientProposals, {
+      headers: getHeader()
+    });
 
     if (response.status === 200) {
       return response.json();
@@ -71,11 +78,39 @@ const useTreatmentApi = () => {
     return [];
   };
 
+  const getPendingTreatments = async () => {};
+
+  const getCompletedTreatments = async () => {};
+
+  const approveTreatment = async (treatment: TreatmentPatientInfoDTO) => {
+    if (!activeKey || !IsPatientKey(activeKey)) return;
+
+    const treatmentKeyPair = web3.eth.accounts.create();
+    const patientKeyAccount = web3.eth.accounts.privateKeyToAccount(
+      activeKey.patientPrivateKey
+    );
+
+    const dataToSignByTreatmentKey =
+      treatment.description.length + treatment.description;
+    const dataToSignByPatientKey =
+      dataToSignByTreatmentKey +
+      treatmentKeyPair.address.length +
+      treatmentKeyPair.address;
+
+    const treatmentKeySignature = treatmentKeyPair.sign(
+      dataToSignByTreatmentKey
+    );
+    const patientKeySignature = treatmentKeyPair.sign(dataToSignByPatientKey);
+  };
+
   return {
     getTreatmentFromAddress,
     getTreatments,
     proposeTreatment,
-    getPatientTreatmentProposals
+    getPatientTreatmentProposals,
+    getPendingTreatments,
+    getCompletedTreatments,
+    approveTreatment
   };
 };
 

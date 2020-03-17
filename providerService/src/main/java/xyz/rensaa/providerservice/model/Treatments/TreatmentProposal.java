@@ -1,9 +1,6 @@
 package xyz.rensaa.providerservice.model.Treatments;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(indexes = {@Index(name = "treatment_proposal_patient_index",  columnList="patientAddress")})
@@ -16,6 +13,7 @@ public class TreatmentProposal {
 
     String patientAddress;
 
+    @Lob
     String description;
 
     public TreatmentProposal() {

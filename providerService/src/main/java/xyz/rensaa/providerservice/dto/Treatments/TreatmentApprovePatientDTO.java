@@ -16,7 +16,7 @@ public interface TreatmentApprovePatientDTO {
     @JsonProperty("treatmentAddress")
     String treatmentAddress();
 
-    @JsonProperty("signature")
+    @JsonProperty("patientKeySignature")
     String patientKeySignature();
 
     @JsonProperty("treatmentKeySignature")

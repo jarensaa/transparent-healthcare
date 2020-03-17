@@ -23,7 +23,7 @@ public class KeyRepositoryService {
 
   public String getPatientAddressFromBearerToken(final String bearerToken) {
     final var token = bearerToken.substring(7);
-    return patientKeyRepository.findById(token).orElseThrow(UnauthorizedException::new).getAddress();
+    return patientKeyRepository.findByToken(token).orElseThrow(UnauthorizedException::new).getAddress();
   }
 
   public boolean isValidPatientToken(final String bearerToken) {

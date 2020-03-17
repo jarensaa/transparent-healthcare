@@ -2,9 +2,17 @@ import React, { ReactNode, Component } from "react";
 import { FunctionComponent } from "react";
 import styled from "styled-components";
 import { Card } from "@blueprintjs/core";
+import FlexRow from "../styles/FlexRow";
+
+type ImageAlignment = "flex-start" | "flex-end" | "center";
 
 interface FancyCardProps {
   LeftImage: FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  imageAlignment?: ImageAlignment;
+}
+
+interface IImageWrapperProps {
+  imageAlignment?: ImageAlignment;
 }
 
 const CardWrapper = styled.div`
@@ -14,30 +22,32 @@ const CardWrapper = styled.div`
 `;
 
 const ContentArea = styled.div`
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 20px 30px;
   gap: 50px;
   display: grid;
   grid-template-columns: 200px auto;
 `;
 
-const ImageWrapper = styled.div`
-  height: 100%;
-  width: 100%;
+const ImageWrapper = styled.div<IImageWrapperProps>`
+  align-self: ${props =>
+    props.imageAlignment ? props.imageAlignment : "center"};
 `;
 
 const FancyImageCard: FunctionComponent<FancyCardProps> = ({
   children,
-  LeftImage
+  LeftImage,
+  imageAlignment
 }) => {
   return (
     <CardWrapper>
       <Card>
         <ContentArea>
-          <ImageWrapper>
-            <LeftImage style={{ height: "100%", width: "100%" }} />
-          </ImageWrapper>
-          {children}
+          <FlexRow>
+            <ImageWrapper imageAlignment={imageAlignment}>
+              <LeftImage style={{ height: "100%", width: "100%" }} />
+            </ImageWrapper>
+          </FlexRow>
+          <div>{children}</div>
         </ContentArea>
       </Card>
     </CardWrapper>

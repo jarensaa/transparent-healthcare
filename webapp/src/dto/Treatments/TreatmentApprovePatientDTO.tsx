@@ -1,6 +1,7 @@
 type TreatmentPatientInfoDTO = {
   treatmentId: string;
-  desciption: string;
-  licenseAddress: string;
+  treatmentAddress: string;
+  patientKeySignature: string;
+  treatmentKeySignature: string;
 };
 export default TreatmentPatientInfoDTO;
