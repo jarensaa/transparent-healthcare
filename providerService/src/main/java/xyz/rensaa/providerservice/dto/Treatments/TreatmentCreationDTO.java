@@ -16,4 +16,7 @@ public interface TreatmentCreationDTO {
 
     @JsonProperty("treatmentDescription")
     String treatmentDescription();
+
+    @JsonProperty("treatmentProviderToken")
+    String treatmentProviderToken();
 }

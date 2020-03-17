@@ -71,22 +71,27 @@ const FancyIssueTreatmentsCard: FunctionComponent<FancyCardProps> = ({
                 setTreatmentDescription(change.currentTarget.value)
               }
             ></TextArea>
-            <Button
-              intent={isAllValid ? Intent.SUCCESS : Intent.NONE}
-              disabled={!isAllValid}
-              minimal
-              rightIcon="arrow-right"
-              onClick={() => {
-                proposeTreatment({
-                  patientAddress: address,
-                  treatmentDescription: treatmentDescription
-                });
-                setTreatmentDescription("");
-                setAddress("");
-              }}
-            >
-              Issue treatment
-            </Button>
+            {treatmentProvider ? (
+              <Button
+                intent={isAllValid ? Intent.SUCCESS : Intent.NONE}
+                disabled={!isAllValid}
+                minimal
+                rightIcon="arrow-right"
+                onClick={() => {
+                  proposeTreatment({
+                    patientAddress: address,
+                    treatmentDescription: treatmentDescription,
+                    treatmentProviderToken: treatmentProvider.token
+                  });
+                  setTreatmentDescription("");
+                  setAddress("");
+                }}
+              >
+                Issue treatment
+              </Button>
+            ) : (
+              <Fragment />
+            )}
           </InputGrid>
         </FormGroup>
       </InputGrid>

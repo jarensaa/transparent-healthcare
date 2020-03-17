@@ -153,9 +153,9 @@ public class TreatmentProviderService {
   }
 
 
-  public boolean registerLicenseWithTreatmentProvider(String licenseAddress, String treatmentProviderAddress) {
+  public boolean registerLicenseWithTreatmentProvider(String licenseAddress, String providerToken, String treatmentProviderAddress) {
     var token = UUID.randomUUID().toString();
-    var treatmentProviderHire = new TreatmentProviderHire(token, licenseAddress, treatmentProviderAddress);
+    var treatmentProviderHire = new TreatmentProviderHire(token, licenseAddress, treatmentProviderAddress,providerToken);
     treatmentProviderHireRepository.save(treatmentProviderHire);
     return true;
   }

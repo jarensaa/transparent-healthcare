@@ -13,17 +13,24 @@ public class TreatmentProposal {
 
     String patientAddress;
 
+    String treatmentProviderToken;
+
     @Lob
     String description;
 
     public TreatmentProposal() {
     }
 
-    public TreatmentProposal(String tempId, String licenseAddress, String patientAddress, String description) {
+    public TreatmentProposal(String tempId, String licenseAddress, String patientAddress, String description, String treatmentProviderToken) {
         this.tempId = tempId;
         this.licenseAddress = licenseAddress;
         this.patientAddress = patientAddress;
         this.description = description;
+        this.treatmentProviderToken = treatmentProviderToken;
+    }
+
+    public String getTreatmentProviderToken() {
+        return treatmentProviderToken;
     }
 
     public String getTempId() {

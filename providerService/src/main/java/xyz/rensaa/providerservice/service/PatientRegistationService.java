@@ -2,21 +2,13 @@ package xyz.rensaa.providerservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.web3j.crypto.ECDSASignature;
-import org.web3j.crypto.Hash;
-import org.web3j.crypto.Keys;
-import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
 import xyz.rensaa.providerservice.exceptions.UnauthorizedException;
 import xyz.rensaa.providerservice.model.PatientKeyRegistration;
 import xyz.rensaa.providerservice.model.PatientKeyRegistrationChallenge;
 import xyz.rensaa.providerservice.repository.PatientKeyChallengeRepository;
 import xyz.rensaa.providerservice.repository.PatientKeyRepository;
-import xyz.rensaa.providerservice.service.utils.SignatureService;
+import xyz.rensaa.providerservice.service.utils.CryptoService;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.UUID;
 
 @Service
@@ -44,7 +36,7 @@ public class PatientRegistationService {
         if (challengeOptional.isEmpty()) throw new UnauthorizedException();
         var challenge = challengeOptional.get().getChallenge();
 
-        var isSignatureValid = SignatureService.verifyEthSignature(challenge, challangeSignature, address);
+        var isSignatureValid = CryptoService.verifyEthSignature(challenge, challangeSignature, address);
         if(!isSignatureValid) throw new UnauthorizedException("Invalid signature");
         var token = UUID.randomUUID().toString();
         var keyEntry = new PatientKeyRegistration(address, token);

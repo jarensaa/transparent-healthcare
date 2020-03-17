@@ -19,13 +19,16 @@ public class TreatmentProviderHire {
 
     String providerAddress;
 
+    String providerKeyToken;
+
     public TreatmentProviderHire() {
     }
 
-    public TreatmentProviderHire(String token, String licenseAddress, String providerAddress) {
+    public TreatmentProviderHire(String token, String licenseAddress, String providerAddress, String providerKeyToken) {
         this.token = token;
         this.licenseAddress = licenseAddress;
         this.providerAddress = providerAddress;
+        this.providerKeyToken = providerKeyToken;
     }
 
     public String getToken() {
@@ -38,5 +41,9 @@ public class TreatmentProviderHire {
 
     public String getProviderAddress() {
         return providerAddress;
+    }
+
+    public String getProviderKeyToken() {
+        return providerKeyToken;
     }
 }

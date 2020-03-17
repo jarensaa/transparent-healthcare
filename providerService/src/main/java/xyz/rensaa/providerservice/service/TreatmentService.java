@@ -1,9 +1,9 @@
 package xyz.rensaa.providerservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.web3j.tuples.generated.Tuple5;
+import xyz.rensaa.providerservice.LicenseProvider;
 import xyz.rensaa.providerservice.Treatment;
 import xyz.rensaa.providerservice.contracts.CTreatmentFactory;
 import xyz.rensaa.providerservice.dto.ImmutableTreatmentMessage;
@@ -12,9 +12,13 @@ import xyz.rensaa.providerservice.dto.Treatments.*;
 import xyz.rensaa.providerservice.exceptions.NoContentException;
 import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
 import xyz.rensaa.providerservice.exceptions.UnauthorizedException;
+import xyz.rensaa.providerservice.model.Treatments.TreatmentData;
+import xyz.rensaa.providerservice.model.Treatments.TreatmentDataBuilder;
 import xyz.rensaa.providerservice.model.Treatments.TreatmentProposal;
+import xyz.rensaa.providerservice.repository.TreatmentDataRepository;
 import xyz.rensaa.providerservice.repository.TreatmentProposalRepository;
-import xyz.rensaa.providerservice.service.utils.SignatureService;
+import xyz.rensaa.providerservice.repository.TreatmentProviderHireRepository;
+import xyz.rensaa.providerservice.service.utils.CryptoService;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.List;
@@ -35,7 +39,22 @@ public class TreatmentService {
   Treatment defaultTreatmentContract;
 
   @Autowired
+  LicenseProvider defaultLicenseProviderContract;
+
+  @Autowired
   TreatmentProposalRepository treatmentProposalRepository;
+
+  @Autowired
+  TreatmentProviderHireRepository treatmentProviderHireRepository;
+
+  @Autowired
+  TreatmentDataRepository treatmentDataRepository;
+
+  @Autowired
+  KeyRepositoryService keyRepositoryService;
+
+  @Value("services.treatmentprovider.hostname")
+  String hostname;
 
   public TreatmentMessage getTreatmentFromAddress(final String address) {
     try {
@@ -81,17 +100,32 @@ public class TreatmentService {
     }
   }
 
+  public List<TreatmentMessage> getTreatmentsForPatient(final String patientAddress ) {
+    return getTreatments().stream()
+            .filter(treatmentMessage -> treatmentMessage.fullDataURL().equals(hostname))
+            .filter(treatmentMessage -> {
+              var fullTreatment = treatmentDataRepository.findById(treatmentMessage.address());
+              if(fullTreatment.isEmpty()) return false;
+              return fullTreatment.get().getPatientAddress().equals(patientAddress);
+            }).collect(Collectors.toList());
+  }
+
   public boolean createTreatmentProposal(String licenseAddress, TreatmentCreationDTO treatmentCreationDTO) {
     var isTrustedLicense = licenseService.isLicenseTrusted(licenseAddress);
     if(!isTrustedLicense) throw new UnauthorizedException("Address is not a trusted license");
 
     var tempId = UUID.randomUUID().toString();
 
+    var treatmentProviderHire = treatmentProviderHireRepository
+            .findById(treatmentCreationDTO.treatmentProviderToken())
+            .orElseThrow(UnauthorizedException::new);
+
     var treatmentProposal = new TreatmentProposal(
             tempId,
             licenseAddress,
             treatmentCreationDTO.patientAddress(),
-            treatmentCreationDTO.treatmentDescription());
+            treatmentCreationDTO.treatmentDescription(),
+            treatmentProviderHire.getProviderKeyToken());
 
     treatmentProposalRepository.save(treatmentProposal);
     return true;
@@ -120,18 +154,50 @@ public class TreatmentService {
             treatmentApprovePatientDTO.treatmentAddress().length() +
             treatmentApprovePatientDTO.treatmentAddress();
 
-    boolean treatmentKeySignatureIsValid = SignatureService.verifyEthSignature(
+    boolean treatmentKeySignatureIsValid = CryptoService.verifyEthSignature(
             dataSignedByTreatmentKey,
             treatmentApprovePatientDTO.treatmentKeySignature(),
             treatmentApprovePatientDTO.treatmentAddress());
 
-    boolean patientKeySignatureIsValid = SignatureService.verifyEthSignature(
+    boolean patientKeySignatureIsValid = CryptoService.verifyEthSignature(
             dataSignedByPatientKey,
             treatmentApprovePatientDTO.patientKeySignature(),
             patientAddress
     );
 
-    System.out.println("Received treatment patient approval");
+    if (!treatmentKeySignatureIsValid || !patientKeySignatureIsValid) {
+      throw new UnauthorizedException("Invalid signatures");
+    }
+
+    var treatmentProviderKey = keyRepositoryService.getKeyFromToken(treatment.getTreatmentProviderToken());
+    var treatmentContractInstance = cTreatmentFactory.fromPrivateKey(treatmentProviderKey.getPrivateKey());
+
+    var dataHash = CryptoService.getPackedEthHash(treatment.getDescription());
+
+    try {
+
+      var isLicenseStillTrusted = defaultLicenseProviderContract.isLicenseTrusted(treatment.getLicenseAddress()).send();
+      if (!isLicenseStillTrusted) throw new UnauthorizedException("Issuing license is not trusted anymore.");
+
+      treatmentContractInstance.createTreatment(
+              treatmentApprovePatientDTO.treatmentAddress(),
+              dataHash,
+              hostname).send();
+      var treatmentData = new TreatmentDataBuilder()
+              .setTreatmentAddress(treatmentApprovePatientDTO.treatmentAddress())
+              .setPatientAddress(patientAddress)
+              .setFullDescription(treatment.getDescription())
+              .setLicenseAddress(treatment.getLicenseAddress())
+              .setPatientKeySignature(treatmentApprovePatientDTO.patientKeySignature())
+              .setTreatmentKeySignature(treatmentApprovePatientDTO.treatmentKeySignature())
+              .build();
+      treatmentDataRepository.save(treatmentData);
+      treatmentProposalRepository.deleteById(treatment.getTempId());
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new TransactionFailedException("Failed to create treatment: " + e.getMessage());
+    }
+
     return true;
   }
 }

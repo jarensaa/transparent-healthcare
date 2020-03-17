@@ -10,9 +10,15 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-public class SignatureService {
+public class CryptoService {
 
     public static final String PERSONAL_MESSAGE_PREFIX = "\u0019Ethereum Signed Message:\n";
+
+    // We must apply the prefix from the spec here: https://web3js.readthedocs.io/en/v1.2.6/web3-eth-accounts.html#sign
+    public static byte[] getPackedEthHash(String data) {
+        String prefix = PERSONAL_MESSAGE_PREFIX + data.length();
+        return Hash.sha3((prefix + data).getBytes(StandardCharsets.UTF_8));
+    }
 
     public static boolean verifyEthSignature(String data, String signature, String rawAddress) {
         var address = rawAddress.toLowerCase();
@@ -27,7 +33,6 @@ public class SignatureService {
                 v,
                 Arrays.copyOfRange(signatureBytes, 0, 32),
                 Arrays.copyOfRange(signatureBytes, 32, 64));
-
 
         // We must apply the prefix from the spec here: https://web3js.readthedocs.io/en/v1.2.6/web3-eth-accounts.html#sign
         String prefix = PERSONAL_MESSAGE_PREFIX + data.length();

@@ -2,6 +2,7 @@ package xyz.rensaa.providerservice.model.Treatments;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
@@ -13,6 +14,7 @@ public class TreatmentData {
 
     String patientAddress;
 
+    @Lob
     String fullDescription;
 
     String licenseAddress;

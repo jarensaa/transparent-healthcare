@@ -94,7 +94,13 @@ const PatientMyJournalPage: FunctionComponent = () => {
       </DescriptionBox>
       <FancyImageCard LeftImage={MedicineImage} imageAlignment={"flex-start"}>
         <H2>Treatments waiting for your approval</H2>
-        {treatmentCards}
+        {pendingTreatments.length > 0 ? (
+          treatmentCards
+        ) : (
+          <Callout intent={Intent.SUCCESS}>
+            You have no treatments waiting
+          </Callout>
+        )}
       </FancyImageCard>
       <H2>Treatments waiting for pracitioners approval</H2>
       <H2>Previous treatments</H2>

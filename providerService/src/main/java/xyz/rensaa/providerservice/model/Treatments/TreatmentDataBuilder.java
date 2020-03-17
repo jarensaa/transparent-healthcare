@@ -42,7 +42,7 @@ public class TreatmentDataBuilder {
         return this;
     }
 
-    public TreatmentData createTreatmentData() {
+    public TreatmentData build() {
         return new TreatmentData(treatmentAddress, patientAddress, fullDescription, licenseAddress, patientKeySignature, treatmentKeySignature);
     }
 }

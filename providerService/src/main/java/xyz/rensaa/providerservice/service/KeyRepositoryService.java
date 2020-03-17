@@ -16,6 +16,10 @@ public class KeyRepositoryService {
   @Autowired
   private PatientKeyRepository patientKeyRepository;
 
+  public KeyAuthorization getKeyFromToken(final String token ){
+    return keyAuthorizationRepository.findById(token).orElseThrow(UnauthorizedException::new);
+  }
+
   public KeyAuthorization getKeyFromBearerToken(final String bearerToken) {
     final var token = bearerToken.substring(7);
     return keyAuthorizationRepository.findById(token).orElseThrow(UnauthorizedException::new);

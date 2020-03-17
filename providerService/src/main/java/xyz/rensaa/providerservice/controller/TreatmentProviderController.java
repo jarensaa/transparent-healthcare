@@ -71,7 +71,10 @@ public class TreatmentProviderController {
   public boolean hireLicense(@PathVariable("address") final String licenseAddress,
                              @RequestHeader("Authorization") final String bearerToken) {
     final var keyPair = keyRepositoryService.getKeyFromBearerToken(bearerToken);
-    return treatmentProviderService.registerLicenseWithTreatmentProvider(licenseAddress, keyPair.getAddress());
+    return treatmentProviderService.registerLicenseWithTreatmentProvider(
+            licenseAddress,
+            keyPair.getUserToken(),
+            keyPair.getAddress());
   }
 
   @GetMapping("/licenses/provider")
