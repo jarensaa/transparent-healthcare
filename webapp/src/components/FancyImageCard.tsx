@@ -1,17 +1,18 @@
-import React, { ReactNode, Component } from "react";
+import React, { ReactNode, Component, Fragment } from "react";
 import { FunctionComponent } from "react";
 import styled, { css } from "styled-components";
-import { Card } from "@blueprintjs/core";
+import { Card, Colors } from "@blueprintjs/core";
 import FlexRow from "../styles/FlexRow";
 
 interface ICardWrapperProps {
   standardWidth?: boolean;
 }
 
-const CardWrapper = styled.div<ICardWrapperProps>`
+const Wrapper = styled.div<ICardWrapperProps>`
   margin-top: 10px;
   margin-bottom: 10px;
   max-width: 900px;
+  display: grid;
 
   ${props =>
     props.standardWidth &&
@@ -19,6 +20,20 @@ const CardWrapper = styled.div<ICardWrapperProps>`
       width: 100%;
       max-width: 900px;
     `}
+`;
+
+const CardWrapper = styled.div`
+  grid-area: 1/1;
+`;
+
+const Overlay = styled.div`
+  background-color: ${Colors.LIGHT_GRAY3};
+  width: 100%;
+  height: 100%;
+  grid-area: 1/1;
+  opacity: 0.5;
+  cursor: not-allowed;
+  z-index: 1;
 `;
 
 interface IContentAreaProps {
@@ -48,6 +63,7 @@ interface FancyCardProps {
   imageAlignment?: ImageAlignment;
   small?: boolean;
   standardWidth?: boolean;
+  disabled?: boolean;
 }
 
 const FancyImageCard: FunctionComponent<FancyCardProps> = ({
@@ -55,21 +71,25 @@ const FancyImageCard: FunctionComponent<FancyCardProps> = ({
   LeftImage,
   imageAlignment,
   small,
-  standardWidth
+  standardWidth,
+  disabled
 }) => {
   return (
-    <CardWrapper standardWidth={standardWidth}>
-      <Card>
-        <ContentArea small={small}>
-          <FlexRow>
-            <ImageWrapper imageAlignment={imageAlignment}>
-              <LeftImage style={{ height: "100%", width: "100%" }} />
-            </ImageWrapper>
-          </FlexRow>
-          <div>{children}</div>
-        </ContentArea>
-      </Card>
-    </CardWrapper>
+    <Wrapper standardWidth={standardWidth}>
+      <CardWrapper>
+        <Card>
+          <ContentArea small={small}>
+            <FlexRow>
+              <ImageWrapper imageAlignment={imageAlignment}>
+                <LeftImage style={{ height: "100%", width: "100%" }} />
+              </ImageWrapper>
+            </FlexRow>
+            <div>{children}</div>
+          </ContentArea>
+        </Card>
+      </CardWrapper>
+      {disabled ? <Overlay /> : <Fragment />}
+    </Wrapper>
   );
 };
 

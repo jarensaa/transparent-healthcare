@@ -1,4 +1,9 @@
-import React, { Fragment, useState, ChangeEvent } from "react";
+import React, {
+  Fragment,
+  useState,
+  ChangeEvent,
+  FunctionComponent
+} from "react";
 import {
   H2,
   FormGroup,
@@ -12,6 +17,7 @@ import FancyImageCard from "../../../components/FancyImageCard";
 import { ReactComponent as TreatmentImage } from "../../../images/undraw_medicine_b1ol.svg";
 import useAddress from "../../../hooks/useAddress";
 import useTreatmentApi from "../../../hooks/useTreatmentApi";
+import TreatmentProviderHireDTO from "../../../dto/TreatmentProvider/TreatmentProviderHireDTO";
 
 const InputGrid = styled.div`
   display: grid;
@@ -20,7 +26,13 @@ const InputGrid = styled.div`
   gap: 10px;
 `;
 
-const FancyIssueTreatmentsCard = () => {
+interface FancyCardProps {
+  treatmentProvider?: TreatmentProviderHireDTO;
+}
+
+const FancyIssueTreatmentsCard: FunctionComponent<FancyCardProps> = ({
+  treatmentProvider
+}) => {
   const { address, isValidAddress, setAddress } = useAddress();
   const [treatmentDescription, setTreatmentDescription] = useState<string>("");
 
@@ -31,7 +43,10 @@ const FancyIssueTreatmentsCard = () => {
   const isAllValid = isValidDescription && isValidAddress;
 
   return (
-    <FancyImageCard LeftImage={TreatmentImage}>
+    <FancyImageCard
+      disabled={treatmentProvider ? false : true}
+      LeftImage={TreatmentImage}
+    >
       <InputGrid>
         <H2>Issue treatment to a patient</H2>
         <FormGroup>

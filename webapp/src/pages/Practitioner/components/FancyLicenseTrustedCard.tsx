@@ -19,7 +19,7 @@ const FancyLicenseTrustedCard = () => {
   }, [activeKey]);
 
   return (
-    <FancyImageCard LeftImage={DoctorImage}>
+    <FancyImageCard small LeftImage={DoctorImage}>
       <div>
         <Callout intent={isTrusted ? Intent.SUCCESS : Intent.WARNING}>
           <H3>
