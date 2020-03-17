@@ -6,10 +6,15 @@ import org.springframework.stereotype.Service;
 import xyz.rensaa.providerservice.TreatmentProvider;
 import xyz.rensaa.providerservice.contracts.CTreatmentProviderFactory;
 import xyz.rensaa.providerservice.dto.ImmutableTreatmentProviderMessage;
+import xyz.rensaa.providerservice.dto.TreatmentProvider.ImmutableTreatmentProviderHireDTO;
+import xyz.rensaa.providerservice.dto.TreatmentProvider.TreatmentProviderHireDTO;
 import xyz.rensaa.providerservice.dto.TreatmentProviderMessage;
 import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
+import xyz.rensaa.providerservice.model.TreatmentProviderHire;
+import xyz.rensaa.providerservice.repository.TreatmentProviderHireRepository;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -21,6 +26,9 @@ public class TreatmentProviderService {
 
   @Autowired
   private TreatmentProvider defaultTreatmentProvider;
+
+  @Autowired
+  private TreatmentProviderHireRepository treatmentProviderHireRepository;
 
   @Autowired
   private Logger logger;
@@ -117,6 +125,39 @@ public class TreatmentProviderService {
       e.printStackTrace();
       throw new TransactionFailedException(e.getMessage());
     }
+  }
+
+  public List<TreatmentProviderHireDTO> getLicensesForTreatmentProvider(String treatmentProviderAddress) {
+    return treatmentProviderHireRepository
+            .findAllByProviderAddress(treatmentProviderAddress)
+            .stream()
+            .map(treatmentProviderHire -> ImmutableTreatmentProviderHireDTO.builder()
+                    .licenseAddress(treatmentProviderHire.getLicenseAddress())
+                    .providerAddress(treatmentProviderHire.getProviderAddress())
+                    .token(treatmentProviderHire.getToken())
+                    .build()
+            ).collect(Collectors.toList());
+  }
+
+
+  public List<TreatmentProviderHireDTO> getTreatmentProvidersForLicense(String licenseAddress) {
+    return treatmentProviderHireRepository
+            .findAllByLicenseAddress(licenseAddress)
+            .stream()
+            .map(treatmentProviderHire -> ImmutableTreatmentProviderHireDTO.builder()
+                    .licenseAddress(treatmentProviderHire.getLicenseAddress())
+                    .providerAddress(treatmentProviderHire.getProviderAddress())
+                    .token(treatmentProviderHire.getToken())
+                    .build()
+            ).collect(Collectors.toList());
+  }
+
+
+  public boolean registerLicenseWithTreatmentProvider(String licenseAddress, String treatmentProviderAddress) {
+    var token = UUID.randomUUID().toString();
+    var treatmentProviderHire = new TreatmentProviderHire(token, licenseAddress, treatmentProviderAddress);
+    treatmentProviderHireRepository.save(treatmentProviderHire);
+    return true;
   }
 
 

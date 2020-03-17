@@ -26,7 +26,12 @@ const endpoints = {
     addTrustInAddress: (address: string) =>
       config.treatmentProviderBase + "/" + address + "/addtrust",
     removeTrustInAddress: (address: string) =>
-      config.treatmentProviderBase + "/" + address + "/removetrust"
+      config.treatmentProviderBase + "/" + address + "/removetrust",
+    hireLicense: (licenseAddress: string) =>
+      config.treatmentProviderBase + "/licenses/" + licenseAddress + "/hire",
+    getTreatmentProvidersForLicense:
+      config.treatmentProviderBase + "/licenses/provider",
+    getLicensesForTreatmentProvider: config.treatmentProviderBase + "/licenses"
   },
   licenseIssuers: {
     base: config.licenseIssuerBase,
@@ -76,7 +81,8 @@ const endpoints = {
     base: config.treatmentsBase,
     getByAddress: (address: string) => config.treatmentsBase + "/" + address,
     create: config.treatmentsBase + "/create",
-    patientProposals: config.treatmentsBase + "/proposals"
+    patientProposals: config.treatmentsBase + "/proposals",
+    patientApproveProposals: config.treatmentsBase + "/proposals/approve"
   }
 };
 

@@ -8,6 +8,25 @@ import TreatmentPatientInfoDTO from "../dto/Treatments/TreatmentPatientInfoDTO";
 import Web3Context from "../context/Web3Context";
 import KeyContext from "../context/KeyContext";
 import { IsPatientKey } from "../types/PatientKey";
+import TreatmentApprovePatientDTO from "../dto/Treatments/TreatmentApprovePatientDTO";
+
+type TreatmentKey = {
+  address: string;
+  privateKey: string;
+};
+
+const addTreatmentKeyToLocalStorage = (key: TreatmentKey) => {
+  const existingKeys = getTreatmentKeysFromLocalStorage();
+  const newKeys = [...existingKeys, key];
+  localStorage.setItem("treatmentKeys", JSON.stringify(newKeys));
+};
+
+const getTreatmentKeysFromLocalStorage = (): TreatmentKey[] => {
+  const keysString = localStorage.getItem("treatmentKeys");
+
+  const keys: TreatmentKey[] = keysString ? JSON.parse(keysString) : [];
+  return keys;
+};
 
 const useTreatmentApi = () => {
   const { showFailure, showSuccess } = useContext(ToastContext);
@@ -97,10 +116,35 @@ const useTreatmentApi = () => {
       treatmentKeyPair.address.length +
       treatmentKeyPair.address;
 
-    const treatmentKeySignature = treatmentKeyPair.sign(
-      dataToSignByTreatmentKey
-    );
-    const patientKeySignature = treatmentKeyPair.sign(dataToSignByPatientKey);
+    const treatmentKeySign = treatmentKeyPair.sign(dataToSignByTreatmentKey);
+    const patientKeySign = patientKeyAccount.sign(dataToSignByPatientKey);
+
+    const treatmentApprovalDTO: TreatmentApprovePatientDTO = {
+      treatmentId: treatment.treatmentId,
+      treatmentAddress: treatmentKeyPair.address,
+      patientKeySignature: patientKeySign.signature,
+      treatmentKeySignature: treatmentKeySign.signature
+    };
+
+    addTreatmentKeyToLocalStorage({
+      address: treatmentKeyPair.address,
+      privateKey: treatmentKeyPair.privateKey
+    });
+
+    const response = await fetch(endpoints.treatments.patientApproveProposals, {
+      method: "POST",
+      headers: getHeader(),
+      body: JSON.stringify(treatmentApprovalDTO)
+    });
+
+    if (response.status === 200) {
+      showSuccess("Successfully approved treatment");
+      return;
+    }
+
+    const error = await response.json();
+    showFailure(error.message);
+    return;
   };
 
   return {

@@ -1,47 +1,66 @@
 import React, { ReactNode, Component } from "react";
 import { FunctionComponent } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Card } from "@blueprintjs/core";
 import FlexRow from "../styles/FlexRow";
 
-type ImageAlignment = "flex-start" | "flex-end" | "center";
-
-interface FancyCardProps {
-  LeftImage: FunctionComponent<React.SVGProps<SVGSVGElement>>;
-  imageAlignment?: ImageAlignment;
+interface ICardWrapperProps {
+  standardWidth?: boolean;
 }
+
+const CardWrapper = styled.div<ICardWrapperProps>`
+  margin-top: 10px;
+  margin-bottom: 10px;
+  max-width: 900px;
+
+  ${props =>
+    props.standardWidth &&
+    css`
+      width: 100%;
+      max-width: 900px;
+    `}
+`;
+
+interface IContentAreaProps {
+  small?: boolean;
+}
+
+const ContentArea = styled.div<IContentAreaProps>`
+  padding: 20px 30px;
+  gap: 50px;
+  display: grid;
+  grid-template-columns: ${props => (props.small ? "140px" : "200px")} auto;
+`;
+
+type ImageAlignment = "flex-start" | "flex-end" | "center";
 
 interface IImageWrapperProps {
   imageAlignment?: ImageAlignment;
 }
-
-const CardWrapper = styled.div`
-  margin-top: 10px;
-  margin-bottom: 10px;
-  max-width: 900px;
-`;
-
-const ContentArea = styled.div`
-  padding: 20px 30px;
-  gap: 50px;
-  display: grid;
-  grid-template-columns: 200px auto;
-`;
 
 const ImageWrapper = styled.div<IImageWrapperProps>`
   align-self: ${props =>
     props.imageAlignment ? props.imageAlignment : "center"};
 `;
 
+interface FancyCardProps {
+  LeftImage: FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  imageAlignment?: ImageAlignment;
+  small?: boolean;
+  standardWidth?: boolean;
+}
+
 const FancyImageCard: FunctionComponent<FancyCardProps> = ({
   children,
   LeftImage,
-  imageAlignment
+  imageAlignment,
+  small,
+  standardWidth
 }) => {
   return (
-    <CardWrapper>
+    <CardWrapper standardWidth={standardWidth}>
       <Card>
-        <ContentArea>
+        <ContentArea small={small}>
           <FlexRow>
             <ImageWrapper imageAlignment={imageAlignment}>
               <LeftImage style={{ height: "100%", width: "100%" }} />

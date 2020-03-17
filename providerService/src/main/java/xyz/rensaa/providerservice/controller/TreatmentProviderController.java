@@ -3,6 +3,7 @@ package xyz.rensaa.providerservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.rensaa.providerservice.dto.ImmutableTreatmentProviderMessage;
+import xyz.rensaa.providerservice.dto.TreatmentProvider.TreatmentProviderHireDTO;
 import xyz.rensaa.providerservice.dto.TreatmentProviderMessage;
 import xyz.rensaa.providerservice.exceptions.NoContentException;
 import xyz.rensaa.providerservice.service.KeyRepositoryService;
@@ -66,5 +67,25 @@ public class TreatmentProviderController {
     treatmentProviderService.removeTrustInProvider(key.getPrivateKey(), providerAddress);
   }
 
+  @PostMapping("/licenses/{address}/hire")
+  public boolean hireLicense(@PathVariable("address") final String licenseAddress,
+                             @RequestHeader("Authorization") final String bearerToken) {
+    final var keyPair = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+    return treatmentProviderService.registerLicenseWithTreatmentProvider(licenseAddress, keyPair.getAddress());
+  }
+
+  @GetMapping("/licenses/provider")
+  public List<TreatmentProviderHireDTO> getProvidersForLicense(
+          @RequestHeader("Authorization") final String bearerToken) {
+      final var keyPair = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+      return treatmentProviderService.getTreatmentProvidersForLicense(keyPair.getAddress());
+  }
+
+  @GetMapping("/licenses")
+  public List<TreatmentProviderHireDTO> getLicensesForProvider(
+          @RequestHeader("Authorization") final String bearerToken) {
+    final var keyPair = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+    return treatmentProviderService.getLicensesForTreatmentProvider(keyPair.getAddress());
+  }
 
 }

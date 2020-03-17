@@ -1,4 +1,3 @@
-import Home from "../pages/Home/Home";
 import Authority from "../pages/Authority/Authority";
 import Keys from "../pages/Keys/Keys";
 import TreatmentProvider from "../pages/TreatmentProvider/TreatmentProvider";
@@ -11,10 +10,8 @@ import LicenseProviderView from "../pages/Authority/LicenseProviderView";
 import LicenseIssuerPage from "../pages/Licenses/LicenseIssuer";
 import LicenseProviderPage from "../pages/Licenses/LicenseProvider";
 import ManageLicensePage from "../pages/Practitioner/ManageLicense";
-import IssueTreatmentPage from "../pages/TreatmentProvider/IssueTreatmentPage";
 import PractitionerTreatmentPage from "../pages/Practitioner/PractitionerTreatmentsPage";
 import PatientMyJournalPage from "../pages/Patient/PatientMyJournalPage";
-import EvaluateTreatmentsPage from "../pages/Patient/EvaluateTreatmentsPage";
 import PractitionersList from "../pages/Patient/PractitionersList";
 
 interface RouteDefinition {
@@ -75,17 +72,10 @@ const routes: RouteDefinition[] = [
     sidebarArea: "licenses"
   },
   {
-    title: "Treatment Providers",
+    title: "Hires and treatments",
     path: "/treatmentProvider",
     exact: true,
     Component: TreatmentProvider,
-    sidebarArea: "treatmentProvider"
-  },
-  {
-    title: "Issue treatment",
-    path: "/issuetreatment",
-    exact: true,
-    Component: IssueTreatmentPage,
     sidebarArea: "treatmentProvider"
   },
   {

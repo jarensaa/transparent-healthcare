@@ -56,31 +56,29 @@ const PatientMyJournalPage: FunctionComponent = () => {
 
   const treatmentCards = pendingTreatments.map((treatment, index) => {
     return (
-      <Fragment>
-        <TopMarginWrapper key={index}>
-          <Card key={index}>
-            <FlexColumn>
-              <H6>Proposed by practitioner</H6>
-              {treatment.licenseAddress}
-              <Divider />
-              <TopMarginWrapper>
-                <H6>Treatment desciption</H6>
-                {treatment.description}
-              </TopMarginWrapper>
-              <TopMarginWrapper>
-                <Button
-                  intent={Intent.SUCCESS}
-                  minimal
-                  rightIcon="arrow-right"
-                  onClick={() => approveTreatment(treatment)}
-                >
-                  Approve treatment
-                </Button>
-              </TopMarginWrapper>
-            </FlexColumn>
-          </Card>
-        </TopMarginWrapper>
-      </Fragment>
+      <TopMarginWrapper key={index}>
+        <Card key={index}>
+          <FlexColumn>
+            <H6>Proposed by practitioner</H6>
+            {treatment.licenseAddress}
+            <Divider />
+            <TopMarginWrapper>
+              <H6>Treatment desciption</H6>
+              {treatment.description}
+            </TopMarginWrapper>
+            <TopMarginWrapper>
+              <Button
+                intent={Intent.SUCCESS}
+                minimal
+                rightIcon="arrow-right"
+                onClick={() => approveTreatment(treatment)}
+              >
+                Approve treatment
+              </Button>
+            </TopMarginWrapper>
+          </FlexColumn>
+        </Card>
+      </TopMarginWrapper>
     );
   });
 

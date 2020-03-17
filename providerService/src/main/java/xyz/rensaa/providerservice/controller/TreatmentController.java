@@ -44,7 +44,7 @@ public class TreatmentController {
     return treatmentService.createTreatmentProposal(licenseAddress, treatmentCreationDTO);
   }
 
-  @PostMapping("/proposals")
+  @PostMapping("/proposals/approve")
   public boolean patientApproveTreatment(@RequestBody TreatmentApprovePatientDTO approvePatientDTO,
                                          @RequestHeader("Authorization") final String bearerToken) {
     var patientAddress = keyRepositoryService.getPatientAddressFromBearerToken(bearerToken);

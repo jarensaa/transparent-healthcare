@@ -14,6 +14,7 @@ import xyz.rensaa.providerservice.exceptions.TransactionFailedException;
 import xyz.rensaa.providerservice.exceptions.UnauthorizedException;
 import xyz.rensaa.providerservice.model.Treatments.TreatmentProposal;
 import xyz.rensaa.providerservice.repository.TreatmentProposalRepository;
+import xyz.rensaa.providerservice.service.utils.SignatureService;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.List;
@@ -109,6 +110,26 @@ public class TreatmentService {
   }
 
   public boolean patientApproveTreatment(String patientAddress, TreatmentApprovePatientDTO treatmentApprovePatientDTO) {
+
+    var treatment = treatmentProposalRepository
+            .findById(treatmentApprovePatientDTO.treatmentId())
+            .orElseThrow(NoContentException::new);
+
+    String dataSignedByTreatmentKey = treatment.getDescription().length() + treatment.getDescription();
+    String dataSignedByPatientKey = dataSignedByTreatmentKey +
+            treatmentApprovePatientDTO.treatmentAddress().length() +
+            treatmentApprovePatientDTO.treatmentAddress();
+
+    boolean treatmentKeySignatureIsValid = SignatureService.verifyEthSignature(
+            dataSignedByTreatmentKey,
+            treatmentApprovePatientDTO.treatmentKeySignature(),
+            treatmentApprovePatientDTO.treatmentAddress());
+
+    boolean patientKeySignatureIsValid = SignatureService.verifyEthSignature(
+            dataSignedByPatientKey,
+            treatmentApprovePatientDTO.patientKeySignature(),
+            patientAddress
+    );
 
     System.out.println("Received treatment patient approval");
     return true;

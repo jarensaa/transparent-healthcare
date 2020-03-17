@@ -3,6 +3,7 @@ import endpoints from "../config/endpoints";
 import useTokenHeader from "./useTokenHeader";
 import { useContext } from "react";
 import ToastContext from "../context/ToastContext";
+import TreatmentProviderHireDTO from "../dto/TreatmentProvider/TreatmentProviderHireDTO";
 
 const useTreatmentProviderApi = () => {
   const { getHeader } = useTokenHeader();
@@ -87,12 +88,57 @@ const useTreatmentProviderApi = () => {
     return false;
   };
 
+  const hireLicense = async (licenseAddress: string) => {
+    const response = await fetch(
+      endpoints.treatmentProvider.hireLicense(licenseAddress),
+      { method: "POST", headers: getHeader() }
+    );
+
+    if (response.status === 200) {
+      showSuccess("Successfully hired license");
+    } else {
+      const parsedResponse = await response.json();
+      showFailure(parsedResponse.message);
+    }
+  };
+
+  const getLicensesForProvider = async (): Promise<TreatmentProviderHireDTO[]> => {
+    const response = await fetch(
+      endpoints.treatmentProvider.getLicensesForTreatmentProvider,
+      { headers: getHeader() }
+    );
+
+    if (response.status === 200) {
+      return await response.json();
+    }
+    const parsedResponse = await response.json();
+    showFailure(parsedResponse.message);
+    return [];
+  };
+
+  const getProvidersForLicense = async (): Promise<TreatmentProviderHireDTO[]> => {
+    const response = await fetch(
+      endpoints.treatmentProvider.getTreatmentProvidersForLicense,
+      { headers: getHeader() }
+    );
+
+    if (response.status === 200) {
+      return await response.json();
+    }
+    const parsedResponse = await response.json();
+    showFailure(parsedResponse.message);
+    return [];
+  };
+
   return {
     getTreatmentProviders,
     getTreatmentProvider,
     addTrustInProvider,
     removeTrustInProvider,
-    registerKey
+    registerKey,
+    hireLicense,
+    getLicensesForProvider,
+    getProvidersForLicense
   };
 };
 

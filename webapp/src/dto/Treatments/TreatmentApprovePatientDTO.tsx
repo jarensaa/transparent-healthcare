@@ -1,7 +1,7 @@
-type TreatmentPatientInfoDTO = {
+type TreatmentApprovePatientDTO = {
   treatmentId: string;
   treatmentAddress: string;
   patientKeySignature: string;
   treatmentKeySignature: string;
 };
-export default TreatmentPatientInfoDTO;
+export default TreatmentApprovePatientDTO;
