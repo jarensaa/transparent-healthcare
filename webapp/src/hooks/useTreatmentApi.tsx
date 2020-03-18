@@ -114,7 +114,7 @@ const useTreatmentApi = () => {
     const dataToSignByPatientKey =
       dataToSignByTreatmentKey +
       treatmentKeyPair.address.length +
-      treatmentKeyPair.address;
+      treatmentKeyPair.address.toLowerCase();
 
     const treatmentKeySign = treatmentKeyPair.sign(dataToSignByTreatmentKey);
     const patientKeySign = patientKeyAccount.sign(dataToSignByPatientKey);

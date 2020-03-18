@@ -195,7 +195,7 @@ public class TreatmentService {
     String dataSignedByTreatmentKey = treatment.getDescription().length() + treatment.getDescription();
     String dataSignedByPatientKey = dataSignedByTreatmentKey +
             treatmentApprovePatientDTO.treatmentAddress().length() +
-            treatmentApprovePatientDTO.treatmentAddress();
+            treatmentApprovePatientDTO.treatmentAddress().toLowerCase();
 
     boolean treatmentKeySignatureIsValid = CryptoService.verifyEthSignature(
             dataSignedByTreatmentKey,

@@ -7,7 +7,8 @@ import {
   H5,
   Tag,
   Intent,
-  Button
+  Button,
+  Callout
 } from "@blueprintjs/core";
 import FlexColumn from "../../../styles/FlexColumn";
 import FancyImageCard from "../../../components/FancyImageCard";
@@ -67,7 +68,7 @@ const FancyApproveTreatmentsCard = () => {
                 </Tag>
               ) : (
                 <Tag minimal intent={Intent.DANGER} icon="cross" large>
-                  Data invalid
+                  Data mismatches blockchain
                 </Tag>
               )}
               <Divider />
@@ -97,7 +98,13 @@ const FancyApproveTreatmentsCard = () => {
     <FancyImageCard small standardWidth LeftImage={TreatmentImage}>
       <FlexColumn>
         <H2>Treatments you can approve</H2>
-        {approvableTreatmentsCards}
+        {approvableTreatmentsCards.length > 0 ? (
+          approvableTreatmentsCards
+        ) : (
+          <Callout intent={Intent.SUCCESS}>
+            You have no pending treatments to approve
+          </Callout>
+        )}
       </FlexColumn>
     </FancyImageCard>
   );
