@@ -17,17 +17,14 @@ public class TreatmentData {
     @Lob
     String fullDescription;
 
-    String licenseAddress;
-
     String patientKeySignature;
 
     String treatmentKeySignature;
 
-    public TreatmentData(String treatmentAddress, String patientAddress, String fullDescription, String licenseAddress, String patientKeySignature, String treatmentKeySignature) {
+    public TreatmentData(String treatmentAddress, String patientAddress, String fullDescription, String patientKeySignature, String treatmentKeySignature) {
         this.treatmentAddress = treatmentAddress;
         this.patientAddress = patientAddress;
         this.fullDescription = fullDescription;
-        this.licenseAddress = licenseAddress;
         this.patientKeySignature = patientKeySignature;
         this.treatmentKeySignature = treatmentKeySignature;
     }
@@ -45,10 +42,6 @@ public class TreatmentData {
 
     public String getFullDescription() {
         return fullDescription;
-    }
-
-    public String getLicenseAddress() {
-        return licenseAddress;
     }
 
     public String getPatientKeySignature() {

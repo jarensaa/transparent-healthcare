@@ -44,6 +44,7 @@ const FancyIssueTreatmentsCard: FunctionComponent<FancyCardProps> = ({
 
   return (
     <FancyImageCard
+      small
       disabled={treatmentProvider ? false : true}
       LeftImage={TreatmentImage}
     >

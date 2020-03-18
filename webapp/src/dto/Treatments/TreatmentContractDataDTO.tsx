@@ -1,4 +1,4 @@
-type TreatmentMessage = {
+type TreatmentContractDataDTO = {
   address: String;
   approvingLicenseAddress: String;
   treatmentProviderAddress: String;
@@ -7,4 +7,4 @@ type TreatmentMessage = {
   isSpent: boolean;
 };
 
-export default TreatmentMessage;
+export default TreatmentContractDataDTO;

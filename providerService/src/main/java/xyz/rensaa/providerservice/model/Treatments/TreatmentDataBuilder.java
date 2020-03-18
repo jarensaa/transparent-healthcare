@@ -8,7 +8,6 @@ public class TreatmentDataBuilder {
     private String treatmentAddress;
     private String patientAddress;
     private String fullDescription;
-    private String licenseAddress;
     private String patientKeySignature;
     private String treatmentKeySignature;
 
@@ -27,11 +26,6 @@ public class TreatmentDataBuilder {
         return this;
     }
 
-    public TreatmentDataBuilder setLicenseAddress(String licenseAddress) {
-        this.licenseAddress = licenseAddress;
-        return this;
-    }
-
     public TreatmentDataBuilder setPatientKeySignature(String patientKeySignature) {
         this.patientKeySignature = patientKeySignature;
         return this;
@@ -43,6 +37,6 @@ public class TreatmentDataBuilder {
     }
 
     public TreatmentData build() {
-        return new TreatmentData(treatmentAddress, patientAddress, fullDescription, licenseAddress, patientKeySignature, treatmentKeySignature);
+        return new TreatmentData(treatmentAddress, patientAddress, fullDescription, patientKeySignature, treatmentKeySignature);
     }
 }

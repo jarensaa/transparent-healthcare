@@ -240,27 +240,6 @@ contract("Treatment", accounts => {
 
   it("It should be possible to get all treatment data", async () => {
     const treatmentArrays = await treatmentInstance.getTreatmentsWithData();
-
-    const firstTreatment = [
-      treatmentArrays[1][0],
-      treatmentArrays[2][0],
-      treatmentArrays[3][0],
-      treatmentArrays[4][0],
-      treatmentArrays[5][0]
-    ];
-
-    const secondTreatment = [
-      treatmentArrays[1][1],
-      treatmentArrays[2][1],
-      treatmentArrays[3][1],
-      treatmentArrays[4][1],
-      treatmentArrays[5][1]
-    ];
-
-    assert.ok(
-      treatmentArrays[0].length == 2 &&
-        treatmentObjectMapper(firstTreatment).fullDataURL === treatmentURL &&
-        treatmentObjectMapper(secondTreatment).fullDataURL === treatmentURL
-    );
+    assert.ok(treatmentArrays[0].length == 2);
   });
 });

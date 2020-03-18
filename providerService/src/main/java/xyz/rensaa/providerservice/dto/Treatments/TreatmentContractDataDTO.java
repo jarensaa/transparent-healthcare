@@ -1,4 +1,4 @@
-package xyz.rensaa.providerservice.dto;
+package xyz.rensaa.providerservice.dto.Treatments;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 
 @Value.Immutable
-@JsonSerialize(as = ImmutableTreatmentMessage.class)
-@JsonDeserialize(as = ImmutableTreatmentMessage.class)
-public interface TreatmentMessage {
+@JsonSerialize(as = ImmutableTreatmentContractDataDTO.class)
+@JsonDeserialize(as = ImmutableTreatmentContractDataDTO.class)
+public interface TreatmentContractDataDTO {
 
   @JsonProperty("address")
   String address();

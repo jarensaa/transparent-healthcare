@@ -12,7 +12,7 @@ import {
 } from "@blueprintjs/core";
 import useTreatmentProviderApi from "../../hooks/useTreatmentProviderApi";
 import useTreatmentApi from "../../hooks/useTreatmentApi";
-import TreatmentMessage from "../../dto/TreatmentMessage";
+import TreatmentContractDataDTO from "../../dto/Treatments/TreatmentContractDataDTO";
 import { TopMarginWrapper } from "../../styles/MarginWrappers";
 import TreatmentProviderMessage from "../../dto/TreatmentProvider";
 import DescriptionBox from "../../components/DescriptionBox";
@@ -24,7 +24,7 @@ import HiredPractitionersCard from "./components/HiredPractitionersCard";
 import TreatmentProviderTreatmentsCard from "./components/TreatmentProviderTreatmentsCard";
 
 const TreatmentProvider = () => {
-  const [treatments, setTreatments] = useState<TreatmentMessage[]>([]);
+  const [treatments, setTreatments] = useState<TreatmentContractDataDTO[]>([]);
 
   const { getTreatments } = useTreatmentApi();
 

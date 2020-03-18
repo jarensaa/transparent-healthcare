@@ -82,7 +82,10 @@ const endpoints = {
     getByAddress: (address: string) => config.treatmentsBase + "/" + address,
     create: config.treatmentsBase + "/create",
     patientProposals: config.treatmentsBase + "/proposals",
-    patientApproveProposals: config.treatmentsBase + "/proposals/approve"
+    patientApproveProposals: config.treatmentsBase + "/proposals/approve",
+    getTreatmentsForLicense: config.treatmentsBase + "/license",
+    licenseApproveTreatment: (address: string) =>
+      config.treatmentsBase + "/" + address + "/license/approve"
   }
 };
 

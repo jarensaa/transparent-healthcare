@@ -2,10 +2,7 @@ package xyz.rensaa.providerservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import xyz.rensaa.providerservice.dto.TreatmentMessage;
-import xyz.rensaa.providerservice.dto.Treatments.TreatmentApprovePatientDTO;
-import xyz.rensaa.providerservice.dto.Treatments.TreatmentCreationDTO;
-import xyz.rensaa.providerservice.dto.Treatments.TreatmentPatientInfoDTO;
+import xyz.rensaa.providerservice.dto.Treatments.*;
 import xyz.rensaa.providerservice.service.KeyRepositoryService;
 import xyz.rensaa.providerservice.service.TreatmentService;
 
@@ -22,19 +19,34 @@ public class TreatmentController {
   KeyRepositoryService keyRepositoryService;
 
   @GetMapping
-  public List<TreatmentMessage> getTreatments() {
+  public List<TreatmentContractDataDTO> getTreatments() {
     return treatmentService.getTreatments();
   }
 
   @GetMapping("/{address}")
-  public TreatmentMessage getTreatmentByAddress(@PathVariable("address") final String address) {
+  public TreatmentContractDataDTO getTreatmentByAddress(@PathVariable("address") final String address) {
     return treatmentService.getTreatmentFromAddress(address);
   }
 
+  @PostMapping("/{address}/license/approve")
+  public boolean licenseApproveTreatment(@PathVariable("address") final String address,
+                                         @RequestHeader("Authorization") final String bearerToken) {
+    var keyPair = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+    return treatmentService.licenseApproveTreatment(keyPair.getPrivateKey(), address);
+  }
+
   @GetMapping("/proposals")
-  public List<TreatmentPatientInfoDTO> getPatientTreatments(@RequestHeader("Authorization") final String bearerToken) {
+  public List<TreatmentPatientInfoDTO> getPatientTreatmentProposals(
+          @RequestHeader("Authorization") final String bearerToken) {
     var patientAddress = keyRepositoryService.getPatientAddressFromBearerToken(bearerToken);
     return treatmentService.getTreatmentProposalsForPatient(patientAddress);
+  }
+
+  @GetMapping("/license")
+  public List<TreatmentCombinedDataDTO> getTreatmentsForLicense(
+          @RequestHeader("Authorization") final String bearerToken) {
+    var keyPair = keyRepositoryService.getKeyFromBearerToken(bearerToken);
+    return treatmentService.getTreatmentsForLicense(keyPair.getAddress());
   }
 
   @PostMapping("/create")

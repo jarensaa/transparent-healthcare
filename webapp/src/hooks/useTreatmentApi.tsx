@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import ToastContext from "../context/ToastContext";
-import TreatmentMessage from "../dto/TreatmentMessage";
+import TreatmentContractDataDTO from "../dto/Treatments/TreatmentContractDataDTO";
 import endpoints from "../config/endpoints";
 import useTokenHeader from "./useTokenHeader";
 import TreatmentCreationDTO from "../dto/Treatments/TreatmentCreationDTO";
@@ -9,6 +9,9 @@ import Web3Context from "../context/Web3Context";
 import KeyContext from "../context/KeyContext";
 import { IsPatientKey } from "../types/PatientKey";
 import TreatmentApprovePatientDTO from "../dto/Treatments/TreatmentApprovePatientDTO";
+import TreatmentCombinedDataDTO from "../dto/Treatments/TreatmentCombinedDataDTO";
+import SignatureCheckedTreatment from "../types/SignatureCheckedTreatment";
+import useCrypto from "./useCrypto";
 
 type TreatmentKey = {
   address: string;
@@ -33,14 +36,15 @@ const useTreatmentApi = () => {
   const { getHeader } = useTokenHeader();
   const { web3 } = useContext(Web3Context);
   const { activeKey } = useContext(KeyContext);
+  const { getVerifiedTreatmentDTO } = useCrypto();
 
   const getTreatmentFromAddress = async (
     address: string
-  ): Promise<TreatmentMessage | undefined> => {
+  ): Promise<TreatmentContractDataDTO | undefined> => {
     const response = await fetch(endpoints.treatments.getByAddress(address));
 
     if (response.status === 200) {
-      const treatment: TreatmentMessage = await response.json();
+      const treatment: TreatmentContractDataDTO = await response.json();
       return treatment;
     } else if (response.status === 204) {
       return undefined;
@@ -51,11 +55,11 @@ const useTreatmentApi = () => {
     return undefined;
   };
 
-  const getTreatments = async (): Promise<TreatmentMessage[]> => {
+  const getTreatments = async (): Promise<TreatmentContractDataDTO[]> => {
     const response = await fetch(endpoints.treatments.base);
 
     if (response.status === 200) {
-      const treatment: TreatmentMessage[] = await response.json();
+      const treatment: TreatmentContractDataDTO[] = await response.json();
       return treatment;
     }
 
@@ -96,10 +100,6 @@ const useTreatmentApi = () => {
     showFailure(error.message);
     return [];
   };
-
-  const getPendingTreatments = async () => {};
-
-  const getCompletedTreatments = async () => {};
 
   const approveTreatment = async (treatment: TreatmentPatientInfoDTO) => {
     if (!activeKey || !IsPatientKey(activeKey)) return;
@@ -147,14 +147,47 @@ const useTreatmentApi = () => {
     return;
   };
 
+  const getTreatmentsForLicense = async (): Promise<SignatureCheckedTreatment[]> => {
+    const response = await fetch(endpoints.treatments.getTreatmentsForLicense, {
+      headers: getHeader()
+    });
+
+    if (response.status === 200) {
+      const treatment: TreatmentCombinedDataDTO[] = await response.json();
+      return treatment.map(getVerifiedTreatmentDTO);
+    }
+
+    const error = await response.json();
+    showFailure(error.message);
+    return [];
+  };
+
+  const licenseApproveTreatment = async (address: string) => {
+    const response = await fetch(
+      endpoints.treatments.licenseApproveTreatment(address),
+      {
+        method: "POST",
+        headers: getHeader()
+      }
+    );
+
+    if (response.status === 200) {
+      showSuccess("Successfully approved treatment");
+      return;
+    }
+
+    const error = await response.json();
+    showFailure(error.message);
+  };
+
   return {
     getTreatmentFromAddress,
     getTreatments,
     proposeTreatment,
     getPatientTreatmentProposals,
-    getPendingTreatments,
-    getCompletedTreatments,
-    approveTreatment
+    approveTreatment,
+    getTreatmentsForLicense,
+    licenseApproveTreatment
   };
 };
 

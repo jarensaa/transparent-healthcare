@@ -1,5 +1,4 @@
 pragma solidity ^0.6.1;
-pragma experimental ABIEncoderV2; //Although marked as experimental, it's considered stable from v0.6.0.
 import "./iface/ILicenseProviderManager.sol";
 import "./iface/ITreatmentProviderManager.sol";
 import "./iface/ITreatment.sol";
@@ -120,7 +119,6 @@ contract Treatment is ITreatment {
             address[] memory,
             address[] memory,
             bytes32[] memory,
-            string[] memory,
             bool[] memory
         )
     {
@@ -129,7 +127,6 @@ contract Treatment is ITreatment {
         address[] memory returnApprovingLicenses = new address[](numTreatments);
         address[] memory returnTreatmentProvider = new address[](numTreatments);
         bytes32[] memory returnFullDataHash = new bytes32[](numTreatments);
-        string[] memory returnFullDataURL = new string[](numTreatments);
         bool[] memory returnIsSpent = new bool[](numTreatments);
 
         for (uint256 i = 0; i < numTreatments; i++) {
@@ -139,7 +136,6 @@ contract Treatment is ITreatment {
             returnTreatmentProvider[i] = treatments[treatmentAddress]
                 .treatmentProvider;
             returnFullDataHash[i] = treatments[treatmentAddress].fullDataHash;
-            returnFullDataURL[i] = treatments[treatmentAddress].fullDataURL;
             returnIsSpent[i] = treatments[treatmentAddress].isSpent;
         }
 
@@ -148,7 +144,6 @@ contract Treatment is ITreatment {
             returnApprovingLicenses,
             returnTreatmentProvider,
             returnFullDataHash,
-            returnFullDataURL,
             returnIsSpent
         );
     }
