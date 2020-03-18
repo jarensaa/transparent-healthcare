@@ -14,7 +14,8 @@ import {
   Card,
   H6,
   Divider,
-  H5
+  H5,
+  Tag
 } from "@blueprintjs/core";
 import FlexColumn from "../../styles/FlexColumn";
 import TreatmentPatientInfoDTO from "../../dto/Treatments/TreatmentPatientInfoDTO";
@@ -27,6 +28,8 @@ import { TopMarginWrapper } from "../../styles/MarginWrappers";
 import DescriptionBox from "../../components/DescriptionBox";
 import TreatmentCombinedDataDTO from "../../dto/Treatments/TreatmentCombinedDataDTO";
 import constants from "../../config/constants";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import CompletedTreatmentCard from "./components/CompletedTreatmentCard";
 
 const PatientMyJournalPage: FunctionComponent = () => {
   const { activeKey } = useContext(KeyContext);
@@ -36,6 +39,8 @@ const PatientMyJournalPage: FunctionComponent = () => {
   const [submittedTreatments, setSubmittedTreatments] = useState<
     TreatmentCombinedDataDTO[]
   >([]);
+
+  const { getTreatmentKeysMapFromLocalStorage } = useLocalStorage();
 
   const {
     getPatientTreatmentProposals,
@@ -119,12 +124,16 @@ const PatientMyJournalPage: FunctionComponent = () => {
           <Card>
             <FlexColumn>
               <H5>Treatment address</H5>
-              {treatment.treatmentAddress}
+              <p>{treatment.treatmentAddress}</p>
               <Divider />
-              <H5>Description hash</H5>
+              <p>
+                <H5>Description hash</H5>
+              </p>
               {treatment.contractData?.fullDataHash}
               <Divider />
-              <H5>Description</H5>
+              <p>
+                <H5>Description</H5>
+              </p>
               {treatment.fullData?.fullDescription ?? "unknown"}
             </FlexColumn>
           </Card>
@@ -139,22 +148,18 @@ const PatientMyJournalPage: FunctionComponent = () => {
       treatment.contractData.approvingLicenseAddress !== constants.nullAddress
   );
 
+  const treatmentKeys = getTreatmentKeysMapFromLocalStorage();
+
   const completedTreatmentsCards = approvedTreatments.map(
     (treatment, index) => {
       return (
         <TopMarginWrapper key={index}>
-          <Card key={index}>
-            <FlexColumn>
-              <H5>Treatment address</H5>
-              {treatment.treatmentAddress}
-              <Divider />
-              <H5>Description hash</H5>
-              {treatment.contractData?.fullDataHash}
-              <Divider />
-              <H5>Description</H5>
-              {treatment.fullData?.fullDescription ?? "unknown"}
-            </FlexColumn>
-          </Card>
+          <CompletedTreatmentCard
+            treatment={treatment}
+            treatmentKey={treatmentKeys.get(
+              treatment.treatmentAddress.toLowerCase()
+            )}
+          />
         </TopMarginWrapper>
       );
     }

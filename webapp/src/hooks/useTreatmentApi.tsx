@@ -12,24 +12,7 @@ import TreatmentApprovePatientDTO from "../dto/Treatments/TreatmentApprovePatien
 import TreatmentCombinedDataDTO from "../dto/Treatments/TreatmentCombinedDataDTO";
 import SignatureCheckedTreatment from "../types/SignatureCheckedTreatment";
 import useCrypto from "./useCrypto";
-
-type TreatmentKey = {
-  address: string;
-  privateKey: string;
-};
-
-const addTreatmentKeyToLocalStorage = (key: TreatmentKey) => {
-  const existingKeys = getTreatmentKeysFromLocalStorage();
-  const newKeys = [...existingKeys, key];
-  localStorage.setItem("treatmentKeys", JSON.stringify(newKeys));
-};
-
-const getTreatmentKeysFromLocalStorage = (): TreatmentKey[] => {
-  const keysString = localStorage.getItem("treatmentKeys");
-
-  const keys: TreatmentKey[] = keysString ? JSON.parse(keysString) : [];
-  return keys;
-};
+import useLocalStorage from "./useLocalStorage";
 
 const useTreatmentApi = () => {
   const { showFailure, showSuccess } = useContext(ToastContext);
@@ -37,6 +20,10 @@ const useTreatmentApi = () => {
   const { web3 } = useContext(Web3Context);
   const { activeKey } = useContext(KeyContext);
   const { getVerifiedTreatmentDTO } = useCrypto();
+  const {
+    addTreatmentKeyToLocalStorage,
+    getTreatmentKeysFromLocalStorage
+  } = useLocalStorage();
 
   const getTreatmentFromAddress = async (
     address: string
