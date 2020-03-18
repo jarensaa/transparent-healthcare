@@ -1,12 +1,9 @@
 package xyz.rensaa.providerservice.model.Treatments;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table
+@Table(indexes = {@Index(name = "treatment_data_patient_address_index",  columnList="patientAddress")})
 public class TreatmentData {
 
     @Id

@@ -23,7 +23,7 @@ import xyz.rensaa.providerservice.service.utils.CryptoService;
 import javax.xml.bind.DatatypeConverter;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
 
 @Service
 public class TreatmentService {
@@ -58,20 +58,20 @@ public class TreatmentService {
   @Value("services.treatmentprovider.hostname")
   String hostname;
 
-  public TreatmentContractDataDTO getTreatmentFromAddress(final String address) {
+  public Optional<TreatmentContractDataDTO> getTreatmentFromAddress(final String address) {
     try {
       final var isInstanced = defaultTreatmentContract.isTreatmentInstanced(address).send();
-      if (!isInstanced) return null;
+      if (!isInstanced) return Optional.empty();
 
       final var treatmentData = defaultTreatmentContract.getTreatmentData(address).send();
-      return ImmutableTreatmentContractDataDTO.builder()
+      return Optional.of(ImmutableTreatmentContractDataDTO.builder()
           .address(address)
           .approvingLicenseAddress(treatmentData.component1())
           .treatmentProviderAddress(treatmentData.component2())
           .fullDataHash(DatatypeConverter.printHexBinary(treatmentData.component3()))
           .fullDataURL(treatmentData.component4())
           .isSpent(treatmentData.component5())
-          .build();
+          .build());
 
     } catch (final Exception e) {
       e.printStackTrace();
@@ -85,7 +85,8 @@ public class TreatmentService {
 
       return treatmentAddresses.stream()
               .map(this::getTreatmentFromAddress)
-              .filter(Objects::nonNull)
+              .filter(Optional::isPresent)
+              .map(Optional::get)
               .collect(Collectors.toList());
 
     } catch (final Exception e) {
@@ -94,18 +95,28 @@ public class TreatmentService {
     }
   }
 
-  public List<TreatmentContractDataDTO> getTreatmentsForPatient(final String patientAddress) {
-    return getTreatments().stream()
-            .filter(treatmentContractDataDTO -> treatmentContractDataDTO.fullDataURL().equals(hostname))
-            .filter(treatmentContractDataDTO -> {
-              var fullTreatment = treatmentDataRepository.findById(treatmentContractDataDTO.address());
-              if(fullTreatment.isEmpty()) return false;
-              return fullTreatment.get().getPatientAddress().equals(patientAddress);
+  public List<TreatmentCombinedDataDTO> getTreatmentsForPatient(final String patientAddress) {
+    var fullTreatments = treatmentDataRepository.findAllByPatientAddress(patientAddress);
+
+    return fullTreatments.stream()
+            .map(treatmentData -> ImmutableTreatmentFullDataDTO.builder()
+              .treatmentKeySignature(treatmentData.getTreatmentKeySignature())
+              .patientKeySignature(treatmentData.getPatientKeySignature())
+              .patientAddress(treatmentData.getPatientAddress())
+              .address(treatmentData.getTreatmentAddress())
+              .fullDescription(treatmentData.getFullDescription())
+              .build())
+            .map(fullTreatmentDataDTO -> {
+              var contractData = getTreatmentFromAddress(fullTreatmentDataDTO.address());
+              return ImmutableTreatmentCombinedDataDTO.builder()
+                      .treatmentAddress(fullTreatmentDataDTO.address())
+                      .fullData(fullTreatmentDataDTO)
+                      .contractData(contractData)
+                      .build();
             }).collect(Collectors.toList());
   }
   
   public List<TreatmentCombinedDataDTO> getTreatmentsForLicense(final String licenseAddress) {
-    var treatmentsToReturn = new ArrayList<TreatmentCombinedDataDTO>();
 
     // First, find all treatments assigned to the license
     var treatmentsAssignedToLicense  = treatmentLicenseAssignmentRepository
@@ -165,8 +176,8 @@ public class TreatmentService {
 
     var treatmentProposal = new TreatmentProposal(
             tempId,
-            licenseAddress,
-            treatmentCreationDTO.patientAddress(),
+            licenseAddress.toLowerCase(),
+            treatmentCreationDTO.patientAddress().toLowerCase(),
             treatmentCreationDTO.treatmentDescription(),
             treatmentProviderHire.getProviderKeyToken());
 

@@ -9,13 +9,12 @@ import {
   Button,
   H1,
   H2,
-  H3,
   Intent,
   Callout,
   Card,
-  H4,
   H6,
-  Divider
+  Divider,
+  H5
 } from "@blueprintjs/core";
 import FlexColumn from "../../styles/FlexColumn";
 import TreatmentPatientInfoDTO from "../../dto/Treatments/TreatmentPatientInfoDTO";
@@ -26,64 +25,35 @@ import { ReactComponent as MedicineImage } from "../../images/undraw_doctors_hwt
 import FancyImageCard from "../../components/FancyImageCard";
 import { TopMarginWrapper } from "../../styles/MarginWrappers";
 import DescriptionBox from "../../components/DescriptionBox";
+import TreatmentCombinedDataDTO from "../../dto/Treatments/TreatmentCombinedDataDTO";
+import constants from "../../config/constants";
 
 const PatientMyJournalPage: FunctionComponent = () => {
   const { activeKey } = useContext(KeyContext);
-  const [pendingTreatments, setPendingTreatments] = useState<
+  const [approvableTreatments, setApprovableTreatments] = useState<
     TreatmentPatientInfoDTO[]
   >([]);
+  const [submittedTreatments, setSubmittedTreatments] = useState<
+    TreatmentCombinedDataDTO[]
+  >([]);
 
-  const { getPatientTreatmentProposals, approveTreatment } = useTreatmentApi();
+  const {
+    getPatientTreatmentProposals,
+    approveTreatment,
+    getTreatmentsForPatient
+  } = useTreatmentApi();
 
   useEffect(() => {
     if (activeKey && IsPatientKey(activeKey)) {
-      getPatientTreatmentProposals().then(setPendingTreatments);
+      getPatientTreatmentProposals().then(setApprovableTreatments);
+      getTreatmentsForPatient().then(setSubmittedTreatments);
     } else {
-      setPendingTreatments([]);
+      setApprovableTreatments([]);
     }
   }, [activeKey]);
 
-  if (!activeKey || !IsPatientKey(activeKey)) {
-    return (
-      <div>
-        <h1>License Management</h1>
-        <Callout intent={Intent.WARNING}>
-          You must select a patient key to access this page
-        </Callout>
-      </div>
-    );
-  }
-
-  const treatmentCards = pendingTreatments.map((treatment, index) => {
-    return (
-      <TopMarginWrapper key={index}>
-        <Card key={index}>
-          <FlexColumn>
-            <H6>Proposed by practitioner</H6>
-            {treatment.licenseAddress}
-            <Divider />
-            <TopMarginWrapper>
-              <H6>Treatment desciption</H6>
-              {treatment.description}
-            </TopMarginWrapper>
-            <TopMarginWrapper>
-              <Button
-                intent={Intent.SUCCESS}
-                minimal
-                rightIcon="arrow-right"
-                onClick={() => approveTreatment(treatment)}
-              >
-                Approve treatment
-              </Button>
-            </TopMarginWrapper>
-          </FlexColumn>
-        </Card>
-      </TopMarginWrapper>
-    );
-  });
-
-  return (
-    <FlexColumn>
+  const header = (
+    <Fragment>
       <H1>My journal</H1>
       <DescriptionBox>
         As a patient you go though treatments over time. This formally consists
@@ -92,18 +62,152 @@ const PatientMyJournalPage: FunctionComponent = () => {
         possible to trace back to the specific patient, as it uses a one-time
         key which is generated on approval.
       </DescriptionBox>
-      <FancyImageCard LeftImage={MedicineImage} imageAlignment={"flex-start"}>
+    </Fragment>
+  );
+
+  if (!activeKey || !IsPatientKey(activeKey)) {
+    return (
+      <div>
+        {header}
+        <Callout intent={Intent.WARNING}>
+          You must select a patient key to access this page
+        </Callout>
+      </div>
+    );
+  }
+
+  const approvableTreatmentCards = approvableTreatments.map(
+    (treatment, index) => {
+      return (
+        <TopMarginWrapper key={index}>
+          <Card key={index}>
+            <FlexColumn>
+              <H6>Proposed by practitioner</H6>
+              {treatment.licenseAddress}
+              <Divider />
+              <TopMarginWrapper>
+                <H6>Treatment desciption</H6>
+                {treatment.description}
+              </TopMarginWrapper>
+              <TopMarginWrapper>
+                <Button
+                  intent={Intent.SUCCESS}
+                  minimal
+                  rightIcon="arrow-right"
+                  onClick={() => approveTreatment(treatment)}
+                >
+                  Approve treatment
+                </Button>
+              </TopMarginWrapper>
+            </FlexColumn>
+          </Card>
+        </TopMarginWrapper>
+      );
+    }
+  );
+
+  const treatmentsPendingPracitionerApproval = submittedTreatments.filter(
+    treatment =>
+      treatment.contractData &&
+      treatment.contractData.approvingLicenseAddress === constants.nullAddress
+  );
+
+  const pendingTreatmentCards = treatmentsPendingPracitionerApproval.map(
+    (treatment, index) => {
+      return (
+        <TopMarginWrapper key={index}>
+          <Card>
+            <FlexColumn>
+              <H5>Treatment address</H5>
+              {treatment.treatmentAddress}
+              <Divider />
+              <H5>Description hash</H5>
+              {treatment.contractData?.fullDataHash}
+              <Divider />
+              <H5>Description</H5>
+              {treatment.fullData?.fullDescription ?? "unknown"}
+            </FlexColumn>
+          </Card>
+        </TopMarginWrapper>
+      );
+    }
+  );
+
+  const approvedTreatments = submittedTreatments.filter(
+    treatment =>
+      treatment.contractData &&
+      treatment.contractData.approvingLicenseAddress !== constants.nullAddress
+  );
+
+  const completedTreatmentsCards = approvedTreatments.map(
+    (treatment, index) => {
+      return (
+        <TopMarginWrapper key={index}>
+          <Card key={index}>
+            <FlexColumn>
+              <H5>Treatment address</H5>
+              {treatment.treatmentAddress}
+              <Divider />
+              <H5>Description hash</H5>
+              {treatment.contractData?.fullDataHash}
+              <Divider />
+              <H5>Description</H5>
+              {treatment.fullData?.fullDescription ?? "unknown"}
+            </FlexColumn>
+          </Card>
+        </TopMarginWrapper>
+      );
+    }
+  );
+
+  return (
+    <FlexColumn>
+      {header}
+      <FancyImageCard
+        small
+        standardWidth
+        LeftImage={MedicineImage}
+        imageAlignment={"flex-start"}
+      >
         <H2>Treatments waiting for your approval</H2>
-        {pendingTreatments.length > 0 ? (
-          treatmentCards
+        {approvableTreatments.length > 0 ? (
+          approvableTreatmentCards
         ) : (
           <Callout intent={Intent.SUCCESS}>
             You have no treatments waiting
           </Callout>
         )}
       </FancyImageCard>
-      <H2>Treatments waiting for pracitioners approval</H2>
-      <H2>Previous treatments</H2>
+      <FancyImageCard
+        small
+        standardWidth
+        LeftImage={MedicineImage}
+        imageAlignment={"flex-start"}
+      >
+        <H2>Treatments waiting for pracitioners approval</H2>
+        {pendingTreatmentCards.length > 0 ? (
+          pendingTreatmentCards
+        ) : (
+          <Callout intent={Intent.SUCCESS}>
+            No treatments are waiting for approval
+          </Callout>
+        )}
+      </FancyImageCard>
+      <FancyImageCard
+        small
+        standardWidth
+        LeftImage={MedicineImage}
+        imageAlignment={"flex-start"}
+      >
+        <H2>Completed treatments</H2>
+        {completedTreatmentsCards.length > 0 ? (
+          completedTreatmentsCards
+        ) : (
+          <Callout intent={Intent.SUCCESS}>
+            There are no previous treatments
+          </Callout>
+        )}
+      </FancyImageCard>
     </FlexColumn>
   );
 };

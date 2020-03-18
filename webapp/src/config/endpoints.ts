@@ -85,7 +85,8 @@ const endpoints = {
     patientApproveProposals: config.treatmentsBase + "/proposals/approve",
     getTreatmentsForLicense: config.treatmentsBase + "/license",
     licenseApproveTreatment: (address: string) =>
-      config.treatmentsBase + "/" + address + "/license/approve"
+      config.treatmentsBase + "/" + address + "/license/approve",
+    getTreatmentsForPatient: config.treatmentsBase + "/patient"
   }
 };
 

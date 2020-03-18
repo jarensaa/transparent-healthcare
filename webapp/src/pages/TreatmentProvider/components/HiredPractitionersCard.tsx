@@ -37,8 +37,6 @@ const HiredPractitionersCard: FunctionComponent = () => {
     </TopMarginWrapper>
   )) ?? <Fragment />;
 
-  console.log(licenses);
-
   return (
     <FancyImageCard
       standardWidth

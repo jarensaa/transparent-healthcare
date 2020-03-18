@@ -7,6 +7,7 @@ import xyz.rensaa.providerservice.service.KeyRepositoryService;
 import xyz.rensaa.providerservice.service.TreatmentService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/treatments")
@@ -24,7 +25,7 @@ public class TreatmentController {
   }
 
   @GetMapping("/{address}")
-  public TreatmentContractDataDTO getTreatmentByAddress(@PathVariable("address") final String address) {
+  public Optional<TreatmentContractDataDTO> getTreatmentByAddress(@PathVariable("address") final String address) {
     return treatmentService.getTreatmentFromAddress(address);
   }
 
@@ -33,6 +34,13 @@ public class TreatmentController {
                                          @RequestHeader("Authorization") final String bearerToken) {
     var keyPair = keyRepositoryService.getKeyFromBearerToken(bearerToken);
     return treatmentService.licenseApproveTreatment(keyPair.getPrivateKey(), address);
+  }
+
+  @GetMapping("/patient")
+  public List<TreatmentCombinedDataDTO> getTreatmentsForPatient(
+          @RequestHeader("Authorization") final String bearerToken) {
+    var address = keyRepositoryService.getPatientAddressFromBearerToken(bearerToken);
+    return treatmentService.getTreatmentsForPatient(address);
   }
 
   @GetMapping("/proposals")

@@ -2,7 +2,8 @@ import React, {
   FunctionComponent,
   useContext,
   useState,
-  useEffect
+  useEffect,
+  Fragment
 } from "react";
 import { Callout, Intent, H1, H2, Button, MenuItem } from "@blueprintjs/core";
 import FlexColumn from "../../styles/FlexColumn";
@@ -17,6 +18,8 @@ import useTreatmentProviderApi from "../../hooks/useTreatmentProviderApi";
 import TreatmentProviderHireDTO from "../../dto/TreatmentProvider/TreatmentProviderHireDTO";
 import { Select, ItemPredicate, IItemRendererProps } from "@blueprintjs/select";
 import highlightText from "../Shared/components/highlighttext";
+import LicenseMessage from "../../dto/LicenseMessage";
+import useLicenseApi from "../../hooks/useLicenseApi";
 
 const TreatmentProviderSelect = Select.ofType<TreatmentProviderHireDTO>();
 
@@ -34,6 +37,8 @@ const PractitionerTreatmentPage: FunctionComponent = () => {
   const { activeKey } = useContext(KeyContext);
 
   const { getProvidersForLicense } = useTreatmentProviderApi();
+  const { getLicenseFromAddress } = useLicenseApi();
+  const [license, setLicense] = useState<LicenseMessage | undefined>(undefined);
 
   const [treatmentProviders, setTreatmentProviders] = useState<
     TreatmentProviderHireDTO[]
@@ -44,21 +49,47 @@ const PractitionerTreatmentPage: FunctionComponent = () => {
   >(undefined);
 
   useEffect(() => {
-    if (activeKey) {
+    if (activeKey && license) {
       getProvidersForLicense().then(setTreatmentProviders);
+    } else if (activeKey) {
+      getLicenseFromAddress(activeKey.address).then(setLicense);
     } else {
       setTreatmentProviders([]);
     }
-  }, [activeKey]);
+  }, [activeKey, license]);
+
+  const header = (
+    <Fragment>
+      <H1>Practitioner treaments</H1>
+      <DescriptionBox>
+        As in the real world, pracitioners <i>in the field</i> are the ones who
+        first issue treatments to patients. Treatments are allways created in
+        context of a given treatment provider where they are hired. This page
+        allows practitioners to propose treatments if they are trusted.
+      </DescriptionBox>
+    </Fragment>
+  );
 
   if (!activeKey) {
     return (
       <FlexColumn>
-        <H1>Practitioner treaments</H1>
+        {header}
         <Callout intent={Intent.WARNING}>
           You must select a key to access this page
         </Callout>
       </FlexColumn>
+    );
+  }
+
+  if (!license) {
+    return (
+      <Fragment>
+        {header}
+        <Callout intent={Intent.WARNING}>
+          You do not have a license. You must get a license issuer to issue one
+          for you.
+        </Callout>
+      </Fragment>
     );
   }
 
@@ -84,13 +115,7 @@ const PractitionerTreatmentPage: FunctionComponent = () => {
 
   return (
     <FlexColumn>
-      <H1>Practitioner treaments</H1>
-      <DescriptionBox>
-        As in the real world, pracitioners <i>in the field</i> are the ones who
-        first issue treatments to patients. Treatments are allways created in
-        context of a given treatment provider where they are hired. This page
-        allows practitioners to propose treatments if they are trusted.
-      </DescriptionBox>
+      {header}
       <H2>License status</H2>
       <FancyLicenseTrustedCard />
       <H2>Issue treatments</H2>

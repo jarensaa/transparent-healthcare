@@ -9,4 +9,6 @@ public interface TreatmentDataRepository extends CrudRepository<TreatmentData, S
 
     @Override
     List<TreatmentData> findAllById(Iterable<String> strings);
+
+    List<TreatmentData> findAllByPatientAddress(String patientAddress);
 }

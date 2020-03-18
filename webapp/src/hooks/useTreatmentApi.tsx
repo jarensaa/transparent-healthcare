@@ -180,6 +180,20 @@ const useTreatmentApi = () => {
     showFailure(error.message);
   };
 
+  const getTreatmentsForPatient = async (): Promise<TreatmentCombinedDataDTO[]> => {
+    const response = await fetch(endpoints.treatments.getTreatmentsForPatient, {
+      headers: getHeader()
+    });
+
+    if (response.status === 200) {
+      return response.json();
+    }
+
+    const error = await response.json();
+    showFailure(error.message);
+    return [];
+  };
+
   return {
     getTreatmentFromAddress,
     getTreatments,
@@ -187,7 +201,8 @@ const useTreatmentApi = () => {
     getPatientTreatmentProposals,
     approveTreatment,
     getTreatmentsForLicense,
-    licenseApproveTreatment
+    licenseApproveTreatment,
+    getTreatmentsForPatient
   };
 };
 
