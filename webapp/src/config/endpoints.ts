@@ -7,7 +7,7 @@ const endpoints = {
     voteOnProposal: (id: number) =>
       config.authorityBase + "/proposals/" + id + "/vote",
     enactProposal: (id: number) =>
-      config.authorityBase + "/proposals/" + id + "/enact"
+      config.authorityBase + "/proposals/" + id + "/enact",
   },
   accounts: {
     base: config.serverUrl + "/accounts",
@@ -17,7 +17,7 @@ const endpoints = {
     balance: (address: string) =>
       config.serverUrl + "/accounts/" + address + "/balance",
     send: (address: string, amount: bigint) =>
-      config.serverUrl + "/accounts/" + address + "/send/" + amount
+      config.serverUrl + "/accounts/" + address + "/send/" + amount,
   },
   treatmentProvider: {
     base: config.serverUrl + "/treatmentproviders",
@@ -31,7 +31,7 @@ const endpoints = {
       config.treatmentProviderBase + "/licenses/" + licenseAddress + "/hire",
     getTreatmentProvidersForLicense:
       config.treatmentProviderBase + "/licenses/provider",
-    getLicensesForTreatmentProvider: config.treatmentProviderBase + "/licenses"
+    getLicensesForTreatmentProvider: config.treatmentProviderBase + "/licenses",
   },
   licenseIssuers: {
     base: config.licenseIssuerBase,
@@ -43,7 +43,7 @@ const endpoints = {
     issueLicense: (address: string) =>
       config.licenseBase + "/" + address + "/issue",
     getProposals: (isserAddress: string) =>
-      config.licenseIssuerBase + "/" + isserAddress + "/proposals"
+      config.licenseIssuerBase + "/" + isserAddress + "/proposals",
   },
   licenseProviders: {
     base: config.licenseProviderBase,
@@ -54,7 +54,7 @@ const endpoints = {
     removeTrustInProvider: (address: string) =>
       config.licenseProviderBase + "/" + address + "/removetrust",
     getProposals: (isserAddress: string) =>
-      config.licenseProviderBase + "/" + isserAddress + "/proposals"
+      config.licenseProviderBase + "/" + isserAddress + "/proposals",
   },
   licenses: {
     base: config.licenseBase,
@@ -68,14 +68,14 @@ const endpoints = {
     approveProviderMove: (licenseAddress: string) =>
       config.licenseBase + "/provider/approve/" + licenseAddress,
     isTrusted: (licenseAddress: string) =>
-      config.licenseBase + "/" + licenseAddress + "/istrusted"
+      config.licenseBase + "/" + licenseAddress + "/istrusted",
   },
   patient: {
     base: config.patientBase,
     getToken: config.patientBase + "/token",
     getChallange: config.patientBase + "/challenge",
     registerKey: config.patientBase + "/registerkey",
-    valid: config.patientBase + "/validkey"
+    valid: config.patientBase + "/validkey",
   },
   treatments: {
     base: config.treatmentsBase,
@@ -86,8 +86,11 @@ const endpoints = {
     getTreatmentsForLicense: config.treatmentsBase + "/license",
     licenseApproveTreatment: (address: string) =>
       config.treatmentsBase + "/" + address + "/license/approve",
-    getTreatmentsForPatient: config.treatmentsBase + "/patient"
-  }
+    getTreatmentsForPatient: config.treatmentsBase + "/patient",
+  },
+  evaluations: {
+    base: config.evaluationsBase,
+  },
 };
 
 export default endpoints;

@@ -3,8 +3,14 @@ var Measure = artifacts.require("./Measure.sol");
 var fs = require("fs");
 
 module.exports = async (deployer, network, accounts) => {
+  const treatmentInstance = await Treatment.deployed();
+
   await deployer.deploy(Measure, Treatment.address, {
-    from: accounts[0]
+    from: accounts[0],
+  });
+
+  await treatmentInstance.registerMeasureContract(Measure.address, {
+    from: accounts[0],
   });
 
   var previousAddresses = JSON.parse(fs.readFileSync("shared/addresses.json"));
@@ -12,7 +18,7 @@ module.exports = async (deployer, network, accounts) => {
   var json = JSON.stringify(
     {
       ...previousAddresses,
-      measure: Measure.address
+      measure: Measure.address,
     },
     null,
     2

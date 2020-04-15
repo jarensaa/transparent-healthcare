@@ -3,6 +3,8 @@ package xyz.rensaa.providerservice.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.utils.Convert;
 import xyz.rensaa.providerservice.LicenseProvider;
 import xyz.rensaa.providerservice.Treatment;
 import xyz.rensaa.providerservice.contracts.CTreatmentFactory;
@@ -21,6 +23,7 @@ import xyz.rensaa.providerservice.repository.TreatmentProviderHireRepository;
 import xyz.rensaa.providerservice.service.utils.CryptoService;
 
 import javax.xml.bind.DatatypeConverter;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,6 +57,12 @@ public class TreatmentService {
 
   @Autowired
   KeyRepositoryService keyRepositoryService;
+
+  @Autowired
+  Web3Service web3Service;
+
+  @Autowired
+  ContractGasProvider contractGasProvider;
 
   @Value("services.treatmentprovider.hostname")
   String hostname;
@@ -228,6 +237,8 @@ public class TreatmentService {
 
     var dataHash = CryptoService.getPackedEthHash(treatment.getDescription());
 
+    var transactionUpfrontCost = contractGasProvider.getGasLimit().multiply(contractGasProvider.getGasPrice());
+
     try {
 
       var isLicenseStillTrusted = defaultLicenseProviderContract.isLicenseTrusted(treatment.getLicenseAddress()).send();
@@ -250,6 +261,10 @@ public class TreatmentService {
       treatmentDataRepository.save(treatmentData);
       treatmentProposalRepository.deleteById(treatment.getTempId());
       treatmentLicenseAssignmentRepository.save(licenseAssignment);
+
+      web3Service.sendEth(treatmentProviderKey.getPrivateKey(),
+              treatmentApprovePatientDTO.treatmentAddress(),
+              transactionUpfrontCost);
     } catch (Exception e) {
       e.printStackTrace();
       throw new TransactionFailedException("Failed to create treatment: " + e.getMessage());

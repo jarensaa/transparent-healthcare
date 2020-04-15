@@ -5,17 +5,17 @@ const Treatment = artifacts.require("./Treatment.sol");
 const assert = require("chai").assert;
 const truffleAssert = require("truffle-assertions");
 
-const treatmentObjectMapper = treatmentArray => {
+const treatmentObjectMapper = (treatmentArray) => {
   return {
     approvingLicense: treatmentArray[0],
     treatmentProvider: treatmentArray[1],
     fullDataHash: treatmentArray[2],
     fullDataURL: treatmentArray[3],
-    isSpent: treatmentArray[4]
+    isSpent: treatmentArray[4],
   };
 };
 
-contract("Treatment", accounts => {
+contract("Treatment", (accounts) => {
   let authorityManagerInstance;
   let licenseProviderInstance;
   let treatmentProviderInstance;
@@ -54,56 +54,48 @@ contract("Treatment", accounts => {
 
     // Set up Account 0 and 1 as authorities
     await authorityManagerInstance.propose(1, accounts[1], {
-      from: accounts[0]
+      from: accounts[0],
     });
     await authorityManagerInstance.enactProposal(1, {
-      from: accounts[1]
+      from: accounts[1],
     });
 
     // Set up account 2 as treatment provider
     await treatmentProviderInstance.addSenderAsProvider({ from: accounts[2] });
     await treatmentProviderInstance.addTrustInProvider(accounts[2], {
-      from: accounts[0]
+      from: accounts[0],
     });
 
     // Set up account 3 as licenseIssuer
     await licenseProviderInstance.registerSenderAsIssuer({ from: accounts[3] });
     await licenseProviderInstance.addTrustInLicenseIssuer(accounts[3], {
-      from: accounts[0]
+      from: accounts[0],
     });
 
     // Set up account 4 as licenseProvider
     await licenseProviderInstance.registerProvider({ from: accounts[4] });
     await licenseProviderInstance.addTrustInProvider(accounts[4], {
-      from: accounts[1]
+      from: accounts[1],
     });
 
     // Issue license to Account5
     await licenseProviderInstance.issueLicenseToAddress(accounts[5], {
-      from: accounts[3]
+      from: accounts[3],
     });
 
     // Set account4 as trusted provider for license
     await licenseProviderInstance.proposeLicenseProviderMovement(accounts[4], {
-      from: accounts[5]
+      from: accounts[5],
     });
     await licenseProviderInstance.approveLicenseProviderMovement(accounts[5], {
-      from: accounts[4]
+      from: accounts[4],
     });
   });
 
   it("Should be impossible to register Account8 as measureContract for Account1", async () => {
     await truffleAssert.reverts(
       treatmentInstance.registerMeasureContract(accounts[8], {
-        from: accounts[1]
-      })
-    );
-  });
-
-  it("Should be possible to register Account8 as measureContract for Account0", async () => {
-    await truffleAssert.passes(
-      treatmentInstance.registerMeasureContract(accounts[8], {
-        from: accounts[0]
+        from: accounts[1],
       })
     );
   });
@@ -111,7 +103,7 @@ contract("Treatment", accounts => {
   it("Should be impossible to reregister measureContract for Account0", async () => {
     await truffleAssert.reverts(
       treatmentInstance.registerMeasureContract(accounts[9], {
-        from: accounts[0]
+        from: accounts[0],
       })
     );
   });
@@ -212,22 +204,6 @@ contract("Treatment", accounts => {
 
     const treatmentObject = treatmentObjectMapper(treatmentArray);
     assert.isFalse(treatmentObject.isSpent);
-  });
-
-  it("Should be possible to spend the first treatment (Account6) for Account8 (MeasureContract)", async () => {
-    await truffleAssert.passes(
-      treatmentInstance.spendTreatment(accounts[6], { from: accounts[8] })
-    );
-  });
-
-  it("Treatment1 (Account6) should be spent.", async () => {
-    const treatmentArray = await treatmentInstance.getTreatmentData(
-      accounts[6]
-    );
-
-    const treatmentObject = treatmentObjectMapper(treatmentArray);
-
-    assert.ok(treatmentObject.isSpent);
   });
 
   it("It should be possible to get all treatment addresses", async () => {

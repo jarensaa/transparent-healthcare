@@ -6,25 +6,25 @@ const Measure = artifacts.require("./Measure.sol");
 const assert = require("chai").assert;
 const truffleAssert = require("truffle-assertions");
 
-const treatmentObjectMapper = treatmentArray => {
+const treatmentObjectMapper = (treatmentArray) => {
   return {
     approvingLicense: treatmentArray[0],
     treatmentProvider: treatmentArray[1],
     fullDataHash: treatmentArray[2],
     fullDataURL: treatmentArray[3],
-    isSpent: treatmentArray[4]
+    isSpent: treatmentArray[4],
   };
 };
 
-const measureObjectMapper = measureArray => {
+const measureObjectMapper = (measureArray) => {
   return {
     rating: measureArray[0],
     fullMeasureHash: measureArray[1],
-    fullMeasureURL: measureArray[2]
+    fullMeasureURL: measureArray[2],
   };
 };
 
-contract("Measure", accounts => {
+contract("Measure", (accounts) => {
   let authorityManagerInstance;
   let licenseProviderInstance;
   let treatmentProviderInstance;
@@ -71,47 +71,42 @@ contract("Measure", accounts => {
 
     // Set up Account 0 and 1 as authorities
     await authorityManagerInstance.propose(1, accounts[1], {
-      from: accounts[0]
+      from: accounts[0],
     });
     await authorityManagerInstance.enactProposal(1, {
-      from: accounts[1]
+      from: accounts[1],
     });
 
     // Set up account 2 as treatment provider
     await treatmentProviderInstance.addSenderAsProvider({ from: accounts[2] });
     await treatmentProviderInstance.addTrustInProvider(accounts[2], {
-      from: accounts[0]
+      from: accounts[0],
     });
 
     // Set up account 3 as licenseIssuer
     await licenseProviderInstance.registerSenderAsIssuer({ from: accounts[3] });
     await licenseProviderInstance.addTrustInLicenseIssuer(accounts[3], {
-      from: accounts[0]
+      from: accounts[0],
     });
 
     // Set up account 4 as licenseProvider
     await licenseProviderInstance.registerProvider({ from: accounts[4] });
     await licenseProviderInstance.addTrustInProvider(accounts[4], {
-      from: accounts[1]
+      from: accounts[1],
     });
 
     // Issue license to Account5
     await licenseProviderInstance.issueLicenseToAddress(accounts[5], {
-      from: accounts[3]
+      from: accounts[3],
     });
 
     // Set account4 as trusted provider for license
     await licenseProviderInstance.proposeLicenseProviderMovement(accounts[4], {
-      from: accounts[5]
+      from: accounts[5],
     });
 
     await licenseProviderInstance.approveLicenseProviderMovement(accounts[5], {
-      from: accounts[4]
-    });
-
-    //Connect TreatmentContract to MeasureContract
-    await treatmentInstance.registerMeasureContract(Measure.address, {
-      from: accounts[0]
+      from: accounts[4],
     });
 
     //Create treatments and approce them by license
@@ -123,7 +118,7 @@ contract("Measure", accounts => {
     );
 
     await treatmentInstance.approveTreatment(accounts[7], {
-      from: accounts[5]
+      from: accounts[5],
     });
 
     await treatmentInstance.createTreatment(
@@ -131,12 +126,12 @@ contract("Measure", accounts => {
       treatment2Hash,
       treatmentURL,
       {
-        from: accounts[2]
+        from: accounts[2],
       }
     );
 
     await treatmentInstance.approveTreatment(accounts[8], {
-      from: accounts[5]
+      from: accounts[5],
     });
   });
 
@@ -151,7 +146,7 @@ contract("Measure", accounts => {
   it("Should be possible to create new measure for Account7", async () => {
     await truffleAssert.passes(
       measureInstance.createMeasure(measureRating, measureHash, measureURL, {
-        from: accounts[7]
+        from: accounts[7],
       })
     );
   });
@@ -167,7 +162,7 @@ contract("Measure", accounts => {
   it("Should not be possible to create new measure for Account7", async () => {
     await truffleAssert.reverts(
       measureInstance.createMeasure(measureRating, measureHash, measureURL, {
-        from: accounts[7]
+        from: accounts[7],
       })
     );
   });
@@ -175,7 +170,7 @@ contract("Measure", accounts => {
   it("Should not be possible to create new measure for Account9", async () => {
     await truffleAssert.reverts(
       measureInstance.createMeasure(measureRating, measureHash, measureURL, {
-        from: accounts[9]
+        from: accounts[9],
       })
     );
   });

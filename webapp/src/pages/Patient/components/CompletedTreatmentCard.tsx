@@ -9,7 +9,7 @@ import {
   Dialog,
   H3,
   Slider,
-  H6
+  H6,
 } from "@blueprintjs/core";
 import FlexColumn from "../../../styles/FlexColumn";
 import { FunctionComponent } from "react";
@@ -27,7 +27,7 @@ interface CompletedTreatmentCardProps {
 
 const CompletedTreatmentCard: FunctionComponent<CompletedTreatmentCardProps> = ({
   treatment,
-  treatmentKey
+  treatmentKey,
 }) => {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [rating, setRating] = useState<number>(5);
@@ -43,8 +43,10 @@ const CompletedTreatmentCard: FunctionComponent<CompletedTreatmentCardProps> = (
   const publishEvaluation = () => {
     if (treatmentKey) {
       addEvaluation(treatment.treatmentAddress, treatmentKey, rating);
+      setDialogOpen(false);
     } else {
       showFailure("Unable to fetch key for treatement locally.");
+      setDialogOpen(false);
     }
     closeDialog();
   };
