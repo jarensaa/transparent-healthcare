@@ -124,7 +124,21 @@ public class TreatmentService {
                       .build();
             }).collect(Collectors.toList());
   }
-  
+
+  public List<TreatmentContractDataDTO> getTreatmentContractDataForLicense(final String licenseAddress) {
+    try {
+      List<String> treatmentAddresses = defaultTreatmentContract.getTreatmentsForLicense(licenseAddress).send();
+
+      return treatmentAddresses.stream()
+              .map(this::getTreatmentFromAddress)
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .collect(Collectors.toList());
+    } catch (Exception e){
+      throw new TransactionFailedException(e.getMessage());
+    }
+  }
+
   public List<TreatmentCombinedDataDTO> getTreatmentsForLicense(final String licenseAddress) {
 
     // First, find all treatments assigned to the license

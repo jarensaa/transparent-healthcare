@@ -6,16 +6,15 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
 
 @Value.Immutable
-@JsonSerialize(as = ImmutableEvaluationDTO.class)
-@JsonDeserialize(as = ImmutableEvaluationDTO.class)
-public interface EvaluationDTO {
+@JsonSerialize(as = ImmutableEvaluationCreationDTO.class)
+@JsonDeserialize(as = ImmutableEvaluationCreationDTO.class)
+public interface EvaluationCreationDTO {
+    @JsonProperty("privateKey")
+    String privateKey();
+
+    @JsonProperty("address")
+    String address();
 
     @JsonProperty("rating")
     Integer rating();
-
-    @JsonProperty("fullMeasureHash")
-    String fullMeasureHash();
-
-    @JsonProperty("fullMeasureUrl")
-    String fullMeasureUrl();
 }

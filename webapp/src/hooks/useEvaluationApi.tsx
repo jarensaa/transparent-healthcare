@@ -4,6 +4,7 @@ import ToastContext from "../context/ToastContext";
 import useTokenHeader from "./useTokenHeader";
 import endpoints from "../config/endpoints";
 import EvaluationDTO from "../dto/Evaluation/EvaluationDTO";
+import PractitionerViewDTO from "../dto/Evaluation/PractitionerViewDTO";
 
 const useEvaluationApi = () => {
   const { showFailure, showSuccess } = useContext(ToastContext);
@@ -36,7 +37,19 @@ const useEvaluationApi = () => {
     }
   };
 
-  return { addEvaluation };
+  const getLicensesView = async (): Promise<PractitionerViewDTO[]> => {
+    const response = await fetch(endpoints.patient.getLicensesInfo);
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      const error = await response.json();
+      showFailure(error.message);
+      return [];
+    }
+  };
+
+  return { addEvaluation, getLicensesView };
 };
 
 export default useEvaluationApi;

@@ -76,6 +76,9 @@ const endpoints = {
     getChallange: config.patientBase + "/challenge",
     registerKey: config.patientBase + "/registerkey",
     valid: config.patientBase + "/validkey",
+    getLicensesInfo: config.patientBase + "/licenses",
+    getLicenseInfo: (address: string) =>
+      config.patientBase + "/licenses/" + address,
   },
   treatments: {
     base: config.treatmentsBase,

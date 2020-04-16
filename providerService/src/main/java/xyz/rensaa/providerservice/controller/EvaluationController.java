@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.rensaa.providerservice.dto.Evaluation.EvaluationDTO;
+import xyz.rensaa.providerservice.dto.Evaluation.EvaluationCreationDTO;
 import xyz.rensaa.providerservice.service.EvaluationService;
 
 @RestController
@@ -16,7 +16,7 @@ public class EvaluationController {
     EvaluationService evaluationService;
 
     @PostMapping
-    private boolean evaluateTreatment(@RequestBody EvaluationDTO evaluationDTO) {
-        return  evaluationService.evaluateTreatment(evaluationDTO);
+    private boolean evaluateTreatment(@RequestBody EvaluationCreationDTO evaluationCreationDTO) {
+        return  evaluationService.evaluateTreatment(evaluationCreationDTO);
     }
 }
