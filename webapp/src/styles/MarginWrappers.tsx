@@ -11,7 +11,26 @@ const TopRightMarginWrapper = styled.div`
 `;
 
 const TopMarginWrapper = styled.div<MarginWrapperProps>`
-  margin-top: ${props => (props.large ? "20px" : "10px")};
+  margin-top: ${(props) => (props.large ? "20px" : "10px")};
 `;
 
-export { TopRightMarginWrapper, TopMarginWrapper };
+const RightMarginWrapper = styled.div<MarginWrapperProps>`
+  margin-right: ${(props) => (props.large ? "20px" : "10px")};
+`;
+
+const LeftMarginWrapper = styled.div<MarginWrapperProps>`
+  margin-left: ${(props) => (props.large ? "20px" : "10px")};
+`;
+
+const LeftRightMarginWrapper = styled.div<MarginWrapperProps>`
+  margin-left: ${(props) => (props.large ? "20px" : "10px")};
+  margin-right: ${(props) => (props.large ? "20px" : "10px")};
+`;
+
+export {
+  TopRightMarginWrapper,
+  RightMarginWrapper,
+  TopMarginWrapper,
+  LeftMarginWrapper,
+  LeftRightMarginWrapper,
+};
