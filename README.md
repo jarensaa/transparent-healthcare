@@ -1,6 +1,6 @@
 # Transparent healthcare
 
-Proof of concept blockchain platform for transparent trustevaluation in healthcare.
+Proof of concept blockchain platform for transparent trust evaluation in healthcare.
 
 ## Quickstart
 
