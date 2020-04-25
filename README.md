@@ -1,4 +1,4 @@
-# A blockchain platform for transparent
+# Transparent healthcare
 
 Proof of concept blockchain platform for transparent trustevaluation in healthcare.
 
