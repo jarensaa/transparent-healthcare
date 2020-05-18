@@ -2,6 +2,8 @@
 
 Proof of concept blockchain platform for transparent trust evaluation in healthcare.
 
+# Development
+
 ## Quickstart
 
 ```
@@ -28,3 +30,15 @@ When developing on the application, you probably want to run the services manual
 6. Run `./gradlew bootRun`
 7. Open another terminal window and navigate to the `webapp` folder.
 8. Run `yarn install` and `yarn start`
+
+# Citation
+
+```
+@inproceedings{rensaa2020VerifyMed,
+  author = {
+    Jens-Andreas. H. Rensaa and Danilo Gligoroski and Katina Kralevska and Anton Hasselgren and Arild Faxvaag},
+  title = {VerifyMed - A blockchain platform for transparent trust in virtualized healthcare: Proof-of-concept},
+  booktitle = {BIOTC},
+  year = {2020}
+}
+```
