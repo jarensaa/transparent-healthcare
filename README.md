@@ -1,14 +1,22 @@
 # VerifyMed -  A blockchain platform for transparent trust in virtualized healthcare
 
-This is repository contains the code for the platform presented in: Rensaa et al. _VerifyMed - A blockchain platform for transparent trust in virtualized healthcare: Proof-of-concept_, to be presented at Blockchain and Internet of Things Conference (BIOTC 2020)
+This repository contains the code for the platform presented in: Rensaa et al. _VerifyMed - A blockchain platform for transparent trust in virtualized healthcare: Proof-of-concept_, to be presented at Blockchain and Internet of Things Conference (BIOTC 2020)
 
 Read the paper at:
-- [arXiv link (Reccomended)]()
+- [arXiv link (Recomended)]()
 - [Official BIOTC2020 link; to appear]()
 
 ## Testing the platform
 
 ### Quickstart
+
+#### Requirements:
+```
+docker
+docker-compose
+```
+#### Startup
+
 The following will build and start the platform:
 
 ```
