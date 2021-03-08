@@ -1,0 +1,300 @@
+{
+  "contractName": "IAuthorization",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "isAuthorized",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.1+commit.e6f7d5a4\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"isAuthorized\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"contracts/iface/IAuthorization.sol\":\"IAuthorization\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/iface/IAuthorization.sol\":{\"keccak256\":\"0xc51e6796ceb581ae6b8a4e2116bf95cad19eededbdedf7db9ad6352849543f85\",\"urls\":[\"bzz-raw://e8eae2582cff33e6842c9efba4372b8b5e7aab4e9facf8edae4f6e06daab62e7\",\"dweb:/ipfs/QmTfqf6rt13Rz53iUtdpXevqrXHtw832dfcDD2XRThd5bj\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.6.1;\n\ninterface IAuthorization {\n    function isAuthorized(address _address) external view returns (bool);\n}\n",
+  "sourcePath": "contracts/iface/IAuthorization.sol",
+  "ast": {
+    "absolutePath": "contracts/iface/IAuthorization.sol",
+    "exportedSymbols": {
+      "IAuthorization": [
+        3223
+      ]
+    },
+    "id": 3224,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3215,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".1"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:11"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3223,
+        "linearizedBaseContracts": [
+          3223
+        ],
+        "name": "IAuthorization",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "fe9fbb80",
+            "id": 3222,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isAuthorized",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3218,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3217,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3222,
+                  "src": "78:16:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3216,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "78:7:11",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "77:18:11"
+            },
+            "returnParameters": {
+              "id": 3221,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3220,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3222,
+                  "src": "119:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 3219,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "119:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "118:6:11"
+            },
+            "scope": 3223,
+            "src": "56:69:11",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3224,
+        "src": "25:102:11"
+      }
+    ],
+    "src": "0:128:11"
+  },
+  "legacyAST": {
+    "absolutePath": "contracts/iface/IAuthorization.sol",
+    "exportedSymbols": {
+      "IAuthorization": [
+        3223
+      ]
+    },
+    "id": 3224,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3215,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".1"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:11"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3223,
+        "linearizedBaseContracts": [
+          3223
+        ],
+        "name": "IAuthorization",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "fe9fbb80",
+            "id": 3222,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isAuthorized",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3218,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3217,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3222,
+                  "src": "78:16:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3216,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "78:7:11",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "77:18:11"
+            },
+            "returnParameters": {
+              "id": 3221,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3220,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3222,
+                  "src": "119:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 3219,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "119:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "118:6:11"
+            },
+            "scope": 3223,
+            "src": "56:69:11",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3224,
+        "src": "25:102:11"
+      }
+    ],
+    "src": "0:128:11"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.1+commit.e6f7d5a4.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.23",
+  "updatedAt": "2021-03-08T18:05:17.859Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

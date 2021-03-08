@@ -1,0 +1,686 @@
+{
+  "contractName": "ITreatmentProviderManager",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "addSenderAsProvider",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "removeSenderAsProvider",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "addTrustInProvider",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "removeTrustInProvider",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "isTrustedProvider",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.1+commit.e6f7d5a4\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"addSenderAsProvider\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"addTrustInProvider\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"isTrustedProvider\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"removeSenderAsProvider\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"removeTrustInProvider\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"contracts/iface/ITreatmentProviderManager.sol\":\"ITreatmentProviderManager\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/iface/ITreatmentProviderManager.sol\":{\"keccak256\":\"0x5707ebfdaa97bd50f69e9ab4ae20e5aad77c5aea1c013dd672e4e134460742cb\",\"urls\":[\"bzz-raw://03eb2952370de0fde4c6af8bc835b9a396462462dc8d1a0da41b97bdca5a47b2\",\"dweb:/ipfs/QmTyu2mVaTZdwpZtVXs3tBJt6XTAK5bzapqGMdyaEVt48p\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity 0.6.1;\n\ninterface ITreatmentProviderManager {\n    function addSenderAsProvider() external;\n    function removeSenderAsProvider() external;\n    function addTrustInProvider(address _address) external;\n    function removeTrustInProvider(address _address) external;\n    function isTrustedProvider(address _address) external view returns (bool);\n}\n",
+  "sourcePath": "contracts/iface/ITreatmentProviderManager.sol",
+  "ast": {
+    "absolutePath": "contracts/iface/ITreatmentProviderManager.sol",
+    "exportedSymbols": {
+      "ITreatmentProviderManager": [
+        3460
+      ]
+    },
+    "id": 3461,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3436,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".1"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:22:15"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3460,
+        "linearizedBaseContracts": [
+          3460
+        ],
+        "name": "ITreatmentProviderManager",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "6738b0d5",
+            "id": 3439,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addSenderAsProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3437,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "94:2:15"
+            },
+            "returnParameters": {
+              "id": 3438,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "105:0:15"
+            },
+            "scope": 3460,
+            "src": "66:40:15",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "77316577",
+            "id": 3442,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeSenderAsProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3440,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "142:2:15"
+            },
+            "returnParameters": {
+              "id": 3441,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "153:0:15"
+            },
+            "scope": 3460,
+            "src": "111:43:15",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "80b4cb8b",
+            "id": 3447,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addTrustInProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3445,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3444,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3447,
+                  "src": "187:16:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3443,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "187:7:15",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "186:18:15"
+            },
+            "returnParameters": {
+              "id": 3446,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "213:0:15"
+            },
+            "scope": 3460,
+            "src": "159:55:15",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "5f4b6a43",
+            "id": 3452,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeTrustInProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3450,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3449,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3452,
+                  "src": "250:16:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3448,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "250:7:15",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "249:18:15"
+            },
+            "returnParameters": {
+              "id": 3451,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "276:0:15"
+            },
+            "scope": 3460,
+            "src": "219:58:15",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "c08974e2",
+            "id": 3459,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isTrustedProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3455,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3454,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3459,
+                  "src": "309:16:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3453,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "309:7:15",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "308:18:15"
+            },
+            "returnParameters": {
+              "id": 3458,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3457,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3459,
+                  "src": "350:4:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 3456,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "350:4:15",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "349:6:15"
+            },
+            "scope": 3460,
+            "src": "282:74:15",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3461,
+        "src": "24:334:15"
+      }
+    ],
+    "src": "0:359:15"
+  },
+  "legacyAST": {
+    "absolutePath": "contracts/iface/ITreatmentProviderManager.sol",
+    "exportedSymbols": {
+      "ITreatmentProviderManager": [
+        3460
+      ]
+    },
+    "id": 3461,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 3436,
+        "literals": [
+          "solidity",
+          "0.6",
+          ".1"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:22:15"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 3460,
+        "linearizedBaseContracts": [
+          3460
+        ],
+        "name": "ITreatmentProviderManager",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "6738b0d5",
+            "id": 3439,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addSenderAsProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3437,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "94:2:15"
+            },
+            "returnParameters": {
+              "id": 3438,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "105:0:15"
+            },
+            "scope": 3460,
+            "src": "66:40:15",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "77316577",
+            "id": 3442,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeSenderAsProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3440,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "142:2:15"
+            },
+            "returnParameters": {
+              "id": 3441,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "153:0:15"
+            },
+            "scope": 3460,
+            "src": "111:43:15",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "80b4cb8b",
+            "id": 3447,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addTrustInProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3445,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3444,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3447,
+                  "src": "187:16:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3443,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "187:7:15",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "186:18:15"
+            },
+            "returnParameters": {
+              "id": 3446,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "213:0:15"
+            },
+            "scope": 3460,
+            "src": "159:55:15",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "5f4b6a43",
+            "id": 3452,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "removeTrustInProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3450,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3449,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3452,
+                  "src": "250:16:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3448,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "250:7:15",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "249:18:15"
+            },
+            "returnParameters": {
+              "id": 3451,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "276:0:15"
+            },
+            "scope": 3460,
+            "src": "219:58:15",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "c08974e2",
+            "id": 3459,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isTrustedProvider",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 3455,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3454,
+                  "name": "_address",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3459,
+                  "src": "309:16:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3453,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "309:7:15",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "308:18:15"
+            },
+            "returnParameters": {
+              "id": 3458,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3457,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 3459,
+                  "src": "350:4:15",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 3456,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "350:4:15",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "349:6:15"
+            },
+            "scope": 3460,
+            "src": "282:74:15",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 3461,
+        "src": "24:334:15"
+      }
+    ],
+    "src": "0:359:15"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.1+commit.e6f7d5a4.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.23",
+  "updatedAt": "2021-03-08T18:05:17.869Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
